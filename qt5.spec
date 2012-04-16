@@ -66,12 +66,6 @@ BuildRequires: pkgconfig(xcb-renderutil)
 BuildRequires: pkgconfig(xcb-keysyms)
 BuildRequires: pkgconfig(xrender)
 
-# For MySQL plugin:
-BuildRequires: mysql-devel
-
-# For PostgreSQL plugin:
-BuildRequires: postgresql-devel >= 9.0
-
 %description
 Version 5 of the Qt toolkit
 
@@ -214,6 +208,7 @@ Qt SQL library
 Summary: SQLite 3.x support for the QtSql library v%major
 Group: System/Libraries
 Requires: %qtsql = %version-%release
+BuildRequires: pkgconfig(sqlite3)
 
 %description -n %qtsql-sqlite
 SQLite 3.x support for the QtSql library v%major
@@ -222,6 +217,7 @@ SQLite 3.x support for the QtSql library v%major
 Summary: MySQL support for the QtSql library v%major
 Group: System/Libraries
 Requires: %qtsql = %version-%release
+BuildRequires: mysql-devel
 
 %description -n %qtsql-mysql
 MySQL support for the QtSql library v%major
@@ -230,6 +226,7 @@ MySQL support for the QtSql library v%major
 Summary: ODBC support for the QtSql library v%major
 Group: System/Libraries
 Requires: %qtsql = %version-%release
+BuildRequires: pkgconfig(libiodbc)
 
 %description -n %qtsql-odbc
 ODBC support for the QtSql library v%major
@@ -238,6 +235,7 @@ ODBC support for the QtSql library v%major
 Summary: PostgreSQL support for the QtSql library v%major
 Group: System/Libraries
 Requires: %qtsql = %version-%release
+BuildRequires: postgresql-devel >= 9.0
 
 %description -n %qtsql-postgresql
 PostgreSQL support for the QtSql library v%major
