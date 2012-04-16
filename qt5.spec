@@ -58,6 +58,9 @@ BuildRequires: cups-devel
 # OpenGL
 BuildRequires: pkgconfig(gl)
 
+# Event loop
+BuildRequires: pkgconfig(glib-2.0)
+
 # For XCB platform plugin:
 BuildRequires: pkgconfig(xcb) >= 1.5
 BuildRequires: pkgconfig(xcb-icccm)
