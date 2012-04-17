@@ -310,6 +310,18 @@ Group: Development/KDE and Qt
 %description examples
 Example applications for %name
 
+%package fonts
+Summary: Fonts for use with some %name output plugins
+Group: System/Libraries
+
+%description fonts
+Fonts for use with some %name output plugins
+
+These fonts are required for various non-X11 output
+plugins (framebuffer device etc.).
+
+They are not required for the normal X11 output.
+
 %prep
 %setup -q -n qt-everywhere-opensource-src-%version
 cd qtbase
@@ -564,3 +576,6 @@ ln -s ../lib/qt5/%_lib/*.so.* .
 
 %files examples
 %_qt_prefix/examples
+
+%files fonts
+%_qt_libdir/fonts
