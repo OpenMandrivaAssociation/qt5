@@ -27,7 +27,7 @@
 %define qtopengl %mklibname qtopengl %major
 %define qtopengld %mklibname qtopengl%major -d
 %define qtprintsupport %mklibname qtprintsupport %major
-%define qtprintsupportd %mklibname qtprintsupportd -d
+%define qtprintsupportd %mklibname qtprintsupport%major -d
 %define qtsql %mklibname qtsql %major
 %define qtsqld %mklibname qtsql%major -d
 %define qttest %mklibname qttest %major
