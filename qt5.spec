@@ -807,7 +807,7 @@ Summary: Development files for the Qt XPath/XQuery/XSLT/XML Schema library
 Group: Development/KDE and Qt
 Requires: %qtxmlpatterns = %version-%release
 
-%description -n %qtclucened
+%description -n %qtxmlpatternsd
 Development files for the Qt XPath/XQuery/XSLT/XML Schema library
 
 %package assistant
