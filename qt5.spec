@@ -126,6 +126,10 @@ BuildRequires: pkgconfig(xcb-renderutil)
 BuildRequires: pkgconfig(xcb-keysyms)
 BuildRequires: pkgconfig(xrender)
 
+# For WebKit
+BuildRequires: flex
+BuildRequires: bison
+
 %if "%_lib" == "lib64"
 %define platform linux-g++-64
 %else
