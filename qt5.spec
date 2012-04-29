@@ -129,6 +129,7 @@ BuildRequires: pkgconfig(xrender)
 # For WebKit
 BuildRequires: flex
 BuildRequires: bison
+BuildRequires: gperf
 
 %if "%_lib" == "lib64"
 %define platform linux-g++-64
