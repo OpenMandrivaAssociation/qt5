@@ -131,6 +131,14 @@ BuildRequires: flex
 BuildRequires: bison
 BuildRequires: gperf
 
+# WebKit video support
+BuildRequires: pkgconfig(gstreamer-0.10)
+BuildRequires: pkgconfig(gstreamer-base-0.10)
+BuildRequires: pkgconfig(gio-2.0)
+
+# Multimedia plugins
+BuildRequires: pkgconfig(libpulse) >= 1.1
+
 %if "%_lib" == "lib64"
 %define platform linux-g++-64
 %else
