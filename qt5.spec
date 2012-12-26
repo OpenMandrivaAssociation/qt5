@@ -485,6 +485,9 @@ ln -s ../lib/qt5/%_lib/*.so.* .
 
 %files -n %qtgui-linuxfb
 %_libdir/qt5/plugins/platforms/libqlinuxfb.so
+# FIXME need to determine why those aren't built all the time. We're probably
+# missing a BuildRequires: somewhere.
+%optional %_qt_libdir/fonts
 
 %files -n %qtgui-minimal
 %_libdir/qt5/plugins/platforms/libqminimal.so
