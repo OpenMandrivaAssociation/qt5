@@ -1,4 +1,4 @@
-%define beta beta2
+%define beta %nil
 %define _qt_prefix %_prefix/lib/qt5
 %define _qt_bindir %_qt_prefix/bin
 %define _qt_docdir %_docdir/qt5
@@ -14,33 +14,34 @@
 %define _qt_translationsdir %_qt_prefix/translations
 
 %define major %(echo %version |cut -d. -f1)
-%define qtconcurrent %mklibname qtconcurrent %major
-%define qtconcurrentd %mklibname qtconcurrent%major -d
-%define qtcore %mklibname qtcore %major
-%define qtcored %mklibname qtcore%major -d
-%define qtdbus %mklibname qtdbus %major
-%define qtdbusd %mklibname qtdbus%major -d
-%define qtgui %mklibname qtgui %major
-%define qtguid %mklibname qtgui%major -d
-%define qtnetwork %mklibname qtnetwork %major
-%define qtnetworkd %mklibname qtnetwork%major -d
-%define qtopengl %mklibname qtopengl %major
-%define qtopengld %mklibname qtopengl%major -d
-%define qtprintsupport %mklibname qtprintsupport %major
-%define qtprintsupportd %mklibname qtprintsupportd -d
-%define qtsql %mklibname qtsql %major
-%define qtsqld %mklibname qtsql%major -d
-%define qttest %mklibname qttest %major
-%define qttestd %mklibname qttest%major -d
-%define qtwidgets %mklibname qtwidgets %major
-%define qtwidgetsd %mklibname qtwidgets%major -d
-%define qtxml %mklibname qtxml %major
-%define qtxmld %mklibname qtxml%major -d
+%define qtbootstrapd %mklibname qt%{major}bootstrap -d
+%define qtconcurrent %mklibname qt%{major}concurrent %major
+%define qtconcurrentd %mklibname qt%{major}concurrent%major -d
+%define qtcore %mklibname qt%{major}core %major
+%define qtcored %mklibname qt%{major}core%major -d
+%define qtdbus %mklibname qt%{major}dbus %major
+%define qtdbusd %mklibname qt%{major}dbus%major -d
+%define qtgui %mklibname qt%{major}gui %major
+%define qtguid %mklibname qt%{major}gui%major -d
+%define qtnetwork %mklibname qt%{major}network %major
+%define qtnetworkd %mklibname qt%{major}network%major -d
+%define qtopengl %mklibname qt%{major}opengl %major
+%define qtopengld %mklibname qt%{major}opengl%major -d
+%define qtprintsupport %mklibname qt%{major}printsupport %major
+%define qtprintsupportd %mklibname qt%{major}printsupportd -d
+%define qtsql %mklibname qt%{major}sql %major
+%define qtsqld %mklibname qt%{major}sql%major -d
+%define qttest %mklibname qt%{major}test %major
+%define qttestd %mklibname qt%{major}test%major -d
+%define qtwidgets %mklibname qt%{major}widgets %major
+%define qtwidgetsd %mklibname qt%{major}widgets%major -d
+%define qtxml %mklibname qt%{major}xml %major
+%define qtxmld %mklibname qt%{major}xml%major -d
 
 Name: qt5
 Version: 5.0.0
 %if "%beta" == ""
-Source0: http://releases.qt-project.org/qt5.0/release/qt-everywhere-opensource-src-%version.tar.xz
+Source0: http://releases.qt-project.org/qt5/5.0.0/single/qt-everywhere-opensource-src-%version.tar.gz
 Release: 1
 %else
 Source0: http://releases.qt-project.org/qt5.0/%beta/single/qt-everywhere-opensource-src-%version-%beta.tar.xz
@@ -84,6 +85,13 @@ Group: System/Libraries
 
 %description -n %qtconcurrent
 Qt threading library
+
+%package -n %qtbootstrapd
+Summary: Development files for version %major if the QtBootstrap library
+Group: Development/KDE and Qt
+
+%description -n %qtbootstrapd
+Development files for version %major if the QtBootstrap library
 
 %package -n %qtconcurrentd
 Summary: Development files for version %major of the QtConcurrent library
@@ -412,49 +420,47 @@ cd %buildroot%_libdir
 ln -s ../lib/qt5/%_lib/*.so.* .
 
 %files -n %qtconcurrent
-%_qt_libdir/libQtConcurrent.so.*
-%_libdir/libQtConcurrent.so.*
+%_qt_libdir/libQt%{major}Concurrent.so.*
+%_libdir/libQt%{major}Concurrent.so.*
+
+%files -n %qtbootstrapd
+%_qt_libdir/libQt%{major}Bootstrap.a
+%_qt_libdir/libQt%{major}Bootstrap.prl
+%_qt_libdir/pkgconfig/Qt%{major}Bootstrap.pc
 
 %files -n %qtconcurrentd
-%_qt_libdir/libQtConcurrent.so
-%_qt_libdir/libQtConcurrent.prl
-%_qt_libdir/pkgconfig/QtConcurrent.pc
+%_qt_libdir/libQt%{major}Concurrent.so
+%_qt_libdir/libQt%{major}Concurrent.prl
+%_qt_libdir/pkgconfig/Qt%{major}Concurrent.pc
 %_qt_includedir/QtConcurrent
-%_qt_includedir/Qt/QtConcurrent
 %_qt_libdir/cmake/Qt%{major}Concurrent
 
 %files -n %qtcore
-%_qt_libdir/libQtCore.so.*
-%_libdir/libQtCore.so.*
+%_qt_libdir/libQt%{major}Core.so.*
+%_libdir/libQt%{major}Core.so.*
 %dir %_libdir/qt5/plugins
 
 %files -n %qtcored
 %_qt_bindir/moc
 %_qt_bindir/rcc
-%_qt_libdir/libQtCore.so
-%_qt_libdir/libQtCore.prl
+%_qt_libdir/libQt%{major}Core.so
+%_qt_libdir/libQt%{major}Core.prl
 %_qt_includedir/QtCore
 %dir %_qt_libdir/cmake
 %dir %_qt_libdir/pkgconfig
-%_qt_libdir/pkgconfig/QtCore.pc
+%_qt_libdir/pkgconfig/Qt%{major}Core.pc
 %_qt_libdir/cmake/Qt%{major}Core
-%dir %_qt_includedir/Qt
-%_qt_includedir/Qt/*.h
-%_qt_includedir/Qt/QtCore
-%_qt_includedir/Qt/QGenericPlugin
-%_qt_includedir/Qt/QGenericPluginFactory
 %doc %_docdir/qt5/global
 
 %files -n %qtdbus
-%_qt_libdir/libQtDBus.so.*
-%_libdir/libQtDBus.so.*
+%_qt_libdir/libQt%{major}DBus.so.*
+%_libdir/libQt%{major}DBus.so.*
 
 %files -n %qtdbusd
-%_qt_libdir/libQtDBus.so
-%_qt_libdir/libQtDBus.prl
-%_qt_libdir/pkgconfig/QtDBus.pc
+%_qt_libdir/libQt%{major}DBus.so
+%_qt_libdir/libQt%{major}DBus.prl
+%_qt_libdir/pkgconfig/Qt%{major}DBus.pc
 %_qt_includedir/QtDBus
-%_qt_includedir/Qt/QtDBus
 %_qt_libdir/cmake/Qt%{major}DBus
 %_qt_bindir/qdbuscpp2xml
 %_qt_bindir/qdbusxml2cpp
@@ -464,8 +470,8 @@ ln -s ../lib/qt5/%_lib/*.so.* .
 %_qt_prefix/mkspecs
 
 %files -n %qtgui
-%_qt_libdir/libQtGui.so.*
-%_libdir/libQtGui.so.*
+%_qt_libdir/libQt%{major}Gui.so.*
+%_libdir/libQt%{major}Gui.so.*
 %_libdir/qt5/plugins/imageformats
 %dir %_libdir/qt5/plugins/platforminputcontexts
 %dir %_libdir/qt5/plugins/platforms
@@ -473,7 +479,7 @@ ln -s ../lib/qt5/%_lib/*.so.* .
 %_libdir/qt5/plugins/printsupport
 
 %files -n %qtgui-x11
-%_libdir/qt5/plugins/platforms/libxcb.so
+%_libdir/qt5/plugins/platforms/libqxcb.so
 %_libdir/qt5/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so
 %_libdir/qt5/plugins/platforminputcontexts/libmaliitplatforminputcontextplugin.so
 
@@ -485,65 +491,53 @@ ln -s ../lib/qt5/%_lib/*.so.* .
 
 %files -n %qtguid
 %_qt_bindir/uic
-%_qt_libdir/libQtGui.so
-%_qt_libdir/libQtGui.prl
-%_qt_libdir/pkgconfig/QtGui.pc
+%_qt_libdir/libQt%{major}Gui.so
+%_qt_libdir/libQt%{major}Gui.prl
+%_qt_libdir/pkgconfig/Qt%{major}Gui.pc
 %_qt_includedir/QtGui
-%_qt_includedir/Qt/QtGui
 %_qt_libdir/cmake/Qt%{major}Gui
-%_qt_libdir/libQtPlatformSupport.a
-%_qt_libdir/libQtPlatformSupport.prl
-%_qt_libdir/pkgconfig/QtPlatformSupport.pc
+%_qt_libdir/libQt%{major}PlatformSupport.a
+%_qt_libdir/libQt%{major}PlatformSupport.prl
+%_qt_libdir/pkgconfig/Qt%{major}PlatformSupport.pc
 %_qt_includedir/QtPlatformSupport
-%_qt_includedir/Qt/QtPlatformSupport
-%_qt_includedir/Qt/QPlatformInputContextPlugin
-%_qt_includedir/Qt/QPlatformMenu
-%_qt_includedir/Qt/QPlatformMenuAction
-%_qt_includedir/Qt/QPlatformMenuBar
-%_qt_includedir/Qt/QPlatformPrintPlugin
-%_qt_includedir/Qt/QPlatformPrinterSupport
-%_qt_includedir/Qt/QPlatformPrinterSupportPlugin
 
 %files -n %qtnetwork
-%_qt_libdir/libQtNetwork.so.*
-%_libdir/libQtNetwork.so.*
+%_qt_libdir/libQt%{major}Network.so.*
+%_libdir/libQt%{major}Network.so.*
 %_libdir/qt5/plugins/bearer
 
 %files -n %qtnetworkd
-%_qt_libdir/libQtNetwork.so
-%_qt_libdir/libQtNetwork.prl
-%_qt_libdir/pkgconfig/QtNetwork.pc
+%_qt_libdir/libQt%{major}Network.so
+%_qt_libdir/libQt%{major}Network.prl
+%_qt_libdir/pkgconfig/Qt%{major}Network.pc
 %_qt_includedir/QtNetwork
-%_qt_includedir/Qt/QtNetwork
 %_qt_libdir/cmake/Qt%{major}Network
 
 %files -n %qtopengl
-%_qt_libdir/libQtOpenGL.so.*
-%_libdir/libQtOpenGL.so.*
+%_qt_libdir/libQt%{major}OpenGL.so.*
+%_libdir/libQt%{major}OpenGL.so.*
 
 %files -n %qtopengld
-%_qt_libdir/libQtOpenGL.so
-%_qt_libdir/libQtOpenGL.prl
-%_qt_libdir/pkgconfig/QtOpenGL.pc
+%_qt_libdir/libQt%{major}OpenGL.so
+%_qt_libdir/libQt%{major}OpenGL.prl
+%_qt_libdir/pkgconfig/Qt%{major}OpenGL.pc
 %_qt_includedir/QtOpenGL
-%_qt_includedir/Qt/QtOpenGL
 %_qt_libdir/cmake/Qt%{major}OpenGL
 
 %files -n %qtprintsupport
-%_qt_libdir/libQtPrintSupport.so.*
-%_libdir/libQtPrintSupport.so.*
+%_qt_libdir/libQt%{major}PrintSupport.so.*
+%_libdir/libQt%{major}PrintSupport.so.*
 
 %files -n %qtprintsupportd
-%_qt_libdir/libQtPrintSupport.so
-%_qt_libdir/libQtPrintSupport.prl
-%_qt_libdir/pkgconfig/QtPrintSupport.pc
+%_qt_libdir/libQt%{major}PrintSupport.so
+%_qt_libdir/libQt%{major}PrintSupport.prl
+%_qt_libdir/pkgconfig/Qt%{major}PrintSupport.pc
 %_qt_includedir/QtPrintSupport
-%_qt_includedir/Qt/QtPrintSupport
 %_qt_libdir/cmake/Qt%{major}PrintSupport
 
 %files -n %qtsql
-%_qt_libdir/libQtSql.so.*
-%_libdir/libQtSql.so.*
+%_qt_libdir/libQt%{major}Sql.so.*
+%_libdir/libQt%{major}Sql.so.*
 %dir %_libdir/qt5/plugins/sqldrivers
 
 %files -n %qtsql-sqlite
@@ -559,48 +553,44 @@ ln -s ../lib/qt5/%_lib/*.so.* .
 %_libdir/qt5/plugins/sqldrivers/libqsqlpsql.so
 
 %files -n %qtsqld
-%_qt_libdir/libQtSql.so
-%_qt_libdir/libQtSql.prl
-%_qt_libdir/pkgconfig/QtSql.pc
+%_qt_libdir/libQt%{major}Sql.so
+%_qt_libdir/libQt%{major}Sql.prl
+%_qt_libdir/pkgconfig/Qt%{major}Sql.pc
 %_qt_includedir/QtSql
-%_qt_includedir/Qt/QtSql
 %_qt_libdir/cmake/Qt%{major}Sql
 
 %files -n %qttest
-%_qt_libdir/libQtTest.so.*
-%_libdir/libQtTest.so.*
+%_qt_libdir/libQt%{major}Test.so.*
+%_libdir/libQt%{major}Test.so.*
 
 %files -n %qttestd
-%_qt_libdir/libQtTest.so
-%_qt_libdir/libQtTest.prl
-%_qt_libdir/pkgconfig/QtTest.pc
+%_qt_libdir/libQt%{major}Test.so
+%_qt_libdir/libQt%{major}Test.prl
+%_qt_libdir/pkgconfig/Qt%{major}Test.pc
 %_qt_includedir/QtTest
-%_qt_includedir/Qt/QtTest
 %_qt_libdir/cmake/Qt%{major}Test
 
 %files -n %qtwidgets
-%_qt_libdir/libQtWidgets.so.*
-%_libdir/libQtWidgets.so.*
+%_qt_libdir/libQt%{major}Widgets.so.*
+%_libdir/libQt%{major}Widgets.so.*
 %_libdir/qt5/plugins/accessible
 
 %files -n %qtwidgetsd
-%_qt_libdir/libQtWidgets.so
-%_qt_libdir/libQtWidgets.prl
-%_qt_libdir/pkgconfig/QtWidgets.pc
+%_qt_libdir/libQt%{major}Widgets.so
+%_qt_libdir/libQt%{major}Widgets.prl
+%_qt_libdir/pkgconfig/Qt%{major}Widgets.pc
 %_qt_includedir/QtWidgets
-%_qt_includedir/Qt/QtWidgets
 %_qt_libdir/cmake/Qt%{major}Widgets
 
 %files -n %qtxml
-%_qt_libdir/libQtXml.so.*
-%_libdir/libQtXml.so.*
+%_qt_libdir/libQt%{major}Xml.so.*
+%_libdir/libQt%{major}Xml.so.*
 
 %files -n %qtxmld
-%_qt_libdir/libQtXml.so
-%_qt_libdir/libQtXml.prl
-%_qt_libdir/pkgconfig/QtXml.pc
+%_qt_libdir/libQt%{major}Xml.so
+%_qt_libdir/libQt%{major}Xml.prl
+%_qt_libdir/pkgconfig/Qt%{major}Xml.pc
 %_qt_includedir/QtXml
-%_qt_includedir/Qt/QtXml
 %_qt_libdir/cmake/Qt%{major}Xml
 
 %files -n qdoc%major
