@@ -39,9 +39,9 @@
 %define qtxmld %mklibname qt%{major}xml%major -d
 
 Name: qt5
-Version: 5.0.0
+Version: 5.0.1
 %if "%beta" == ""
-Source0: http://releases.qt-project.org/qt5/5.0.0/single/qt-everywhere-opensource-src-%version.tar.gz
+Source0: http://releases.qt-project.org/qt5/%version/single/qt-everywhere-opensource-src-%version.tar.gz
 Release: 1
 %else
 Source0: http://releases.qt-project.org/qt5.0/%beta/single/qt-everywhere-opensource-src-%version-%beta.tar.xz
@@ -350,7 +350,6 @@ They are not required for the normal X11 output.
 %else
 %setup -q -n qt-everywhere-opensource-src-%version
 %endif
-cd qtbase
 ./configure \
 	-prefix %_qt_prefix \
 	-bindir %_qt_bindir \
@@ -366,6 +365,8 @@ cd qtbase
 	-release \
 	-opensource \
 	-shared \
+	-c++11 \
+	-largefile \
 	-accessibility \
 	-no-sql-db2 \
 	-no-sql-ibase \
@@ -386,29 +387,35 @@ cd qtbase
 	-system-zlib \
 	-system-libpng \
 	-system-libjpeg \
-	-openssl \
+	-openssl-linked \
 	-system-pcre \
+	-system-xcb \
 	-optimized-qmake \
 	-no-nis \
 	-cups \
 	-iconv \
+	-icu \
+	-no-strip \
 	-pch \
-	-dbus \
+	-dbus-linked \
 	-reduce-relocations \
 	-xcb \
+	-eglfs \
+	-directfb \
+	-linuxfb \
+	-kms \
+	-qpa xcb \
 	-opengl \
 	-confirm-license \
+	-system-proxies \
 	-glib \
-	-qpa xcb \
 	-no-separate-debug-info \
 	-v
 
 %build
-cd qtbase
 %make STRIP=true
 
 %install
-cd qtbase
 make install STRIP=true INSTALL_ROOT=%buildroot
 
 # Installed, but not useful
@@ -418,6 +425,19 @@ rm -f %buildroot%_qt_bindir/qtmodule-configtests
 
 cd %buildroot%_libdir
 ln -s ../lib/qt5/%_lib/*.so.* .
+
+# Fix some wrong permissions
+find %buildroot -type f -perm -0755 -name "*.png" |xargs chmod 0644
+find %buildroot -type f -perm -0755 -name "*.plist.app" |xargs chmod 0644
+
+# Workaround for
+# *** ERROR: same build ID in nonidentical files!
+#        /usr/lib/qt5/bin/qdbuscpp2xml
+#   and  /usr/lib/qt5/bin/moc
+#	...
+# while generating debug info
+find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unneeded
+
 
 %files -n %qtconcurrent
 %_qt_libdir/libQt%{major}Concurrent.so.*
