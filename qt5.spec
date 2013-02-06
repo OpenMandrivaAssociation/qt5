@@ -131,6 +131,7 @@ BuildRequires: pkgconfig(atspi-2)
 
 # Assorted...
 BuildRequires: pkgconfig(libudev)
+BuildRequires: flex
 
 %description
 Version 5 of the Qt toolkit
