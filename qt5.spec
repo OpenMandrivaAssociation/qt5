@@ -131,7 +131,7 @@ BuildRequires: pkgconfig(atspi-2)
 
 # Assorted...
 BuildRequires: pkgconfig(libudev)
-BuildRequires: flex bison
+BuildRequires: flex bison gperf
 
 %description
 Version 5 of the Qt toolkit
