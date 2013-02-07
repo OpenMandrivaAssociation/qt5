@@ -112,7 +112,7 @@ BuildRequires: pkgconfig(icu-uc)
 
 # Multimedia
 BuildRequires: pkgconfig(gstreamer-0.10) pkgconfig(gstreamer-plugins-base-0.10)
-BuildRequires: pkgconfig(libpulse)
+BuildRequires: pkgconfig(libpulse) pkgconfig(openal)
 
 # For XCB platform plugin:
 BuildRequires: pkgconfig(xcb) >= 1.5
