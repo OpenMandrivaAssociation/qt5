@@ -846,7 +846,6 @@ Tools for creating and updating Qt Linguist translation files
 	-fontconfig \
 	-accessibility \
 	-gnumake \
-	-mysql_config \
 	-pkg-config \
 	-sm \
 	-xinerama \
