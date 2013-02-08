@@ -87,7 +87,7 @@ Name: qt5
 Version: 5.0.1
 %if "%beta" == ""
 Source0: http://releases.qt-project.org/qt5/%version/single/qt-everywhere-opensource-src-%version.tar.gz
-Release: 1
+Release: 2
 %else
 Source0: http://releases.qt-project.org/qt5.0/%beta/single/qt-everywhere-opensource-src-%version-%beta.tar.xz
 Release: 0.%beta.1
@@ -120,7 +120,19 @@ BuildRequires: pkgconfig(xcb-icccm)
 BuildRequires: pkgconfig(xcb-image)
 BuildRequires: pkgconfig(xcb-renderutil)
 BuildRequires: pkgconfig(xcb-keysyms)
-BuildRequires: pkgconfig(xrender)
+BuildRequires: pkgconfig(xrender) pkgconfig(xcb-render)
+BuildRequires: pkgconfig(sm)
+BuildRequires: pkgconfig(xinerama) pkgconfig(xcb-xinerama)
+BuildRequires: pkgconfig(xcb-shape)
+BuildRequires: pkgconfig(xv) pkgconfig(xcb-xv)
+BuildRequires: pkgconfig(inputproto) pkgconfig(xi)
+BuildRequires: pkgconfig(xcb-xfixes) pkgconfig(xfixes)
+BuildRequires: pkgconfig(xcb-randr) pkgconfig(xrandr)
+BuildRequires: pkgconfig(xkbcomp) pkgconfig(xkbfile)
+
+# For proper font access
+BuildRequires: pkgconfig(fontconfig)
+BuildRequires: pkgconfig(freetype2)
 
 %if %with directfb
 # DirectFB platform plugin:
@@ -831,6 +843,22 @@ Tools for creating and updating Qt Linguist translation files
 	-directfb \
 %endif
 	-qpa xcb \
+	-fontconfig \
+	-accessibility \
+	-gnumake \
+	-mysql_config \
+	-pkg-config \
+	-sm \
+	-xinerama \
+	-xshape \
+	-xvideo \
+	-xsync \
+	-xinput2 \
+	-xcursor \
+	-xfixes \
+	-xrandr \
+	-xrender \
+	-xkb \
 	-opengl \
 	-confirm-license \
 	-system-proxies \
