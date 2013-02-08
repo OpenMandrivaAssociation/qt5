@@ -667,6 +667,7 @@ Development files for the Qt version of the V8 JavaScript engine
 %package -n %qtwebkit
 Summary: Qt WebKit web browsing library
 Group: System/Libraries
+BuildRequires: pkgconfig(libxslt)
 
 %description -n %qtwebkit
 Qt WebKit web browsing library
