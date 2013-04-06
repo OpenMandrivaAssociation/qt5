@@ -868,6 +868,7 @@ Tools for creating and updating Qt Linguist translation files
 	-system-proxies \
 	-glib \
 	-no-separate-debug-info \
+	-no-strip \
 	-v
 
 # FIXME we should also build the KMS and EGLFS output plugins (-kms -eglfs), but
