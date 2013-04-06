@@ -98,6 +98,10 @@ Summary: Version 5 of the Qt toolkit
 URL: http://qt-project.org/
 Group: Development/KDE and Qt
 
+BuildRequires: png-devel
+BuildRequires: jpeg-devel
+BuildRequires: zlib-devel
+
 # CUPS
 BuildRequires: cups-devel
 
