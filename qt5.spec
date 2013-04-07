@@ -1,3 +1,4 @@
+%define debug_package %{nil}
 %define beta %nil
 %define _qt_prefix %_prefix/lib/qt5
 %define _qt_bindir %_qt_prefix/bin
