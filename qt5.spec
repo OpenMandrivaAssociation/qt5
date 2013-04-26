@@ -966,7 +966,9 @@ rm -f %buildroot%_qt_prefix/translations/qtconfig_*.qm
 cd %buildroot%_libdir
 ln -s ../lib/qt5/%_lib/*.so.* .
 mkdir pkgconfig
-ln -s ../lib/qt5/%_lib/pkgconfig/*.pc pkgconfig/
+cd pkgconfig
+ln -s ../../lib/qt5/%_lib/pkgconfig/*.pc .
+cd ..
 
 # Fix some wrong permissions
 # We create a dummy file so we don't get errors on "chmod 0644" if no file
