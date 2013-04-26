@@ -1,5 +1,5 @@
 %define debug_package %{nil}
-%define beta %nil
+%define beta alpha
 %define _qt_prefix %_prefix/lib/qt5
 %define _qt_bindir %_qt_prefix/bin
 %define _qt_docdir %_docdir/qt5
@@ -33,12 +33,18 @@
 %define qtopengld %mklibname qt%{major}opengl -d
 %define qtprintsupport %mklibname qt%{major}printsupport %major
 %define qtprintsupportd %mklibname qt%{major}printsupport -d
+%define qtsensors %mklibname qt%{major}sensors %major
+%define qtsensorsd %mklibname qt%{major}sensors -d
+%define qtserialport %mklibname qt%{major}serialport %major
+%define qtserialportd %mklibname qt%{major}serialport -d
 %define qtsql %mklibname qt%{major}sql %major
 %define qtsqld %mklibname qt%{major}sql -d
 %define qttest %mklibname qt%{major}test %major
 %define qttestd %mklibname qt%{major}test -d
 %define qtwidgets %mklibname qt%{major}widgets %major
 %define qtwidgetsd %mklibname qt%{major}widgets -d
+%define qtx11extras %mklibname qt%{major}x11extras %major
+%define qtx11extrasd %mklibname qt%{major}x11extras -d
 %define qtxml %mklibname qt%{major}xml %major
 %define qtxmld %mklibname qt%{major}xml -d
 
@@ -85,12 +91,12 @@
 %bcond_without directfb
 
 Name: qt5
-Version: 5.0.1
+Version: 5.1.0
 %if "%beta" == ""
 Source0: http://releases.qt-project.org/qt5/%version/single/qt-everywhere-opensource-src-%version.tar.gz
 Release: 2
 %else
-Source0: http://releases.qt-project.org/qt5.0/%beta/single/qt-everywhere-opensource-src-%version-%beta.tar.xz
+Source0: http://download.qt-project.org/development_releases/qt/%(echo %version |cut -d. -f1-2)/%version-%beta/single/qt-everywhere-opensource-src-%version-%beta.tar.xz
 Release: 0.%beta.1
 %endif
 Source100: %name.rpmlintrc
@@ -260,6 +266,14 @@ Requires: %qtgui = %version-%release
 %description -n %qtgui-minimal
 Minimal (Framebuffer based) output driver for QtGui v%major
 
+%package -n %qtgui-offscreen
+Summary: Offscreen output driver for QtGui v%major
+Group: System/Libraries
+Requires: %qtgui = %version-%release
+
+%description -n %qtgui-offscreen
+Minimal (Framebuffer based) output driver for QtGui v%major
+
 %package -n %qtnetwork
 Summary: Qt Networking library
 Group: System/Libraries
@@ -304,6 +318,36 @@ Requires: %qtprintsupport = %version-%release
 
 %description -n %qtprintsupportd
 Development files for version %major of the QtPrintSupport library
+
+%package -n %qtsensors
+Summary: Qt Sensors library
+Group: System/Libraries
+
+%description -n %qtsensors
+Qt Sensors library
+
+%package -n %qtsensorsd
+Summary: Development files for the QtSensors library
+Group: Development/KDE and Qt
+Requires: %qtsensors = %version-%release
+
+%description -n %qtsensorsd
+Development files for the QtSensors library
+
+%package -n %qtserialport
+Summary: Qt Serial Port library
+Group: System/Libraries
+
+%description -n %qtserialport
+Qt Serial Port library
+
+%package -n %qtserialportd
+Summary: Development files for the QtSerialPort library
+Group: Development/KDE and Qt
+Requires: %qtserialport = %version-%release
+
+%description -n %qtserialportd
+Development files for the QtSerialPort library
 
 %package -n %qtsql
 Summary: Qt SQL library
@@ -400,6 +444,17 @@ Requires: %qtxml = %version-%release
 
 %description -n %qtxmld
 Development files for version %major of the QtXml library
+
+%package platformtheme-gtk2
+Summary: GTK 2.x platform theme for Qt %{major}
+Group: Graphical desktop/KDE
+Requires: %qtgui = %version-%release
+BuildRequires: pkgconfig(gtk+-x11-2.0)
+
+%description platformtheme-gtk2
+GTK 2.x platform theme for Qt %{major}. This plugin allows Qt to render
+controls using GTK 2.x themes - making it integrate better with GTK
+based desktops.
 
 %package -n qdoc%major
 Summary: Qt documentation generator, version %major
@@ -702,6 +757,21 @@ Requires: %qtwidgetsd = %EVRD
 %description -n %qtwebkitwidgetsd
 Development files for the Qt WebKit Widgets library
 
+%package -n %qtx11extras
+Summary: Qt X11 Extras library
+Group: System/Libraries
+
+%description -n %qtx11extras
+Qt X11 Extras library
+
+%package -n %qtx11extrasd
+Summary: Development files for the QtX11Extras library
+Group: Development/KDE and Qt
+Requires: %qtx11extras = %version-%release
+
+%description -n %qtx11extrasd
+Development files for the QtX11Extras library
+
 %package -n %qtxmlpatterns
 Summary: Qt XSLT engine
 Group: System/Libraries
@@ -730,6 +800,7 @@ Requires: %qtguid = %EVRD
 Requires: %qtnetworkd = %EVRD
 Requires: %qtopengld = %EVRD
 Requires: %qtprintsupportd = %EVRD
+Requires: %qtsensorsd = %EVRD
 Requires: %qtsqld = %EVRD
 Requires: %qttestd = %EVRD
 Requires: %qtwidgetsd = %EVRD
@@ -894,17 +965,24 @@ rm -f %buildroot%_qt_prefix/translations/qtconfig_*.qm
 
 cd %buildroot%_libdir
 ln -s ../lib/qt5/%_lib/*.so.* .
+mkdir pkgconfig
+ln -s ../lib/qt5/%_lib/pkgconfig/*.pc pkgconfig/
 
 # Fix some wrong permissions
-find %buildroot -type f -perm -0755 -name "*.png" |xargs chmod 0644
-find %buildroot -type f -perm -0755 -name "*.svg" |xargs chmod 0644
-find %buildroot -type f -perm -0755 -name "*.jpg" |xargs chmod 0644
-find %buildroot -type f -perm -0755 -name "*.xml" |xargs chmod 0644
-find %buildroot -type f -perm -0755 -name "*.xsl" |xargs chmod 0644
-find %buildroot -type f -perm -0755 -name "*.php" |xargs chmod 0644
-find %buildroot -type f -perm -0755 -name "*.html" |xargs chmod 0644
-find %buildroot -type f -perm -0755 -name "*.js" |xargs chmod 0644
-find %buildroot -type f -perm -0755 -name "*.plist.app" |xargs chmod 0644
+# We create a dummy file so we don't get errors on "chmod 0644" if no file
+# matches -- the chmod should remain in place because pictures with bogus
+# permissions tend to pop up in newer releases.
+touch dummy
+find %buildroot -type f -perm -0755 -name "*.png" |xargs chmod 0644 dummy
+find %buildroot -type f -perm -0755 -name "*.svg" |xargs chmod 0644 dummy
+find %buildroot -type f -perm -0755 -name "*.jpg" |xargs chmod 0644 dummy
+find %buildroot -type f -perm -0755 -name "*.xml" |xargs chmod 0644 dummy
+find %buildroot -type f -perm -0755 -name "*.xsl" |xargs chmod 0644 dummy
+find %buildroot -type f -perm -0755 -name "*.php" |xargs chmod 0644 dummy
+find %buildroot -type f -perm -0755 -name "*.html" |xargs chmod 0644 dummy
+find %buildroot -type f -perm -0755 -name "*.js" |xargs chmod 0644 dummy
+find %buildroot -type f -perm -0755 -name "*.plist.app" |xargs chmod 0644 dummy
+rm -f dummy
 
 # Workaround for
 # *** ERROR: same build ID in nonidentical files!
@@ -912,7 +990,7 @@ find %buildroot -type f -perm -0755 -name "*.plist.app" |xargs chmod 0644
 #   and  /usr/lib/qt5/bin/moc
 #	...
 # while generating debug info
-find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unneeded
+find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --strip-unneeded
 
 
 %files -n %qtconcurrent
@@ -923,11 +1001,13 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}Bootstrap.a
 %_qt_libdir/libQt%{major}Bootstrap.prl
 %_qt_libdir/pkgconfig/Qt%{major}Bootstrap.pc
+%_libdir/pkgconfig/Qt%{major}Bootstrap.pc
 
 %files -n %qtconcurrentd
 %_qt_libdir/libQt%{major}Concurrent.so
 %_qt_libdir/libQt%{major}Concurrent.prl
 %_qt_libdir/pkgconfig/Qt%{major}Concurrent.pc
+%_libdir/pkgconfig/Qt%{major}Concurrent.pc
 %_qt_includedir/QtConcurrent
 %_qt_libdir/cmake/Qt%{major}Concurrent
 
@@ -988,8 +1068,10 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %lang(zh_CN) %_qt_prefix/translations/qt_help_zh_CN.qm
 %lang(zh_TW) %_qt_prefix/translations/qt_help_zh_TW.qm
 %lang(de) %_qt_prefix/translations/qtbase_de.qm
+%lang(hu) %_qt_prefix/translations/qtbase_hu.qm
 %lang(ru) %_qt_prefix/translations/qtbase_ru.qm
 %lang(sk) %_qt_prefix/translations/qtbase_sk.qm
+%lang(uk) %_qt_prefix/translations/qtbase_uk.qm
 
 %files -n %qtcored
 %_qt_bindir/moc
@@ -998,9 +1080,13 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}Core.prl
 %_qt_includedir/QtCore
 %dir %_qt_libdir/cmake
+%dir %_qt_libdir/cmake/Qt%{major}
 %dir %_qt_libdir/pkgconfig
 %_qt_libdir/pkgconfig/Qt%{major}Core.pc
+%_libdir/pkgconfig/Qt%{major}Core.pc
 %_qt_libdir/cmake/Qt%{major}Core
+%_qt_libdir/cmake/Qt%{major}/Qt5Config.cmake
+%_qt_libdir/cmake/Qt%{major}/Qt5ConfigVersion.cmake
 %doc %_docdir/qt5/global
 
 %files -n %qtdbus
@@ -1011,6 +1097,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}DBus.so
 %_qt_libdir/libQt%{major}DBus.prl
 %_qt_libdir/pkgconfig/Qt%{major}DBus.pc
+%_libdir/pkgconfig/Qt%{major}DBus.pc
 %_qt_includedir/QtDBus
 %_qt_libdir/cmake/Qt%{major}DBus
 %_qt_bindir/qdbuscpp2xml
@@ -1026,6 +1113,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_libdir/qt5/plugins/imageformats
 %dir %_qt_plugindir/platforminputcontexts
 %dir %_qt_plugindir/platforms
+%dir %_qt_plugindir/platformthemes
 %dir %_qt_plugindir/iconengines
 %_libdir/qt5/plugins/generic
 %_libdir/qt5/plugins/printsupport
@@ -1044,6 +1132,9 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %files -n %qtgui-minimal
 %_libdir/qt5/plugins/platforms/libqminimal.so
 
+%files -n %qtgui-offscreen
+%_libdir/qt5/plugins/platforms/libqoffscreen.so
+
 %files -n %qtgui-directfb
 %_qt_plugindir/platforms/libqdirectfb.so
 
@@ -1052,17 +1143,20 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}Gui.so
 %_qt_libdir/libQt%{major}Gui.prl
 %_qt_libdir/pkgconfig/Qt%{major}Gui.pc
+%_libdir/pkgconfig/Qt%{major}Gui.pc
 %_qt_includedir/QtGui
 %_qt_libdir/cmake/Qt%{major}Gui
 %_qt_libdir/libQt%{major}PlatformSupport.a
 %_qt_libdir/libQt%{major}PlatformSupport.prl
 %_qt_libdir/pkgconfig/Qt%{major}PlatformSupport.pc
+%_libdir/pkgconfig/Qt%{major}PlatformSupport.pc
 %_qt_includedir/QtPlatformSupport
 %_qt_includedir/QtUiTools
 %_qt_libdir/cmake/Qt%{major}UiTools
 %_qt_libdir/libQt%{major}UiTools.a
 %_qt_libdir/libQt%{major}UiTools.prl
 %_qt_libdir/pkgconfig/Qt%{major}UiTools.pc
+%_libdir/pkgconfig/Qt%{major}UiTools.pc
 
 %files -n %qtnetwork
 %_qt_libdir/libQt%{major}Network.so.*
@@ -1073,6 +1167,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}Network.so
 %_qt_libdir/libQt%{major}Network.prl
 %_qt_libdir/pkgconfig/Qt%{major}Network.pc
+%_libdir/pkgconfig/Qt%{major}Network.pc
 %_qt_includedir/QtNetwork
 %_qt_libdir/cmake/Qt%{major}Network
 
@@ -1084,8 +1179,15 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}OpenGL.so
 %_qt_libdir/libQt%{major}OpenGL.prl
 %_qt_libdir/pkgconfig/Qt%{major}OpenGL.pc
+%_libdir/pkgconfig/Qt%{major}OpenGL.pc
+%_qt_libdir/pkgconfig/Qt%{major}OpenGLExtensions.pc
+%_libdir/pkgconfig/Qt%{major}OpenGLExtensions.pc
 %_qt_includedir/QtOpenGL
+%_qt_includedir/QtOpenGLExtensions
 %_qt_libdir/cmake/Qt%{major}OpenGL
+%_qt_libdir/cmake/Qt%{major}OpenGLExtensions
+%_qt_libdir/libQt%{major}OpenGLExtensions.a
+%_qt_libdir/libQt%{major}OpenGLExtensions.prl
 
 %files -n %qtprintsupport
 %_qt_libdir/libQt%{major}PrintSupport.so.*
@@ -1095,8 +1197,36 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}PrintSupport.so
 %_qt_libdir/libQt%{major}PrintSupport.prl
 %_qt_libdir/pkgconfig/Qt%{major}PrintSupport.pc
+%_libdir/pkgconfig/Qt%{major}PrintSupport.pc
 %_qt_includedir/QtPrintSupport
 %_qt_libdir/cmake/Qt%{major}PrintSupport
+
+%files -n %qtsensors
+%_qt_libdir/libQt%{major}Sensors.so.*
+%_libdir/libQt%{major}Sensors.so.*
+%_qt_prefix/qml/QtSensors
+%_qt_plugindir/sensorgestures
+%_qt_plugindir/sensors
+
+%files -n %qtsensorsd
+%_qt_includedir/QtSensors
+%_qt_libdir/cmake/Qt%{major}Sensors
+%_qt_libdir/libQt%{major}Sensors.so
+%_qt_libdir/libQt%{major}Sensors.prl
+%_qt_libdir/pkgconfig/Qt%{major}Sensors.pc
+%_libdir/pkgconfig/Qt%{major}Sensors.pc
+
+%files -n %qtserialport
+%_qt_libdir/libQt%{major}SerialPort.so.*
+%_libdir/libQt%{major}SerialPort.so.*
+
+%files -n %qtserialportd
+%_qt_includedir/QtSerialPort
+%_qt_libdir/cmake/Qt%{major}SerialPort
+%_qt_libdir/libQt%{major}SerialPort.so
+%_qt_libdir/libQt%{major}SerialPort.prl
+%_qt_libdir/pkgconfig/Qt%{major}SerialPort.pc
+%_libdir/pkgconfig/Qt%{major}SerialPort.pc
 
 %files -n %qtsql
 %_qt_libdir/libQt%{major}Sql.so.*
@@ -1119,6 +1249,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}Sql.so
 %_qt_libdir/libQt%{major}Sql.prl
 %_qt_libdir/pkgconfig/Qt%{major}Sql.pc
+%_libdir/pkgconfig/Qt%{major}Sql.pc
 %_qt_includedir/QtSql
 %_qt_libdir/cmake/Qt%{major}Sql
 
@@ -1131,6 +1262,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}Test.so
 %_qt_libdir/libQt%{major}Test.prl
 %_qt_libdir/pkgconfig/Qt%{major}Test.pc
+%_libdir/pkgconfig/Qt%{major}Test.pc
 %_qt_includedir/QtTest
 %_qt_libdir/cmake/Qt%{major}Test
 
@@ -1143,8 +1275,21 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}Widgets.so
 %_qt_libdir/libQt%{major}Widgets.prl
 %_qt_libdir/pkgconfig/Qt%{major}Widgets.pc
+%_libdir/pkgconfig/Qt%{major}Widgets.pc
 %_qt_includedir/QtWidgets
 %_qt_libdir/cmake/Qt%{major}Widgets
+
+%files -n %qtx11extras
+%_qt_libdir/libQt%{major}X11Extras.so.*
+%_libdir/libQt%{major}X11Extras.so.*
+
+%files -n %qtx11extrasd
+%_qt_includedir/QtX11Extras
+%_qt_libdir/cmake/Qt%{major}X11Extras
+%_qt_libdir/libQt%{major}X11Extras.so
+%_qt_libdir/libQt%{major}X11Extras.prl
+%_qt_libdir/pkgconfig/Qt%{major}X11Extras.pc
+%_libdir/pkgconfig/Qt%{major}X11Extras.pc
 
 %files -n %qtxml
 %_qt_libdir/libQt%{major}Xml.so.*
@@ -1154,8 +1299,12 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}Xml.so
 %_qt_libdir/libQt%{major}Xml.prl
 %_qt_libdir/pkgconfig/Qt%{major}Xml.pc
+%_libdir/pkgconfig/Qt%{major}Xml.pc
 %_qt_includedir/QtXml
 %_qt_libdir/cmake/Qt%{major}Xml
+
+%files platformtheme-gtk2
+%_qt_plugindir/platformthemes/libqgtk2.so
 
 %files -n qdoc%major
 %_qt_bindir/qdoc
@@ -1179,6 +1328,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}CLucene.so
 %_qt_libdir/libQt%{major}CLucene.prl
 %_qt_libdir/pkgconfig/Qt%{major}CLucene.pc
+%_libdir/pkgconfig/Qt%{major}CLucene.pc
 %_qt_includedir/QtCLucene
 
 %files -n %qtdeclarative
@@ -1187,12 +1337,14 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %lang(de) %_qt_prefix/translations/qtdeclarative_de.qm
 %lang(ru) %_qt_prefix/translations/qtdeclarative_ru.qm
 %lang(sk) %_qt_prefix/translations/qtdeclarative_sk.qm
+%lang(uk) %_qt_prefix/translations/qtdeclarative_uk.qm
 %_qt_plugindir/qmltooling
 
 %files -n %qtdeclaratived
 %_qt_libdir/libQt%{major}Declarative.so
 %_qt_libdir/libQt%{major}Declarative.prl
 %_qt_libdir/pkgconfig/Qt%{major}Declarative.pc
+%_libdir/pkgconfig/Qt%{major}Declarative.pc
 %_qt_includedir/QtDeclarative
 %_qt_libdir/cmake/Qt%{major}Declarative
 
@@ -1204,16 +1356,19 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}DesignerComponents.so
 %_qt_libdir/libQt%{major}DesignerComponents.prl
 %_qt_libdir/pkgconfig/Qt%{major}DesignerComponents.pc
+%_libdir/pkgconfig/Qt%{major}DesignerComponents.pc
 %_qt_includedir/QtDesignerComponents
 
 %files -n %qtdesigner
 %_qt_libdir/libQt%{major}Designer.so.*
 %_libdir/libQt%{major}Designer.so.*
+%lang(sk) %_qt_prefix/translations/designer_sk.qm
 
 %files -n %qtdesignerd
 %_qt_libdir/libQt%{major}Designer.so
 %_qt_libdir/libQt%{major}Designer.prl
 %_qt_libdir/pkgconfig/Qt%{major}Designer.pc
+%_libdir/pkgconfig/Qt%{major}Designer.pc
 %_qt_includedir/QtDesigner
 %_qt_libdir/cmake/Qt%{major}Designer
 
@@ -1225,6 +1380,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}Help.so
 %_qt_libdir/libQt%{major}Help.prl
 %_qt_libdir/pkgconfig/Qt%{major}Help.pc
+%_libdir/pkgconfig/Qt%{major}Help.pc
 %_qt_includedir/QtHelp
 %_qt_libdir/cmake/Qt%{major}Help
 
@@ -1235,13 +1391,16 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_plugindir/mediaservice
 %_qt_plugindir/playlistformats
 %lang(de) %_qt_prefix/translations/qtmultimedia_de.qm
+%lang(hu) %_qt_prefix/translations/qtmultimedia_hu.qm
 %lang(ru) %_qt_prefix/translations/qtmultimedia_ru.qm
 %lang(sk) %_qt_prefix/translations/qtmultimedia_sk.qm
+%lang(uk) %_qt_prefix/translations/qtmultimedia_uk.qm
 
 %files -n %qtmultimediad
 %_qt_libdir/libQt%{major}Multimedia.so
 %_qt_libdir/libQt%{major}Multimedia.prl
 %_qt_libdir/pkgconfig/Qt%{major}Multimedia.pc
+%_libdir/pkgconfig/Qt%{major}Multimedia.pc
 %_qt_includedir/QtMultimedia
 %_qt_libdir/cmake/Qt%{major}Multimedia
 %_qt_includedir/QtMultimediaQuick_p
@@ -1258,6 +1417,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}MultimediaWidgets.so
 %_qt_libdir/libQt%{major}MultimediaWidgets.prl
 %_qt_libdir/pkgconfig/Qt%{major}MultimediaWidgets.pc
+%_libdir/pkgconfig/Qt%{major}MultimediaWidgets.pc
 %_qt_includedir/QtMultimediaWidgets
 %_qt_libdir/cmake/Qt%{major}MultimediaWidgets
 
@@ -1271,17 +1431,19 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_prefix/qml/QtAudioEngine
 %_qt_prefix/qml/QtGraphicalEffects
 %_qt_prefix/qml/QtMultimedia
+%_qt_prefix/qml/QtQml
 
 %files -n %qtqmld
 %_qt_libdir/libQt%{major}Qml.so
 %_qt_libdir/libQt%{major}Qml.prl
 %_qt_libdir/pkgconfig/Qt%{major}Qml.pc
+%_libdir/pkgconfig/Qt%{major}Qml.pc
 %_qt_includedir/QtQml
 %_qt_libdir/cmake/Qt%{major}Qml
-%_qt_includedir/QtQmlDevTools
 %_qt_libdir/libQt%{major}QmlDevTools.a
 %_qt_libdir/libQt%{major}QmlDevTools.prl
 %_qt_libdir/pkgconfig/Qt%{major}QmlDevTools.pc
+%_libdir/pkgconfig/Qt%{major}QmlDevTools.pc
 
 %files -n %qtquick
 %_qt_libdir/libQt%{major}Quick.so.*
@@ -1297,13 +1459,16 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_prefix/qml/QtQuick.2
 %_qt_prefix/qml/QtQuick
 %lang(de) %_qt_prefix/translations/qtquick1_de.qm
+%lang(hu) %_qt_prefix/translations/qtquick1_hu.qm
 %lang(ru) %_qt_prefix/translations/qtquick1_ru.qm
 %lang(sk) %_qt_prefix/translations/qtquick1_sk.qm
+%lang(uk) %_qt_prefix/translations/qtquick1_uk.qm
 
 %files -n %qtquickd
 %_qt_libdir/libQt%{major}Quick.so
 %_qt_libdir/libQt%{major}Quick.prl
 %_qt_libdir/pkgconfig/Qt%{major}Quick.pc
+%_libdir/pkgconfig/Qt%{major}Quick.pc
 %_qt_includedir/QtQuick
 %_qt_libdir/cmake/Qt%{major}Quick
 
@@ -1315,6 +1480,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}QuickParticles.so
 %_qt_libdir/libQt%{major}QuickParticles.prl
 %_qt_libdir/pkgconfig/Qt%{major}QuickParticles.pc
+%_libdir/pkgconfig/Qt%{major}QuickParticles.pc
 %_qt_includedir/QtQuickParticles
 
 %files -n %qtquicktest
@@ -1325,6 +1491,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}QuickTest.so
 %_qt_libdir/libQt%{major}QuickTest.prl
 %_qt_libdir/pkgconfig/Qt%{major}QuickTest.pc
+%_libdir/pkgconfig/Qt%{major}QuickTest.pc
 %_qt_includedir/QtQuickTest
 %_qt_libdir/cmake/Qt%{major}QuickTest
 
@@ -1332,13 +1499,16 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}Script.so.*
 %_libdir/libQt%{major}Script.so.*
 %lang(de) %_qt_prefix/translations/qtscript_de.qm
+%lang(hu) %_qt_prefix/translations/qtscript_hu.qm
 %lang(ru) %_qt_prefix/translations/qtscript_ru.qm
 %lang(sk) %_qt_prefix/translations/qtscript_sk.qm
+%lang(uk) %_qt_prefix/translations/qtscript_uk.qm
 
 %files -n %qtscriptd
 %_qt_libdir/libQt%{major}Script.so
 %_qt_libdir/libQt%{major}Script.prl
 %_qt_libdir/pkgconfig/Qt%{major}Script.pc
+%_libdir/pkgconfig/Qt%{major}Script.pc
 %_qt_includedir/QtScript
 %_qt_libdir/cmake/Qt%{major}Script
 
@@ -1350,6 +1520,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}ScriptTools.so
 %_qt_libdir/libQt%{major}ScriptTools.prl
 %_qt_libdir/pkgconfig/Qt%{major}ScriptTools.pc
+%_libdir/pkgconfig/Qt%{major}ScriptTools.pc
 %_qt_includedir/QtScriptTools
 %_qt_libdir/cmake/Qt%{major}ScriptTools
 
@@ -1362,6 +1533,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}Svg.so
 %_qt_libdir/libQt%{major}Svg.prl
 %_qt_libdir/pkgconfig/Qt%{major}Svg.pc
+%_libdir/pkgconfig/Qt%{major}Svg.pc
 %_qt_includedir/QtSvg
 %_qt_libdir/cmake/Qt%{major}Svg
 
@@ -1373,6 +1545,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}V8.so
 %_qt_libdir/libQt%{major}V8.prl
 %_qt_libdir/pkgconfig/Qt%{major}V8.pc
+%_libdir/pkgconfig/Qt%{major}V8.pc
 %_qt_includedir/QtV8
 
 %files -n %qtwebkit
@@ -1387,6 +1560,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}WebKit.so
 %_qt_libdir/libQt%{major}WebKit.prl
 %_qt_libdir/pkgconfig/Qt%{major}WebKit.pc
+%_libdir/pkgconfig/Qt%{major}WebKit.pc
 %_qt_includedir/QtWebKit
 %_qt_libdir/cmake/Qt%{major}WebKit
 
@@ -1398,6 +1572,7 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}WebKitWidgets.so
 %_qt_libdir/libQt%{major}WebKitWidgets.prl
 %_qt_libdir/pkgconfig/Qt%{major}WebKitWidgets.pc
+%_libdir/pkgconfig/Qt%{major}WebKitWidgets.pc
 %_qt_includedir/QtWebKitWidgets
 %_qt_libdir/cmake/Qt%{major}WebKitWidgets
 
@@ -1405,13 +1580,16 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_qt_libdir/libQt%{major}XmlPatterns.so.*
 %_libdir/libQt%{major}XmlPatterns.so.*
 %lang(de) %_qt_prefix/translations/qtxmlpatterns_de.qm
+%lang(hu) %_qt_prefix/translations/qtxmlpatterns_hu.qm
 %lang(ru) %_qt_prefix/translations/qtxmlpatterns_ru.qm
 %lang(sk) %_qt_prefix/translations/qtxmlpatterns_sk.qm
+%lang(uk) %_qt_prefix/translations/qtxmlpatterns_uk.qm
 
 %files -n %qtxmlpatternsd
 %_qt_libdir/libQt%{major}XmlPatterns.so
 %_qt_libdir/libQt%{major}XmlPatterns.prl
 %_qt_libdir/pkgconfig/Qt%{major}XmlPatterns.pc
+%_libdir/pkgconfig/Qt%{major}XmlPatterns.pc
 %_qt_includedir/QtXmlPatterns
 %_qt_libdir/cmake/Qt%{major}XmlPatterns
 
@@ -1493,3 +1671,5 @@ find %buildroot -type f -perm -0755 |grep -v '\.so' |xargs %__strip --strip-unne
 %_prefix/lib/qt%{major}/bin/qmltestrunner
 %_prefix/lib/qt%{major}/bin/qmlviewer
 %lang(sk) %_qt_prefix/translations/qmlviewer_sk.qm
+%lang(hu) %_qt_prefix/translations/qmlviewer_hu.qm
+%lang(uk) %_qt_prefix/translations/qmlviewer_uk.qm
