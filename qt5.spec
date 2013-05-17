@@ -1,5 +1,5 @@
 %define debug_package %{nil}
-%define beta alpha
+%define beta beta1
 %define _qt_prefix %_prefix/lib/qt5
 %define _qt_bindir %_qt_prefix/bin
 %define _qt_docdir %_docdir/qt5
@@ -1072,6 +1072,7 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %lang(uk) %_qt_prefix/translations/qt_help_uk.qm
 %lang(zh_CN) %_qt_prefix/translations/qt_help_zh_CN.qm
 %lang(zh_TW) %_qt_prefix/translations/qt_help_zh_TW.qm
+%lang(cs) %_qt_prefix/translations/qtbase_cs.qm
 %lang(de) %_qt_prefix/translations/qtbase_de.qm
 %lang(hu) %_qt_prefix/translations/qtbase_hu.qm
 %lang(ru) %_qt_prefix/translations/qtbase_ru.qm
@@ -1127,6 +1128,7 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %_libdir/qt5/plugins/platforms/libqxcb.so
 %_libdir/qt5/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so
 %_libdir/qt5/plugins/platforminputcontexts/libmaliitplatforminputcontextplugin.so
+%_qt_plugindir/platforminputcontexts/libcomposeplatforminputcontextplugin.so
 
 %files -n %qtgui-linuxfb
 %_libdir/qt5/plugins/platforms/libqlinuxfb.so
@@ -1395,6 +1397,7 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %_qt_plugindir/audio
 %_qt_plugindir/mediaservice
 %_qt_plugindir/playlistformats
+%lang(cs) %_qt_prefix/translations/qtmultimedia_cs.qm
 %lang(de) %_qt_prefix/translations/qtmultimedia_de.qm
 %lang(hu) %_qt_prefix/translations/qtmultimedia_hu.qm
 %lang(ru) %_qt_prefix/translations/qtmultimedia_ru.qm
@@ -1463,6 +1466,7 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %_qt_importdir/builtins.qmltypes
 %_qt_prefix/qml/QtQuick.2
 %_qt_prefix/qml/QtQuick
+%lang(cs) %_qt_prefix/translations/qtquick1_cs.qm
 %lang(de) %_qt_prefix/translations/qtquick1_de.qm
 %lang(hu) %_qt_prefix/translations/qtquick1_hu.qm
 %lang(ru) %_qt_prefix/translations/qtquick1_ru.qm
@@ -1503,6 +1507,7 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %files -n %qtscript
 %_qt_libdir/libQt%{major}Script.so.*
 %_libdir/libQt%{major}Script.so.*
+%lang(cs) %_qt_prefix/translations/qtscript_cs.qm
 %lang(de) %_qt_prefix/translations/qtscript_de.qm
 %lang(hu) %_qt_prefix/translations/qtscript_hu.qm
 %lang(ru) %_qt_prefix/translations/qtscript_ru.qm
@@ -1584,6 +1589,7 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %files -n %qtxmlpatterns
 %_qt_libdir/libQt%{major}XmlPatterns.so.*
 %_libdir/libQt%{major}XmlPatterns.so.*
+%lang(cs) %_qt_prefix/translations/qtxmlpatterns_cs.qm
 %lang(de) %_qt_prefix/translations/qtxmlpatterns_de.qm
 %lang(hu) %_qt_prefix/translations/qtxmlpatterns_hu.qm
 %lang(ru) %_qt_prefix/translations/qtxmlpatterns_ru.qm
@@ -1675,6 +1681,7 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %_prefix/lib/qt%{major}/bin/qmlscene
 %_prefix/lib/qt%{major}/bin/qmltestrunner
 %_prefix/lib/qt%{major}/bin/qmlviewer
+%lang(cs) %_qt_prefix/translations/qmlviewer_cs.qm
 %lang(sk) %_qt_prefix/translations/qmlviewer_sk.qm
 %lang(hu) %_qt_prefix/translations/qmlviewer_hu.qm
 %lang(uk) %_qt_prefix/translations/qmlviewer_uk.qm
