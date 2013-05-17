@@ -118,6 +118,9 @@ BuildRequires: pkgconfig(gl)
 # Event loop
 BuildRequires: pkgconfig(glib-2.0)
 
+# GTK theme
+BuildRequires: pkgconfig(gtk+-2.0)
+
 # ICU
 BuildRequires: pkgconfig(icu-uc)
 
