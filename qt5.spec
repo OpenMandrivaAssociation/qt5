@@ -1,21 +1,20 @@
 %define debug_package %{nil}
 %define beta beta1
-%define _qt_prefix %_prefix/lib/qt5
+%define major %(echo %version |cut -d. -f1)
+%define _qt_prefix %_prefix/lib/qt%{major}
 %define _qt_bindir %_qt_prefix/bin
-%define _qt_docdir %_docdir/qt5
-%define _qt_libdir %_prefix/lib/qt5/%_lib
-%define _qt_libexecdir %_prefix/lib/qt5/libexec
+%define _qt_docdir %_docdir/qt%{major}
+%define _qt_libdir %_prefix/lib/qt%{major}/%_lib
+%define _qt_libexecdir %_prefix/lib/qt%{major}/libexec
 %define _qt_includedir %_qt_prefix/include
-%define _qt_plugindir %_libdir/qt5/plugins
+%define _qt_plugindir %_libdir/qt%{major}/plugins
 %define _qt_demodir %_qt_prefix/demos
 %define _qt_exampledir %_qt_prefix/examples
 %define _qt_importdir %_qt_prefix/imports
 %define _qt_datadir %_qt_prefix/share
-%define _qt_sysconfdir %_sysconfdir/qt5
+%define _qt_sysconfdir %_sysconfdir/qt%{major}
 %define _qt_testsdir %_qt_prefix/tests
 %define _qt_translationsdir %_qt_prefix/translations
-
-%define major %(echo %version |cut -d. -f1)
 
 # qtbase components
 %define qtbootstrapd %mklibname qt%{major}bootstrap -d
@@ -93,15 +92,15 @@
 Name: qt5
 Version: 5.1.0
 %if "%beta" == ""
-Source0: http://releases.qt-project.org/qt5/%version/single/qt-everywhere-opensource-src-%version.tar.gz
-Release: 2
+Source0: http://releases.qt-project.org/qt%{major}/%version/single/qt-everywhere-opensource-src-%version.tar.gz
+Release: 1
 %else
 Source0: http://download.qt-project.org/development_releases/qt/%(echo %version |cut -d. -f1-2)/%version-%beta/single/qt-everywhere-opensource-src-%version-%beta.tar.xz
-Release: 0.%beta.1
+Release: 0.%beta.2
 %endif
 Source100: %name.rpmlintrc
 License: LGPLv3+
-Summary: Version 5 of the Qt toolkit
+Summary: Version %{major} of the Qt toolkit
 URL: http://qt-project.org/
 Group: Development/KDE and Qt
 
@@ -161,7 +160,7 @@ BuildRequires: pkgconfig(libudev)
 BuildRequires: flex bison gperf
 
 %description
-Version 5 of the Qt toolkit
+Version %{major} of the Qt toolkit
 
 %package -n %qtconcurrent
 Summary: Qt threading library
@@ -957,7 +956,7 @@ make install STRIP=true INSTALL_ROOT=%buildroot
 
 # Installed, but not useful
 rm -f %buildroot%_qt_bindir/syncqt
-# Probably not useful outside of Qt source tree?
+# Probably not useful outside of Qt source tree either?
 rm -f %buildroot%_qt_bindir/qtmodule-configtests
 # Let's not ship -devel files for private libraries... At least not until
 # applications teach us otherwise
@@ -965,12 +964,15 @@ rm -f %buildroot%_qt_libdir/libqgsttools_p.so %buildroot%_qt_libdir/libqgsttools
 rm -f %buildroot%_qt_libdir/libQt%{major}MultimediaQuick_p.so %buildroot%_qt_libdir/libQt%{major}MultimediaQuick_p.prl %buildroot%_qt_libdir/pkgconfig/Qt%{major}MultimediaQuick_p.pc
 # qtconfig doesn't exist anymore - we don't need its translations
 rm -f %buildroot%_qt_prefix/translations/qtconfig_*.qm
+# Let's make life easier for packagers
+mkdir -p %buildroot%_bindir
+ln -s ../lib/qt%{major}/bin/qmake %buildroot%_bindir/qmake-qt%{major}
 
 cd %buildroot%_libdir
-ln -s ../lib/qt5/%_lib/*.so.* .
+ln -s ../lib/qt%{major}/%_lib/*.so.* .
 mkdir pkgconfig
 cd pkgconfig
-ln -s ../../lib/qt5/%_lib/pkgconfig/*.pc .
+ln -s ../../lib/qt%{major}/%_lib/pkgconfig/*.pc .
 cd ..
 
 # Fix some wrong permissions
@@ -1019,7 +1021,7 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %files -n %qtcore
 %_qt_libdir/libQt%{major}Core.so.*
 %_libdir/libQt%{major}Core.so.*
-%dir %_libdir/qt5/plugins
+%dir %_libdir/qt%{major}/plugins
 %dir %_qt_prefix/phrasebooks
 %lang(da) %_qt_prefix/phrasebooks/danish.qph
 %lang(nl) %_qt_prefix/phrasebooks/dutch.qph
@@ -1091,9 +1093,9 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %_qt_libdir/pkgconfig/Qt%{major}Core.pc
 %_libdir/pkgconfig/Qt%{major}Core.pc
 %_qt_libdir/cmake/Qt%{major}Core
-%_qt_libdir/cmake/Qt%{major}/Qt5Config.cmake
-%_qt_libdir/cmake/Qt%{major}/Qt5ConfigVersion.cmake
-%doc %_docdir/qt5/global
+%_qt_libdir/cmake/Qt%{major}/Qt%{major}Config.cmake
+%_qt_libdir/cmake/Qt%{major}/Qt%{major}ConfigVersion.cmake
+%doc %_docdir/qt%{major}/global
 
 %files -n %qtdbus
 %_qt_libdir/libQt%{major}DBus.so.*
@@ -1110,37 +1112,38 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %_qt_bindir/qdbusxml2cpp
 
 %files -n qmake%major
+%_bindir/qmake-qt%{major}
 %_qt_bindir/qmake
 %_qt_prefix/mkspecs
 
 %files -n %qtgui
 %_qt_libdir/libQt%{major}Gui.so.*
 %_libdir/libQt%{major}Gui.so.*
-%_libdir/qt5/plugins/imageformats
+%_libdir/qt%{major}/plugins/imageformats
 %dir %_qt_plugindir/platforminputcontexts
 %dir %_qt_plugindir/platforms
 %dir %_qt_plugindir/platformthemes
 %dir %_qt_plugindir/iconengines
-%_libdir/qt5/plugins/generic
-%_libdir/qt5/plugins/printsupport
+%_libdir/qt%{major}/plugins/generic
+%_libdir/qt%{major}/plugins/printsupport
 
 %files -n %qtgui-x11
-%_libdir/qt5/plugins/platforms/libqxcb.so
-%_libdir/qt5/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so
-%_libdir/qt5/plugins/platforminputcontexts/libmaliitplatforminputcontextplugin.so
+%_libdir/qt%{major}/plugins/platforms/libqxcb.so
+%_libdir/qt%{major}/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so
+%_libdir/qt%{major}/plugins/platforminputcontexts/libmaliitplatforminputcontextplugin.so
 %_qt_plugindir/platforminputcontexts/libcomposeplatforminputcontextplugin.so
 
 %files -n %qtgui-linuxfb
-%_libdir/qt5/plugins/platforms/libqlinuxfb.so
+%_libdir/qt%{major}/plugins/platforms/libqlinuxfb.so
 # FIXME need to determine why those aren't built all the time. We're probably
 # missing a BuildRequires: somewhere.
 %optional %_qt_libdir/fonts
 
 %files -n %qtgui-minimal
-%_libdir/qt5/plugins/platforms/libqminimal.so
+%_libdir/qt%{major}/plugins/platforms/libqminimal.so
 
 %files -n %qtgui-offscreen
-%_libdir/qt5/plugins/platforms/libqoffscreen.so
+%_libdir/qt%{major}/plugins/platforms/libqoffscreen.so
 
 %files -n %qtgui-directfb
 %_qt_plugindir/platforms/libqdirectfb.so
@@ -1168,7 +1171,7 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %files -n %qtnetwork
 %_qt_libdir/libQt%{major}Network.so.*
 %_libdir/libQt%{major}Network.so.*
-%_libdir/qt5/plugins/bearer
+%_libdir/qt%{major}/plugins/bearer
 
 %files -n %qtnetworkd
 %_qt_libdir/libQt%{major}Network.so
@@ -1238,19 +1241,19 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %files -n %qtsql
 %_qt_libdir/libQt%{major}Sql.so.*
 %_libdir/libQt%{major}Sql.so.*
-%dir %_libdir/qt5/plugins/sqldrivers
+%dir %_libdir/qt%{major}/plugins/sqldrivers
 
 %files -n %qtsql-sqlite
-%_libdir/qt5/plugins/sqldrivers/libqsqlite.so
+%_libdir/qt%{major}/plugins/sqldrivers/libqsqlite.so
 
 %files -n %qtsql-mysql
-%_libdir/qt5/plugins/sqldrivers/libqsqlmysql.so
+%_libdir/qt%{major}/plugins/sqldrivers/libqsqlmysql.so
 
 %files -n %qtsql-odbc
-%_libdir/qt5/plugins/sqldrivers/libqsqlodbc.so
+%_libdir/qt%{major}/plugins/sqldrivers/libqsqlodbc.so
 
 %files -n %qtsql-postgresql
-%_libdir/qt5/plugins/sqldrivers/libqsqlpsql.so
+%_libdir/qt%{major}/plugins/sqldrivers/libqsqlpsql.so
 
 %files -n %qtsqld
 %_qt_libdir/libQt%{major}Sql.so
@@ -1276,7 +1279,7 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %files -n %qtwidgets
 %_qt_libdir/libQt%{major}Widgets.so.*
 %_libdir/libQt%{major}Widgets.so.*
-%_libdir/qt5/plugins/accessible
+%_libdir/qt%{major}/plugins/accessible
 
 %files -n %qtwidgetsd
 %_qt_libdir/libQt%{major}Widgets.so
