@@ -1,5 +1,5 @@
 %define debug_package %{nil}
-%define beta beta1
+%define beta rc1
 %define major %(echo %version |cut -d. -f1)
 %define _qt_prefix %_prefix/lib/qt%{major}
 %define _qt_bindir %_qt_prefix/bin
@@ -956,6 +956,7 @@ make install STRIP=true INSTALL_ROOT=%buildroot
 
 # Installed, but not useful
 rm -f %buildroot%_qt_bindir/syncqt
+rm -f %buildroot%_qt_bindir/syncqt.pl
 # Probably not useful outside of Qt source tree either?
 rm -f %buildroot%_qt_bindir/qtmodule-configtests
 # Let's not ship -devel files for private libraries... At least not until
@@ -1443,6 +1444,8 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %_qt_prefix/qml/QtGraphicalEffects
 %_qt_prefix/qml/QtMultimedia
 %_qt_prefix/qml/QtQml
+%_libdir/qt%{major}/plugins/qml1tooling/libqmldbg_inspector.so
+%_libdir/qt%{major}/plugins/qml1tooling/libqmldbg_tcp_qtdeclarative.so
 
 %files -n %qtqmld
 %_qt_libdir/libQt%{major}Qml.so
@@ -1687,4 +1690,5 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %lang(cs) %_qt_prefix/translations/qmlviewer_cs.qm
 %lang(sk) %_qt_prefix/translations/qmlviewer_sk.qm
 %lang(hu) %_qt_prefix/translations/qmlviewer_hu.qm
+%lang(ru) %_qt_prefix/translations/qmlviewer_ru.qm
 %lang(uk) %_qt_prefix/translations/qmlviewer_uk.qm
