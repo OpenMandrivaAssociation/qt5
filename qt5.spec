@@ -159,6 +159,9 @@ BuildRequires: pkgconfig(atspi-2)
 BuildRequires: pkgconfig(libudev)
 BuildRequires: flex bison gperf
 
+# Used for CPU feature detection in configure step
+BuildRequires: gdb
+
 %description
 Version %{major} of the Qt toolkit
 
@@ -943,7 +946,8 @@ Tools for creating and updating Qt Linguist translation files
 	-glib \
 	-no-separate-debug-info \
 	-no-strip \
-	-v
+	-v \
+	-I %_includedir/iodbc
 
 # FIXME we should also build the KMS and EGLFS output plugins (-kms -eglfs), but
 # they require OpenGL ES v2 -- while we typically want to build Desktop GL bits
