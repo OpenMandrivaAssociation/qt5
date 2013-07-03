@@ -1,5 +1,5 @@
 %define debug_package %{nil}
-%define beta rc1
+%define beta %nil
 %define major %(echo %version |cut -d. -f1)
 %define _qt_prefix %_prefix/lib/qt%{major}
 %define _qt_bindir %_qt_prefix/bin
@@ -92,11 +92,11 @@
 Name: qt5
 Version: 5.1.0
 %if "%beta" == ""
-Source0: http://releases.qt-project.org/qt%{major}/%version/single/qt-everywhere-opensource-src-%version.tar.gz
+Source0: http://download.qt-project.org/official_releases/qt/%(echo %version |cut -d. -f1-2)/%version/single/qt-everywhere-opensource-src-%version.tar.gz
 Release: 1
 %else
 Source0: http://download.qt-project.org/development_releases/qt/%(echo %version |cut -d. -f1-2)/%version-%beta/single/qt-everywhere-opensource-src-%version-%beta.tar.xz
-Release: 0.%beta.2
+Release: 0.%beta.1
 %endif
 Source100: %name.rpmlintrc
 License: LGPLv3+
