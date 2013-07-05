@@ -842,6 +842,7 @@ Qt help system
 %package designer
 Summary: Qt interface design tool
 Group: Development/KDE and Qt
+Requires: %qtgui-x11 = %version-%release
 
 %description designer
 Qt interface design tool
@@ -981,20 +982,15 @@ ln -s ../../lib/qt%{major}/%_lib/pkgconfig/*.pc .
 cd ..
 
 # Fix some wrong permissions
-# We create a dummy file so we don't get errors on "chmod 0644" if no file
-# matches -- the chmod should remain in place because pictures with bogus
-# permissions tend to pop up in newer releases.
-touch dummy
-find %buildroot -type f -perm -0755 -name "*.png" |xargs chmod 0644 dummy
-find %buildroot -type f -perm -0755 -name "*.svg" |xargs chmod 0644 dummy
-find %buildroot -type f -perm -0755 -name "*.jpg" |xargs chmod 0644 dummy
-find %buildroot -type f -perm -0755 -name "*.xml" |xargs chmod 0644 dummy
-find %buildroot -type f -perm -0755 -name "*.xsl" |xargs chmod 0644 dummy
-find %buildroot -type f -perm -0755 -name "*.php" |xargs chmod 0644 dummy
-find %buildroot -type f -perm -0755 -name "*.html" |xargs chmod 0644 dummy
-find %buildroot -type f -perm -0755 -name "*.js" |xargs chmod 0644 dummy
-find %buildroot -type f -perm -0755 -name "*.plist.app" |xargs chmod 0644 dummy
-rm -f dummy
+-find %buildroot -type f -perm -0755 -name "*.png" |xargs --no-run-if-empty chmod 0644
+-find %buildroot -type f -perm -0755 -name "*.svg" |xargs --no-run-if-empty chmod 0644
+-find %buildroot -type f -perm -0755 -name "*.jpg" |xargs --no-run-if-empty chmod 0644
+-find %buildroot -type f -perm -0755 -name "*.xml" |xargs --no-run-if-empty chmod 0644
+-find %buildroot -type f -perm -0755 -name "*.xsl" |xargs --no-run-if-empty chmod 0644
+-find %buildroot -type f -perm -0755 -name "*.php" |xargs --no-run-if-empty chmod 0644
+-find %buildroot -type f -perm -0755 -name "*.html" |xargs --no-run-if-empty chmod 0644
+-find %buildroot -type f -perm -0755 -name "*.js" |xargs --no-run-if-empty chmod 0644
+-find %buildroot -type f -perm -0755 -name "*.plist.app" |xargs --no-run-if-empty chmod 0644
 
 # Workaround for
 # *** ERROR: same build ID in nonidentical files!
@@ -1377,7 +1373,6 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %files -n %qtdesigner
 %_qt_libdir/libQt%{major}Designer.so.*
 %_libdir/libQt%{major}Designer.so.*
-%lang(sk) %_qt_prefix/translations/designer_sk.qm
 
 %files -n %qtdesignerd
 %_qt_libdir/libQt%{major}Designer.so
@@ -1644,6 +1639,7 @@ find %buildroot -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --str
 %lang(ko) %_qt_prefix/translations/designer_ko.qm
 %lang(pl) %_qt_prefix/translations/designer_pl.qm
 %lang(ru) %_qt_prefix/translations/designer_ru.qm
+%lang(sk) %_qt_prefix/translations/designer_sk.qm
 %lang(sl) %_qt_prefix/translations/designer_sl.qm
 %lang(uk) %_qt_prefix/translations/designer_uk.qm
 %lang(zh_CN) %_qt_prefix/translations/designer_zh_CN.qm
