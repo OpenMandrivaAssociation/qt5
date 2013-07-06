@@ -6,3 +6,4 @@ addFilter("E: script-without-shebang")
 addFilter("E: non-executable-script")
 # Qt creates debuginfo files itself
 addFilter("E: empty-debuginfo-package")
+addFilter("E: hardcoded-library-path")
