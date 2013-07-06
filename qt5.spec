@@ -203,6 +203,7 @@ Development files for version 5 of the QtCore library.
 %package -n qmake5
 Summary:	Makefile generation system for Qt5
 Group:		Development/KDE and Qt
+Requires:	%{name}-macros = %{EVRD}
 
 %description -n qmake5
 Makefile generation system for Qt5.
@@ -828,6 +829,8 @@ Requires:	%{qtv8d} = %{EVRD}
 Requires:	%{qtwebkitd} = %{EVRD}
 Requires:	%{qtwebkitwidgetsd} = %{EVRD}
 Requires:	%{qtxmlpatternsd} = %{EVRD}
+Requires:	qmake5 = %{EVRD}
+Requires:	%{name}-macros = %{EVRD}
 
 %description devel
 Meta-package for installing all Qt 5 development files.
@@ -875,6 +878,13 @@ Group:		Development/KDE and Qt
 
 %description qml-tools
 QML tools for Qt 5.
+
+%package macros
+Summary:	Base macros for Qt 5
+Group:		Development/KDE and Qt
+
+%description macros
+Base macros for Qt 5.
 
 %prep
 %if "%{beta}" != ""
@@ -1125,9 +1135,8 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %{_qt_bindir}/qdbuscpp2xml
 %{_qt_bindir}/qdbusxml2cpp
 
-%files -n qmake%{major}
+%files -n qmake5
 %{_bindir}/qmake-qt%{major}
-%{_sysconfdir}/rpm/macros.d/qt5.macros
 %{_qt_bindir}/qmake
 %{_qt_prefix}/mkspecs
 
@@ -1706,3 +1715,7 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %lang(sk) %{_qt_prefix}/translations/qmlviewer_sk.qm
 %lang(ru) %{_qt_prefix}/translations/qmlviewer_ru.qm
 %lang(uk) %{_qt_prefix}/translations/qmlviewer_uk.qm
+
+%files macros
+%{_sysconfdir}/rpm/macros.d/qt5.macros
+
