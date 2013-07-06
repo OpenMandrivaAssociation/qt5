@@ -863,8 +863,18 @@ Group:		Development/KDE and Qt
 Tools for creating and updating Qt Linguist translation files.
 
 %package tools
+Summary:	Tools for Qt 5
+Group:		Development/KDE and Qt
+
+%description tools
+Tools for Qt 5.
 
 %package qml-tools
+Summary:	QML tools for Qt 5
+Group:		Development/KDE and Qt
+
+%description qml-tools
+QML tools for Qt 5.
 
 %prep
 %if "%{beta}" != ""
