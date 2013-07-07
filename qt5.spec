@@ -98,7 +98,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.gz
-Release:	2
+Release:	3
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
@@ -364,6 +364,7 @@ Qt SQL library.
 Summary:	SQLite 3.x support for the QtSql library v5
 Group:		System/Libraries
 Requires:	%{qtsql} = %{EVRD}
+Provides:	%{name}-database-plugin-sqlite = %{EVRD}
 BuildRequires:	pkgconfig(sqlite3)
 
 %description -n %{qtsql}-sqlite
@@ -373,6 +374,7 @@ SQLite 3.x support for the QtSql library v5.
 Summary:	MySQL support for the QtSql library v5
 Group:		System/Libraries
 Requires:	%{qtsql} = %{EVRD}
+Provides:	%{name}-database-plugin-mysql = %{EVRD}
 BuildRequires:	mysql-devel
 
 %description -n %{qtsql}-mysql
@@ -382,6 +384,7 @@ MySQL support for the QtSql library v5.
 Summary:	ODBC support for the QtSql library v5
 Group:		System/Libraries
 Requires:	%{qtsql} = %{EVRD}
+Provides:	%{name}-database-plugin-odbc = %{EVRD}
 BuildRequires:	pkgconfig(libiodbc)
 
 %description -n %{qtsql}-odbc
@@ -391,6 +394,7 @@ ODBC support for the QtSql library v5.
 Summary:	PostgreSQL support for the QtSql library v5
 Group:		System/Libraries
 Requires:	%{qtsql} = %{EVRD}
+Provides:	%{name}-database-plugin-postgresql = %{EVRD}
 BuildRequires:	postgresql-devel >= 9.0
 
 %description -n %{qtsql}-postgresql
@@ -868,6 +872,8 @@ Tools for creating and updating Qt Linguist translation files.
 %package tools
 Summary:	Tools for Qt 5
 Group:		Development/KDE and Qt
+Requires:	%{qtgui}-minimal = %{EVRD}
+Requires:	%{name}-database-plugin-sqlite = %{EVRD}
 
 %description tools
 Tools for Qt 5.
