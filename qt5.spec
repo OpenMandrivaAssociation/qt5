@@ -5,8 +5,8 @@
 %define _qt_prefix %{_prefix}/lib/qt%{major}
 %define _qt_bindir %{_qt_prefix}/bin
 %define _qt_docdir %{_docdir}/qt%{major}
-%define _qt_libdir %{_prefix}/lib/qt%{major}/%{_lib}
-%define _qt_libexecdir %{_prefix}/lib/qt%{major}/libexec
+%define _qt_libdir %{_qt_prefix}/%{_lib}
+%define _qt_libexecdir %{_qt_prefix}/libexec
 %define _qt_includedir %{_qt_prefix}/include
 %define _qt_plugindir %{_libdir}/qt%{major}/plugins
 %define _qt_demodir %{_qt_prefix}/demos
@@ -98,12 +98,15 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.gz
-Release:	3
+Release:	4
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
 %endif
 Source1:	qt5.macros
+Source2:	rosa-assistant-qt5.desktop
+Source3:	rosa-designer-qt5.desktop
+Source4:	rosa-linguist-qt5.desktop
 Source100:	%{name}.rpmlintrc
 BuildRequires:	jpeg-devel
 BuildRequires:	pkgconfig(libpng)
@@ -850,6 +853,8 @@ Qt help system.
 Summary:	Qt interface design tool
 Group:		Development/KDE and Qt
 Requires:	%{qtgui}-x11 = %{EVRD}
+# for /usr/lib/qt5/bin/uic
+Requires:	%{qtguid} = %{EVRD}
 
 %description designer
 Qt interface design tool.
@@ -995,7 +1000,7 @@ rm -f %{buildroot}%{_qt_bindir}/qtmodule-configtests
 rm -f %{buildroot}%{_qt_libdir}/libqgsttools_p.so %{buildroot}%{_qt_libdir}/libqgsttools_p.prl
 rm -f %{buildroot}%{_qt_libdir}/libQt%{major}MultimediaQuick_p.so %{buildroot}%{_qt_libdir}/libQt%{major}MultimediaQuick_p.prl %{buildroot}%{_qt_libdir}/pkgconfig/Qt%{major}MultimediaQuick_p.pc
 # qtconfig doesn't exist anymore - we don't need its translations
-rm -f %{buildroot}%{_qt_prefix}/translations/qtconfig_*.qm
+rm -f %{buildroot}%{_qt_translationsdir}/qtconfig_*.qm
 # Let's make life easier for packagers
 mkdir -p %{buildroot}%{_bindir}
 ln -s ../lib/qt%{major}/bin/qmake %{buildroot}%{_bindir}/qmake-qt%{major}
@@ -1030,6 +1035,12 @@ find %{buildroot} -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --s
 mkdir -p %{buildroot}%{_sysconfdir}/rpm/macros.d
 install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 
+# Install .desktop files for assistant, designer and linguist
+mkdir -p %{buildroot}%{_datadir}/applications
+install -m 644 %{SOURCE2} %{buildroot}%{_datadir}/applications
+install -m 644 %{SOURCE3} %{buildroot}%{_datadir}/applications
+install -m 644 %{SOURCE4} %{buildroot}%{_datadir}/applications
+
 %files -n %{qtconcurrent}
 %{_qt_libdir}/libQt%{major}Concurrent.so.*
 %{_libdir}/libQt%{major}Concurrent.so.*
@@ -1051,7 +1062,7 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %files -n %{qtcore}
 %{_qt_libdir}/libQt%{major}Core.so.*
 %{_libdir}/libQt%{major}Core.so.*
-%dir %{_libdir}/qt%{major}/plugins
+%dir %{_qt_plugindir}
 %dir %{_qt_prefix}/phrasebooks
 %lang(da) %{_qt_prefix}/phrasebooks/danish.qph
 %lang(nl) %{_qt_prefix}/phrasebooks/dutch.qph
@@ -1066,50 +1077,50 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %lang(ru) %{_qt_prefix}/phrasebooks/russian.qph
 %lang(es) %{_qt_prefix}/phrasebooks/spanish.qph
 %lang(sv) %{_qt_prefix}/phrasebooks/swedish.qph
-%dir %{_qt_prefix}/translations
-%lang(ar) %{_qt_prefix}/translations/qt_ar.qm
-%lang(cs) %{_qt_prefix}/translations/qt_cs.qm
-%lang(da) %{_qt_prefix}/translations/qt_da.qm
-%lang(de) %{_qt_prefix}/translations/qt_de.qm
-%lang(es) %{_qt_prefix}/translations/qt_es.qm
-%lang(fa) %{_qt_prefix}/translations/qt_fa.qm
-%lang(fr) %{_qt_prefix}/translations/qt_fr.qm
-%lang(gl) %{_qt_prefix}/translations/qt_gl.qm
-%lang(he) %{_qt_prefix}/translations/qt_he.qm
-%lang(hu) %{_qt_prefix}/translations/qt_hu.qm
-%lang(ja) %{_qt_prefix}/translations/qt_ja.qm
-%lang(ko) %{_qt_prefix}/translations/qt_ko.qm
-%lang(lt) %{_qt_prefix}/translations/qt_lt.qm
-%lang(pl) %{_qt_prefix}/translations/qt_pl.qm
-%lang(pt) %{_qt_prefix}/translations/qt_pt.qm
-%lang(ru) %{_qt_prefix}/translations/qt_ru.qm
-%lang(sk) %{_qt_prefix}/translations/qt_sk.qm
-%lang(sl) %{_qt_prefix}/translations/qt_sl.qm
-%lang(sv) %{_qt_prefix}/translations/qt_sv.qm
-%lang(uk) %{_qt_prefix}/translations/qt_uk.qm
-%lang(zh_CN) %{_qt_prefix}/translations/qt_zh_CN.qm
-%lang(zh_TW) %{_qt_prefix}/translations/qt_zh_TW.qm
-%lang(cs) %{_qt_prefix}/translations/qt_help_cs.qm
-%lang(da) %{_qt_prefix}/translations/qt_help_da.qm
-%lang(de) %{_qt_prefix}/translations/qt_help_de.qm
-%lang(fr) %{_qt_prefix}/translations/qt_help_fr.qm
-%lang(gl) %{_qt_prefix}/translations/qt_help_gl.qm
-%lang(hu) %{_qt_prefix}/translations/qt_help_hu.qm
-%lang(ja) %{_qt_prefix}/translations/qt_help_ja.qm
-%lang(ko) %{_qt_prefix}/translations/qt_help_ko.qm
-%lang(pl) %{_qt_prefix}/translations/qt_help_pl.qm
-%lang(ru) %{_qt_prefix}/translations/qt_help_ru.qm
-%lang(sk) %{_qt_prefix}/translations/qt_help_sk.qm
-%lang(sl) %{_qt_prefix}/translations/qt_help_sl.qm
-%lang(uk) %{_qt_prefix}/translations/qt_help_uk.qm
-%lang(zh_CN) %{_qt_prefix}/translations/qt_help_zh_CN.qm
-%lang(zh_TW) %{_qt_prefix}/translations/qt_help_zh_TW.qm
-%lang(cs) %{_qt_prefix}/translations/qtbase_cs.qm
-%lang(de) %{_qt_prefix}/translations/qtbase_de.qm
-%lang(hu) %{_qt_prefix}/translations/qtbase_hu.qm
-%lang(ru) %{_qt_prefix}/translations/qtbase_ru.qm
-%lang(sk) %{_qt_prefix}/translations/qtbase_sk.qm
-%lang(uk) %{_qt_prefix}/translations/qtbase_uk.qm
+%dir %{_qt_translationsdir}
+%lang(ar) %{_qt_translationsdir}/qt_ar.qm
+%lang(cs) %{_qt_translationsdir}/qt_cs.qm
+%lang(da) %{_qt_translationsdir}/qt_da.qm
+%lang(de) %{_qt_translationsdir}/qt_de.qm
+%lang(es) %{_qt_translationsdir}/qt_es.qm
+%lang(fa) %{_qt_translationsdir}/qt_fa.qm
+%lang(fr) %{_qt_translationsdir}/qt_fr.qm
+%lang(gl) %{_qt_translationsdir}/qt_gl.qm
+%lang(he) %{_qt_translationsdir}/qt_he.qm
+%lang(hu) %{_qt_translationsdir}/qt_hu.qm
+%lang(ja) %{_qt_translationsdir}/qt_ja.qm
+%lang(ko) %{_qt_translationsdir}/qt_ko.qm
+%lang(lt) %{_qt_translationsdir}/qt_lt.qm
+%lang(pl) %{_qt_translationsdir}/qt_pl.qm
+%lang(pt) %{_qt_translationsdir}/qt_pt.qm
+%lang(ru) %{_qt_translationsdir}/qt_ru.qm
+%lang(sk) %{_qt_translationsdir}/qt_sk.qm
+%lang(sl) %{_qt_translationsdir}/qt_sl.qm
+%lang(sv) %{_qt_translationsdir}/qt_sv.qm
+%lang(uk) %{_qt_translationsdir}/qt_uk.qm
+%lang(zh_CN) %{_qt_translationsdir}/qt_zh_CN.qm
+%lang(zh_TW) %{_qt_translationsdir}/qt_zh_TW.qm
+%lang(cs) %{_qt_translationsdir}/qt_help_cs.qm
+%lang(da) %{_qt_translationsdir}/qt_help_da.qm
+%lang(de) %{_qt_translationsdir}/qt_help_de.qm
+%lang(fr) %{_qt_translationsdir}/qt_help_fr.qm
+%lang(gl) %{_qt_translationsdir}/qt_help_gl.qm
+%lang(hu) %{_qt_translationsdir}/qt_help_hu.qm
+%lang(ja) %{_qt_translationsdir}/qt_help_ja.qm
+%lang(ko) %{_qt_translationsdir}/qt_help_ko.qm
+%lang(pl) %{_qt_translationsdir}/qt_help_pl.qm
+%lang(ru) %{_qt_translationsdir}/qt_help_ru.qm
+%lang(sk) %{_qt_translationsdir}/qt_help_sk.qm
+%lang(sl) %{_qt_translationsdir}/qt_help_sl.qm
+%lang(uk) %{_qt_translationsdir}/qt_help_uk.qm
+%lang(zh_CN) %{_qt_translationsdir}/qt_help_zh_CN.qm
+%lang(zh_TW) %{_qt_translationsdir}/qt_help_zh_TW.qm
+%lang(cs) %{_qt_translationsdir}/qtbase_cs.qm
+%lang(de) %{_qt_translationsdir}/qtbase_de.qm
+%lang(hu) %{_qt_translationsdir}/qtbase_hu.qm
+%lang(ru) %{_qt_translationsdir}/qtbase_ru.qm
+%lang(sk) %{_qt_translationsdir}/qtbase_sk.qm
+%lang(uk) %{_qt_translationsdir}/qtbase_uk.qm
 
 %files -n %{qtcored}
 %{_qt_bindir}/moc
@@ -1149,31 +1160,31 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %files -n %{qtgui}
 %{_qt_libdir}/libQt%{major}Gui.so.*
 %{_libdir}/libQt%{major}Gui.so.*
-%{_libdir}/qt%{major}/plugins/imageformats
+%{_qt_plugindir}/imageformats
 %dir %{_qt_plugindir}/platforminputcontexts
 %dir %{_qt_plugindir}/platforms
 %dir %{_qt_plugindir}/platformthemes
 %dir %{_qt_plugindir}/iconengines
-%{_libdir}/qt%{major}/plugins/generic
-%{_libdir}/qt%{major}/plugins/printsupport
+%{_qt_plugindir}/generic
+%{_qt_plugindir}/printsupport
 
 %files -n %{qtgui}-x11
-%{_libdir}/qt%{major}/plugins/platforms/libqxcb.so
-%{_libdir}/qt%{major}/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so
-%{_libdir}/qt%{major}/plugins/platforminputcontexts/libmaliitplatforminputcontextplugin.so
+%{_qt_plugindir}/platforms/libqxcb.so
+%{_qt_plugindir}/platforminputcontexts/libibusplatforminputcontextplugin.so
+%{_qt_plugindir}/platforminputcontexts/libmaliitplatforminputcontextplugin.so
 %{_qt_plugindir}/platforminputcontexts/libcomposeplatforminputcontextplugin.so
 
 %files -n %{qtgui}-linuxfb
-%{_libdir}/qt%{major}/plugins/platforms/libqlinuxfb.so
+%{_qt_plugindir}/platforms/libqlinuxfb.so
 # FIXME need to determine why those aren't built all the time. We're probably
 # missing a BuildRequires: somewhere.
 %optional %{_qt_libdir}/fonts
 
 %files -n %{qtgui}-minimal
-%{_libdir}/qt%{major}/plugins/platforms/libqminimal.so
+%{_qt_plugindir}/platforms/libqminimal.so
 
 %files -n %{qtgui}-offscreen
-%{_libdir}/qt%{major}/plugins/platforms/libqoffscreen.so
+%{_qt_plugindir}/platforms/libqoffscreen.so
 
 %files -n %{qtgui}-directfb
 %{_qt_plugindir}/platforms/libqdirectfb.so
@@ -1201,7 +1212,7 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %files -n %{qtnetwork}
 %{_qt_libdir}/libQt%{major}Network.so.*
 %{_libdir}/libQt%{major}Network.so.*
-%{_libdir}/qt%{major}/plugins/bearer
+%{_qt_plugindir}/bearer
 
 %files -n %{qtnetworkd}
 %{_qt_libdir}/libQt%{major}Network.so
@@ -1271,19 +1282,19 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %files -n %{qtsql}
 %{_qt_libdir}/libQt%{major}Sql.so.*
 %{_libdir}/libQt%{major}Sql.so.*
-%dir %{_libdir}/qt%{major}/plugins/sqldrivers
+%dir %{_qt_plugindir}/sqldrivers
 
 %files -n %{qtsql}-sqlite
-%{_libdir}/qt%{major}/plugins/sqldrivers/libqsqlite.so
+%{_qt_plugindir}/sqldrivers/libqsqlite.so
 
 %files -n %{qtsql}-mysql
-%{_libdir}/qt%{major}/plugins/sqldrivers/libqsqlmysql.so
+%{_qt_plugindir}/sqldrivers/libqsqlmysql.so
 
 %files -n %{qtsql}-odbc
-%{_libdir}/qt%{major}/plugins/sqldrivers/libqsqlodbc.so
+%{_qt_plugindir}/sqldrivers/libqsqlodbc.so
 
 %files -n %{qtsql}-postgresql
-%{_libdir}/qt%{major}/plugins/sqldrivers/libqsqlpsql.so
+%{_qt_plugindir}/sqldrivers/libqsqlpsql.so
 
 %files -n %{qtsqld}
 %{_qt_libdir}/libQt%{major}Sql.so
@@ -1309,7 +1320,7 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %files -n %{qtwidgets}
 %{_qt_libdir}/libQt%{major}Widgets.so.*
 %{_libdir}/libQt%{major}Widgets.so.*
-%{_libdir}/qt%{major}/plugins/accessible
+%{_qt_plugindir}/accessible
 
 %files -n %{qtwidgetsd}
 %{_qt_libdir}/libQt%{major}Widgets.so
@@ -1350,7 +1361,7 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %{_qt_bindir}/qdoc
 
 %files examples
-%{_qt_prefix}/examples
+%{_qt_exampledir}
 
 # FIXME re-add when Qt/E is fixed
 #%%files fonts
@@ -1374,10 +1385,10 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %files -n %{qtdeclarative}
 %{_qt_libdir}/libQt%{major}Declarative.so.*
 %{_libdir}/libQt%{major}Declarative.so.*
-%lang(de) %{_qt_prefix}/translations/qtdeclarative_de.qm
-%lang(ru) %{_qt_prefix}/translations/qtdeclarative_ru.qm
-%lang(sk) %{_qt_prefix}/translations/qtdeclarative_sk.qm
-%lang(uk) %{_qt_prefix}/translations/qtdeclarative_uk.qm
+%lang(de) %{_qt_translationsdir}/qtdeclarative_de.qm
+%lang(ru) %{_qt_translationsdir}/qtdeclarative_ru.qm
+%lang(sk) %{_qt_translationsdir}/qtdeclarative_sk.qm
+%lang(uk) %{_qt_translationsdir}/qtdeclarative_uk.qm
 %{_qt_plugindir}/qmltooling
 
 %files -n %{qtdeclaratived}
@@ -1429,12 +1440,12 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %{_qt_plugindir}/audio
 %{_qt_plugindir}/mediaservice
 %{_qt_plugindir}/playlistformats
-%lang(cs) %{_qt_prefix}/translations/qtmultimedia_cs.qm
-%lang(de) %{_qt_prefix}/translations/qtmultimedia_de.qm
-%lang(hu) %{_qt_prefix}/translations/qtmultimedia_hu.qm
-%lang(ru) %{_qt_prefix}/translations/qtmultimedia_ru.qm
-%lang(sk) %{_qt_prefix}/translations/qtmultimedia_sk.qm
-%lang(uk) %{_qt_prefix}/translations/qtmultimedia_uk.qm
+%lang(cs) %{_qt_translationsdir}/qtmultimedia_cs.qm
+%lang(de) %{_qt_translationsdir}/qtmultimedia_de.qm
+%lang(hu) %{_qt_translationsdir}/qtmultimedia_hu.qm
+%lang(ru) %{_qt_translationsdir}/qtmultimedia_ru.qm
+%lang(sk) %{_qt_translationsdir}/qtmultimedia_sk.qm
+%lang(uk) %{_qt_translationsdir}/qtmultimedia_uk.qm
 
 %files -n %{qtmultimediad}
 %{_qt_libdir}/libQt%{major}Multimedia.so
@@ -1472,8 +1483,8 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %{_qt_prefix}/qml/QtGraphicalEffects
 %{_qt_prefix}/qml/QtMultimedia
 %{_qt_prefix}/qml/QtQml
-%{_libdir}/qt%{major}/plugins/qml1tooling/libqmldbg_inspector.so
-%{_libdir}/qt%{major}/plugins/qml1tooling/libqmldbg_tcp_qtdeclarative.so
+%{_qt_plugindir}/qml1tooling/libqmldbg_inspector.so
+%{_qt_plugindir}/qml1tooling/libqmldbg_tcp_qtdeclarative.so
 
 %files -n %{qtqmld}
 %{_qt_libdir}/libQt%{major}Qml.so
@@ -1500,12 +1511,12 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %{_qt_importdir}/builtins.qmltypes
 %{_qt_prefix}/qml/QtQuick.2
 %{_qt_prefix}/qml/QtQuick
-%lang(cs) %{_qt_prefix}/translations/qtquick1_cs.qm
-%lang(de) %{_qt_prefix}/translations/qtquick1_de.qm
-%lang(hu) %{_qt_prefix}/translations/qtquick1_hu.qm
-%lang(ru) %{_qt_prefix}/translations/qtquick1_ru.qm
-%lang(sk) %{_qt_prefix}/translations/qtquick1_sk.qm
-%lang(uk) %{_qt_prefix}/translations/qtquick1_uk.qm
+%lang(cs) %{_qt_translationsdir}/qtquick1_cs.qm
+%lang(de) %{_qt_translationsdir}/qtquick1_de.qm
+%lang(hu) %{_qt_translationsdir}/qtquick1_hu.qm
+%lang(ru) %{_qt_translationsdir}/qtquick1_ru.qm
+%lang(sk) %{_qt_translationsdir}/qtquick1_sk.qm
+%lang(uk) %{_qt_translationsdir}/qtquick1_uk.qm
 
 %files -n %{qtquickd}
 %{_qt_libdir}/libQt%{major}Quick.so
@@ -1541,12 +1552,12 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %files -n %{qtscript}
 %{_qt_libdir}/libQt%{major}Script.so.*
 %{_libdir}/libQt%{major}Script.so.*
-%lang(cs) %{_qt_prefix}/translations/qtscript_cs.qm
-%lang(de) %{_qt_prefix}/translations/qtscript_de.qm
-%lang(hu) %{_qt_prefix}/translations/qtscript_hu.qm
-%lang(ru) %{_qt_prefix}/translations/qtscript_ru.qm
-%lang(sk) %{_qt_prefix}/translations/qtscript_sk.qm
-%lang(uk) %{_qt_prefix}/translations/qtscript_uk.qm
+%lang(cs) %{_qt_translationsdir}/qtscript_cs.qm
+%lang(de) %{_qt_translationsdir}/qtscript_de.qm
+%lang(hu) %{_qt_translationsdir}/qtscript_hu.qm
+%lang(ru) %{_qt_translationsdir}/qtscript_ru.qm
+%lang(sk) %{_qt_translationsdir}/qtscript_sk.qm
+%lang(uk) %{_qt_translationsdir}/qtscript_uk.qm
 
 %files -n %{qtscriptd}
 %{_qt_libdir}/libQt%{major}Script.so
@@ -1597,8 +1608,8 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %{_libdir}/libQt%{major}WebKit.so.*
 %{_qt_importdir}/QtWebKit
 %{_qt_prefix}/qml/QtWebKit
-%{_qt_prefix}/libexec/QtWebProcess
-%{_qt_prefix}/libexec/QtWebPluginProcess
+%{_qt_libexecdir}/QtWebProcess
+%{_qt_libexecdir}/QtWebPluginProcess
 
 %files -n %{qtwebkitd}
 %{_qt_libdir}/libQt%{major}WebKit.so
@@ -1623,12 +1634,12 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 %files -n %{qtxmlpatterns}
 %{_qt_libdir}/libQt%{major}XmlPatterns.so.*
 %{_libdir}/libQt%{major}XmlPatterns.so.*
-%lang(cs) %{_qt_prefix}/translations/qtxmlpatterns_cs.qm
-%lang(de) %{_qt_prefix}/translations/qtxmlpatterns_de.qm
-%lang(hu) %{_qt_prefix}/translations/qtxmlpatterns_hu.qm
-%lang(ru) %{_qt_prefix}/translations/qtxmlpatterns_ru.qm
-%lang(sk) %{_qt_prefix}/translations/qtxmlpatterns_sk.qm
-%lang(uk) %{_qt_prefix}/translations/qtxmlpatterns_uk.qm
+%lang(cs) %{_qt_translationsdir}/qtxmlpatterns_cs.qm
+%lang(de) %{_qt_translationsdir}/qtxmlpatterns_de.qm
+%lang(hu) %{_qt_translationsdir}/qtxmlpatterns_hu.qm
+%lang(ru) %{_qt_translationsdir}/qtxmlpatterns_ru.qm
+%lang(sk) %{_qt_translationsdir}/qtxmlpatterns_sk.qm
+%lang(uk) %{_qt_translationsdir}/qtxmlpatterns_uk.qm
 
 %files -n %{qtxmlpatternsd}
 %{_qt_libdir}/libQt%{major}XmlPatterns.so
@@ -1642,85 +1653,88 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d
 # Intentionally empty, we just pull in dependencies
 
 %files assistant
-%{_qt_prefix}/bin/assistant
-%lang(cs) %{_qt_prefix}/translations/assistant_cs.qm
-%lang(da) %{_qt_prefix}/translations/assistant_da.qm
-%lang(de) %{_qt_prefix}/translations/assistant_de.qm
-%lang(fr) %{_qt_prefix}/translations/assistant_fr.qm
-%lang(hu) %{_qt_prefix}/translations/assistant_hu.qm
-%lang(ja) %{_qt_prefix}/translations/assistant_ja.qm
-%lang(ko) %{_qt_prefix}/translations/assistant_ko.qm
-%lang(pl) %{_qt_prefix}/translations/assistant_pl.qm
-%lang(ru) %{_qt_prefix}/translations/assistant_ru.qm
-%lang(sk) %{_qt_prefix}/translations/assistant_sk.qm
-%lang(sl) %{_qt_prefix}/translations/assistant_sl.qm
-%lang(uk) %{_qt_prefix}/translations/assistant_uk.qm
-%lang(zh_CN) %{_qt_prefix}/translations/assistant_zh_CN.qm
-%lang(zh_TW) %{_qt_prefix}/translations/assistant_zh_TW.qm
+%{_qt_bindir}/assistant
+%{_datadir}/applications/rosa-assistant-qt5.desktop
+%lang(cs) %{_qt_translationsdir}/assistant_cs.qm
+%lang(da) %{_qt_translationsdir}/assistant_da.qm
+%lang(de) %{_qt_translationsdir}/assistant_de.qm
+%lang(fr) %{_qt_translationsdir}/assistant_fr.qm
+%lang(hu) %{_qt_translationsdir}/assistant_hu.qm
+%lang(ja) %{_qt_translationsdir}/assistant_ja.qm
+%lang(ko) %{_qt_translationsdir}/assistant_ko.qm
+%lang(pl) %{_qt_translationsdir}/assistant_pl.qm
+%lang(ru) %{_qt_translationsdir}/assistant_ru.qm
+%lang(sk) %{_qt_translationsdir}/assistant_sk.qm
+%lang(sl) %{_qt_translationsdir}/assistant_sl.qm
+%lang(uk) %{_qt_translationsdir}/assistant_uk.qm
+%lang(zh_CN) %{_qt_translationsdir}/assistant_zh_CN.qm
+%lang(zh_TW) %{_qt_translationsdir}/assistant_zh_TW.qm
 
 %files designer
-%{_prefix}/lib/qt%{major}/bin/designer
-%lang(cs) %{_qt_prefix}/translations/designer_cs.qm
-%lang(de) %{_qt_prefix}/translations/designer_de.qm
-%lang(fr) %{_qt_prefix}/translations/designer_fr.qm
-%lang(hu) %{_qt_prefix}/translations/designer_hu.qm
-%lang(ja) %{_qt_prefix}/translations/designer_ja.qm
-%lang(ko) %{_qt_prefix}/translations/designer_ko.qm
-%lang(pl) %{_qt_prefix}/translations/designer_pl.qm
-%lang(ru) %{_qt_prefix}/translations/designer_ru.qm
-%lang(sk) %{_qt_prefix}/translations/designer_sk.qm
-%lang(sl) %{_qt_prefix}/translations/designer_sl.qm
-%lang(uk) %{_qt_prefix}/translations/designer_uk.qm
-%lang(zh_CN) %{_qt_prefix}/translations/designer_zh_CN.qm
-%lang(zh_TW) %{_qt_prefix}/translations/designer_zh_TW.qm
+%{_qt_bindir}/designer
+%{_datadir}/applications/rosa-designer-qt5.desktop
+%lang(cs) %{_qt_translationsdir}/designer_cs.qm
+%lang(de) %{_qt_translationsdir}/designer_de.qm
+%lang(fr) %{_qt_translationsdir}/designer_fr.qm
+%lang(hu) %{_qt_translationsdir}/designer_hu.qm
+%lang(ja) %{_qt_translationsdir}/designer_ja.qm
+%lang(ko) %{_qt_translationsdir}/designer_ko.qm
+%lang(pl) %{_qt_translationsdir}/designer_pl.qm
+%lang(ru) %{_qt_translationsdir}/designer_ru.qm
+%lang(sk) %{_qt_translationsdir}/designer_sk.qm
+%lang(sl) %{_qt_translationsdir}/designer_sl.qm
+%lang(uk) %{_qt_translationsdir}/designer_uk.qm
+%lang(zh_CN) %{_qt_translationsdir}/designer_zh_CN.qm
+%lang(zh_TW) %{_qt_translationsdir}/designer_zh_TW.qm
 %{_qt_plugindir}/designer
 
 %files linguist
-%{_prefix}/lib/qt%{major}/bin/linguist
-%lang(cs) %{_qt_prefix}/translations/linguist_cs.qm
-%lang(de) %{_qt_prefix}/translations/linguist_de.qm
-%lang(fr) %{_qt_prefix}/translations/linguist_fr.qm
-%lang(hu) %{_qt_prefix}/translations/linguist_hu.qm
-%lang(ja) %{_qt_prefix}/translations/linguist_ja.qm
-%lang(ko) %{_qt_prefix}/translations/linguist_ko.qm
-%lang(pl) %{_qt_prefix}/translations/linguist_pl.qm
-%lang(ru) %{_qt_prefix}/translations/linguist_ru.qm
-%lang(sk) %{_qt_prefix}/translations/linguist_sk.qm
-%lang(sl) %{_qt_prefix}/translations/linguist_sl.qm
-%lang(uk) %{_qt_prefix}/translations/linguist_uk.qm
-%lang(zh_CN) %{_qt_prefix}/translations/linguist_zh_CN.qm
-%lang(zh_TW) %{_qt_prefix}/translations/linguist_zh_TW.qm
+%{_qt_bindir}/linguist
+%{_datadir}/applications/rosa-linguist-qt5.desktop
+%lang(cs) %{_qt_translationsdir}/linguist_cs.qm
+%lang(de) %{_qt_translationsdir}/linguist_de.qm
+%lang(fr) %{_qt_translationsdir}/linguist_fr.qm
+%lang(hu) %{_qt_translationsdir}/linguist_hu.qm
+%lang(ja) %{_qt_translationsdir}/linguist_ja.qm
+%lang(ko) %{_qt_translationsdir}/linguist_ko.qm
+%lang(pl) %{_qt_translationsdir}/linguist_pl.qm
+%lang(ru) %{_qt_translationsdir}/linguist_ru.qm
+%lang(sk) %{_qt_translationsdir}/linguist_sk.qm
+%lang(sl) %{_qt_translationsdir}/linguist_sl.qm
+%lang(uk) %{_qt_translationsdir}/linguist_uk.qm
+%lang(zh_CN) %{_qt_translationsdir}/linguist_zh_CN.qm
+%lang(zh_TW) %{_qt_translationsdir}/linguist_zh_TW.qm
 
 %files linguist-tools
-%{_prefix}/lib/qt%{major}/bin/lconvert
-%{_prefix}/lib/qt%{major}/bin/lrelease
-%{_prefix}/lib/qt%{major}/bin/lupdate
+%{_qt_bindir}/lconvert
+%{_qt_bindir}/lrelease
+%{_qt_bindir}/lupdate
 %{_qt_libdir}/cmake/Qt%{major}LinguistTools
 
 %files tools
-%{_prefix}/lib/qt%{major}/bin/pixeltool
-%{_prefix}/lib/qt%{major}/bin/qcollectiongenerator
-%{_prefix}/lib/qt%{major}/bin/qdbus
-%{_prefix}/lib/qt%{major}/bin/qdbusviewer
-%{_prefix}/lib/qt%{major}/bin/qhelpconverter
-%{_prefix}/lib/qt%{major}/bin/qhelpgenerator
-%{_prefix}/lib/qt%{major}/bin/xmlpatterns
-%{_prefix}/lib/qt%{major}/bin/xmlpatternsvalidator
+%{_qt_bindir}/pixeltool
+%{_qt_bindir}/qcollectiongenerator
+%{_qt_bindir}/qdbus
+%{_qt_bindir}/qdbusviewer
+%{_qt_bindir}/qhelpconverter
+%{_qt_bindir}/qhelpgenerator
+%{_qt_bindir}/xmlpatterns
+%{_qt_bindir}/xmlpatternsvalidator
 
 %files qml-tools
-%{_prefix}/lib/qt%{major}/bin/qml1plugindump
-%{_prefix}/lib/qt%{major}/bin/qmlbundle
-%{_prefix}/lib/qt%{major}/bin/qmlmin
-%{_prefix}/lib/qt%{major}/bin/qmlplugindump
-%{_prefix}/lib/qt%{major}/bin/qmlprofiler
-%{_prefix}/lib/qt%{major}/bin/qmlscene
-%{_prefix}/lib/qt%{major}/bin/qmltestrunner
-%{_prefix}/lib/qt%{major}/bin/qmlviewer
-%lang(cs) %{_qt_prefix}/translations/qmlviewer_cs.qm
-%lang(hu) %{_qt_prefix}/translations/qmlviewer_hu.qm
-%lang(sk) %{_qt_prefix}/translations/qmlviewer_sk.qm
-%lang(ru) %{_qt_prefix}/translations/qmlviewer_ru.qm
-%lang(uk) %{_qt_prefix}/translations/qmlviewer_uk.qm
+%{_qt_bindir}/qml1plugindump
+%{_qt_bindir}/qmlbundle
+%{_qt_bindir}/qmlmin
+%{_qt_bindir}/qmlplugindump
+%{_qt_bindir}/qmlprofiler
+%{_qt_bindir}/qmlscene
+%{_qt_bindir}/qmltestrunner
+%{_qt_bindir}/qmlviewer
+%lang(cs) %{_qt_translationsdir}/qmlviewer_cs.qm
+%lang(hu) %{_qt_translationsdir}/qmlviewer_hu.qm
+%lang(sk) %{_qt_translationsdir}/qmlviewer_sk.qm
+%lang(ru) %{_qt_translationsdir}/qmlviewer_ru.qm
+%lang(uk) %{_qt_translationsdir}/qmlviewer_uk.qm
 
 %files macros
 %{_sysconfdir}/rpm/macros.d/qt5.macros
