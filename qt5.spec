@@ -21,7 +21,7 @@
 # qt base components
 %define qtbootstrapd %mklibname qt%{api}bootstrap -d
 %define qtconcurrent %mklibname qt%{api}concurrent %{major}
-%define qtconcurrentd %mklibname qt%{api}concurrent%{major} -d
+%define qtconcurrentd %mklibname qt%{api}concurrent -d
 %define qtcore %mklibname qt%{api}core %{major}
 %define qtcored %mklibname qt%{api}core -d
 %define qtdbus %mklibname qt%{api}dbus %{major}
@@ -99,7 +99,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.gz
-Release:	4
+Release:	5
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
@@ -203,6 +203,8 @@ Qt threading library.
 Summary:	Development files for version 5 of the QtConcurrent library
 Group:		Development/KDE and Qt
 Requires:	%{qtconcurrent} = %{EVRD}
+# Was introduced by mistake
+Obsoletes:	%{_lib}qt5concurrent5-devel < %{EVRD}
 
 %description -n %{qtconcurrentd}
 Development files for version 5 of the QtConcurrent library.
