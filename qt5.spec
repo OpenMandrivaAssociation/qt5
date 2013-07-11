@@ -194,8 +194,8 @@ Group:		System/Libraries
 Qt threading library.
 
 %files -n %{qtconcurrent}
-%{_qt_libdir}/libQt%{api}Concurrent.so.*
-%{_libdir}/libQt%{api}Concurrent.so.*
+%{_qt_libdir}/libQt%{api}Concurrent.so.%{major}*
+%{_libdir}/libQt%{api}Concurrent.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -227,8 +227,8 @@ Group:		System/Libraries
 Qt Core library.
 
 %files -n %{qtcore}
-%{_qt_libdir}/libQt%{api}Core.so.*
-%{_libdir}/libQt%{api}Core.so.*
+%{_qt_libdir}/libQt%{api}Core.so.%{major}*
+%{_libdir}/libQt%{api}Core.so.%{major}*
 %dir %{_qt_plugindir}
 %dir %{_qt_prefix}/phrasebooks
 %lang(da) %{_qt_prefix}/phrasebooks/danish.qph
@@ -325,8 +325,8 @@ Group:		System/Libraries
 Qt DBus connector library.
 
 %files -n %{qtdbus}
-%{_qt_libdir}/libQt%{api}DBus.so.*
-%{_libdir}/libQt%{api}DBus.so.*
+%{_qt_libdir}/libQt%{api}DBus.so.%{major}*
+%{_libdir}/libQt%{api}DBus.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -358,8 +358,8 @@ Group:		System/Libraries
 Qt GUI library.
 
 %files -n %{qtgui}
-%{_qt_libdir}/libQt%{api}Gui.so.*
-%{_libdir}/libQt%{api}Gui.so.*
+%{_qt_libdir}/libQt%{api}Gui.so.%{major}*
+%{_libdir}/libQt%{api}Gui.so.%{major}*
 %{_qt_plugindir}/imageformats
 %dir %{_qt_plugindir}/platforminputcontexts
 %dir %{_qt_plugindir}/platforms
@@ -479,8 +479,8 @@ Group:		System/Libraries
 Qt Networking library.
 
 %files -n %{qtnetwork}
-%{_qt_libdir}/libQt%{api}Network.so.*
-%{_libdir}/libQt%{api}Network.so.*
+%{_qt_libdir}/libQt%{api}Network.so.%{major}*
+%{_libdir}/libQt%{api}Network.so.%{major}*
 %{_qt_plugindir}/bearer
 
 #----------------------------------------------------------------------------
@@ -511,8 +511,8 @@ Group:		System/Libraries
 Qt OpenGL (3D Graphics) library.
 
 %files -n %{qtopengl}
-%{_qt_libdir}/libQt%{api}OpenGL.so.*
-%{_libdir}/libQt%{api}OpenGL.so.*
+%{_qt_libdir}/libQt%{api}OpenGL.so.%{major}*
+%{_libdir}/libQt%{api}OpenGL.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -548,8 +548,8 @@ Group:		System/Libraries
 Qt printing library.
 
 %files -n %{qtprintsupport}
-%{_qt_libdir}/libQt%{api}PrintSupport.so.*
-%{_libdir}/libQt%{api}PrintSupport.so.*
+%{_qt_libdir}/libQt%{api}PrintSupport.so.%{major}*
+%{_libdir}/libQt%{api}PrintSupport.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -579,8 +579,8 @@ Group:		System/Libraries
 Qt Sensors library.
 
 %files -n %{qtsensors}
-%{_qt_libdir}/libQt%{api}Sensors.so.*
-%{_libdir}/libQt%{api}Sensors.so.*
+%{_qt_libdir}/libQt%{api}Sensors.so.%{major}*
+%{_libdir}/libQt%{api}Sensors.so.%{major}*
 %{_qt_prefix}/qml/QtSensors
 %{_qt_plugindir}/sensorgestures
 %{_qt_plugindir}/sensors
@@ -613,8 +613,8 @@ Group:		System/Libraries
 Qt Serial Port library.
 
 %files -n %{qtserialport}
-%{_qt_libdir}/libQt%{api}SerialPort.so.*
-%{_libdir}/libQt%{api}SerialPort.so.*
+%{_qt_libdir}/libQt%{api}SerialPort.so.%{major}*
+%{_libdir}/libQt%{api}SerialPort.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -644,8 +644,8 @@ Group:		System/Libraries
 Qt SQL library.
 
 %files -n %{qtsql}
-%{_qt_libdir}/libQt%{api}Sql.so.*
-%{_libdir}/libQt%{api}Sql.so.*
+%{_qt_libdir}/libQt%{api}Sql.so.%{major}*
+%{_libdir}/libQt%{api}Sql.so.%{major}*
 %dir %{_qt_plugindir}/sqldrivers
 
 #----------------------------------------------------------------------------
@@ -736,8 +736,8 @@ Group:		System/Libraries
 Qt unit test library.
 
 %files -n %{qttest}
-%{_qt_libdir}/libQt%{api}Test.so.*
-%{_libdir}/libQt%{api}Test.so.*
+%{_qt_libdir}/libQt%{api}Test.so.%{major}*
+%{_libdir}/libQt%{api}Test.so.%{major}*
 %{_qt_prefix}/qml/QtTest
 
 #----------------------------------------------------------------------------
@@ -768,8 +768,8 @@ Group:		System/Libraries
 Qt Widget library.
 
 %files -n %{qtwidgets}
-%{_qt_libdir}/libQt%{api}Widgets.so.*
-%{_libdir}/libQt%{api}Widgets.so.*
+%{_qt_libdir}/libQt%{api}Widgets.so.%{major}*
+%{_libdir}/libQt%{api}Widgets.so.%{major}*
 %{_qt_plugindir}/accessible
 
 #----------------------------------------------------------------------------
@@ -800,8 +800,8 @@ Group:		System/Libraries
 Qt XML library.
 
 %files -n %{qtxml}
-%{_qt_libdir}/libQt%{api}Xml.so.*
-%{_libdir}/libQt%{api}Xml.so.*
+%{_qt_libdir}/libQt%{api}Xml.so.%{major}*
+%{_libdir}/libQt%{api}Xml.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -833,8 +833,8 @@ Group:		System/Libraries
 Runtime library for GStreamer support in Qt 5.
 
 %files -n %{qgsttools_p}
-%{_qt_libdir}/libqgsttools_p.so.*
-%{_libdir}/libqgsttools_p.so.*
+%{_qt_libdir}/libqgsttools_p.so.%{major}*
+%{_libdir}/libqgsttools_p.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -846,8 +846,8 @@ Group:		System/Libraries
 Qt version of the CLucene search engine.
 
 %files -n %{qtclucene}
-%{_qt_libdir}/libQt%{api}CLucene.so.*
-%{_libdir}/libQt%{api}CLucene.so.*
+%{_qt_libdir}/libQt%{api}CLucene.so.%{major}*
+%{_libdir}/libQt%{api}CLucene.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -876,8 +876,8 @@ Group:		System/Libraries
 Runtime library for Qt Declarative.
 
 %files -n %{qtdeclarative}
-%{_qt_libdir}/libQt%{api}Declarative.so.*
-%{_libdir}/libQt%{api}Declarative.so.*
+%{_qt_libdir}/libQt%{api}Declarative.so.%{major}*
+%{_libdir}/libQt%{api}Declarative.so.%{major}*
 %lang(de) %{_qt_translationsdir}/qtdeclarative_de.qm
 %lang(ru) %{_qt_translationsdir}/qtdeclarative_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtdeclarative_sk.qm
@@ -912,8 +912,8 @@ Group:		System/Libraries
 Components for Qt Designer.
 
 %files -n %{qtdesignercomponents}
-%{_qt_libdir}/libQt%{api}DesignerComponents.so.*
-%{_libdir}/libQt%{api}DesignerComponents.so.*
+%{_qt_libdir}/libQt%{api}DesignerComponents.so.%{major}*
+%{_libdir}/libQt%{api}DesignerComponents.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -942,8 +942,8 @@ Group:		System/Libraries
 Qt Designer runtime libraries.
 
 %files -n %{qtdesigner}
-%{_qt_libdir}/libQt%{api}Designer.so.*
-%{_libdir}/libQt%{api}Designer.so.*
+%{_qt_libdir}/libQt%{api}Designer.so.%{major}*
+%{_libdir}/libQt%{api}Designer.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -973,8 +973,8 @@ Group:		System/Libraries
 Runtime libraries for the Qt Help system.
 
 %files -n %{qthelp}
-%{_qt_libdir}/libQt%{api}Help.so.*
-%{_libdir}/libQt%{api}Help.so.*
+%{_qt_libdir}/libQt%{api}Help.so.%{major}*
+%{_libdir}/libQt%{api}Help.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -1005,8 +1005,8 @@ Group:		System/Libraries
 Qt Multimedia libraries.
 
 %files -n %{qtmultimedia}
-%{_qt_libdir}/libQt%{api}Multimedia.so.*
-%{_libdir}/libQt%{api}Multimedia.so.*
+%{_qt_libdir}/libQt%{api}Multimedia.so.%{major}*
+%{_libdir}/libQt%{api}Multimedia.so.%{major}*
 %{_qt_plugindir}/audio
 %{_qt_plugindir}/mediaservice
 %{_qt_plugindir}/playlistformats
@@ -1046,8 +1046,8 @@ Group:		System/Libraries
 Runtime support library for the Qt Multimedia Quick module.
 
 %files -n %{qtmultimediaquick_p}
-%{_qt_libdir}/libQt%{api}MultimediaQuick_p.so.*
-%{_libdir}/libQt%{api}MultimediaQuick_p.so.*
+%{_qt_libdir}/libQt%{api}MultimediaQuick_p.so.%{major}*
+%{_libdir}/libQt%{api}MultimediaQuick_p.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -1059,8 +1059,8 @@ Group:		System/Libraries
 Qt Multimedia Widgets library.
 
 %files -n %{qtmultimediawidgets}
-%{_qt_libdir}/libQt%{api}MultimediaWidgets.so.*
-%{_libdir}/libQt%{api}MultimediaWidgets.so.*
+%{_qt_libdir}/libQt%{api}MultimediaWidgets.so.%{major}*
+%{_libdir}/libQt%{api}MultimediaWidgets.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -1092,8 +1092,8 @@ Group:		System/Libraries
 QML runtime support library.
 
 %files -n %{qtqml}
-%{_qt_libdir}/libQt%{api}Qml.so.*
-%{_libdir}/libQt%{api}Qml.so.*
+%{_qt_libdir}/libQt%{api}Qml.so.%{major}*
+%{_libdir}/libQt%{api}Qml.so.%{major}*
 %dir %{_qt_prefix}/qml
 %dir %{_qt_prefix}/qml/Qt
 %dir %{_qt_prefix}/qml/Qt/labs
@@ -1137,8 +1137,8 @@ Group:		System/Libraries
 Runtime library for Qt Quick.
 
 %files -n %{qtquick}
-%{_qt_libdir}/libQt%{api}Quick.so.*
-%{_libdir}/libQt%{api}Quick.so.*
+%{_qt_libdir}/libQt%{api}Quick.so.%{major}*
+%{_libdir}/libQt%{api}Quick.so.%{major}*
 %dir %{_qt_importdir}
 %dir %{_qt_importdir}/Qt
 %dir %{_qt_importdir}/Qt/labs
@@ -1184,8 +1184,8 @@ Group:		System/Libraries
 Runtime library for Qt Quick's particle engine.
 
 %files -n %{qtquickparticles}
-%{_qt_libdir}/libQt%{api}QuickParticles.so.*
-%{_libdir}/libQt%{api}QuickParticles.so.*
+%{_qt_libdir}/libQt%{api}QuickParticles.so.%{major}*
+%{_libdir}/libQt%{api}QuickParticles.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -1214,8 +1214,8 @@ Group:		System/Libraries
 Qt Quick unit test module.
 
 %files -n %{qtquicktest}
-%{_qt_libdir}/libQt%{api}QuickTest.so.*
-%{_libdir}/libQt%{api}QuickTest.so.*
+%{_qt_libdir}/libQt%{api}QuickTest.so.%{major}*
+%{_libdir}/libQt%{api}QuickTest.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -1245,8 +1245,8 @@ Group:		System/Libraries
 Qt Script runtime library.
 
 %files -n %{qtscript}
-%{_qt_libdir}/libQt%{api}Script.so.*
-%{_libdir}/libQt%{api}Script.so.*
+%{_qt_libdir}/libQt%{api}Script.so.%{major}*
+%{_libdir}/libQt%{api}Script.so.%{major}*
 %lang(cs) %{_qt_translationsdir}/qtscript_cs.qm
 %lang(de) %{_qt_translationsdir}/qtscript_de.qm
 %lang(hu) %{_qt_translationsdir}/qtscript_hu.qm
@@ -1282,8 +1282,8 @@ Group:		System/Libraries
 Qt Script tools library.
 
 %files -n %{qtscripttools}
-%{_qt_libdir}/libQt%{api}ScriptTools.so.*
-%{_libdir}/libQt%{api}ScriptTools.so.*
+%{_qt_libdir}/libQt%{api}ScriptTools.so.%{major}*
+%{_libdir}/libQt%{api}ScriptTools.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -1313,8 +1313,8 @@ Group:		System/Libraries
 Qt SVG rendering engine.
 
 %files -n %{qtsvg}
-%{_qt_libdir}/libQt%{api}Svg.so.*
-%{_libdir}/libQt%{api}Svg.so.*
+%{_qt_libdir}/libQt%{api}Svg.so.%{major}*
+%{_libdir}/libQt%{api}Svg.so.%{major}*
 %{_qt_plugindir}/iconengines/libqsvgicon.so
 
 #----------------------------------------------------------------------------
@@ -1345,8 +1345,8 @@ Group:		System/Libraries
 Qt version of the V8 JavaScript engine.
 
 %files -n %{qtv8}
-%{_qt_libdir}/libQt%{api}V8.so.*
-%{_libdir}/libQt%{api}V8.so.*
+%{_qt_libdir}/libQt%{api}V8.so.%{major}*
+%{_libdir}/libQt%{api}V8.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -1378,8 +1378,8 @@ BuildRequires:	icu-devel
 Qt WebKit web browsing library.
 
 %files -n %{qtwebkit}
-%{_qt_libdir}/libQt%{api}WebKit.so.*
-%{_libdir}/libQt%{api}WebKit.so.*
+%{_qt_libdir}/libQt%{api}WebKit.so.%{major}*
+%{_libdir}/libQt%{api}WebKit.so.%{major}*
 %{_qt_importdir}/QtWebKit
 %{_qt_prefix}/qml/QtWebKit
 %{_qt_libexecdir}/QtWebProcess
@@ -1413,8 +1413,8 @@ Group:		System/Libraries
 Qt WebKit Widgets library.
 
 %files -n %{qtwebkitwidgets}
-%{_qt_libdir}/libQt%{api}WebKitWidgets.so.*
-%{_libdir}/libQt%{api}WebKitWidgets.so.*
+%{_qt_libdir}/libQt%{api}WebKitWidgets.so.%{major}*
+%{_libdir}/libQt%{api}WebKitWidgets.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -1446,8 +1446,8 @@ Group:		System/Libraries
 Qt X11 Extras library.
 
 %files -n %{qtx11extras}
-%{_qt_libdir}/libQt%{api}X11Extras.so.*
-%{_libdir}/libQt%{api}X11Extras.so.*
+%{_qt_libdir}/libQt%{api}X11Extras.so.%{major}*
+%{_libdir}/libQt%{api}X11Extras.so.%{major}*
 
 #----------------------------------------------------------------------------
 
@@ -1478,8 +1478,8 @@ Requires:	%{qtxml} = %{EVRD}
 Qt XSLT engine.
 
 %files -n %{qtxmlpatterns}
-%{_qt_libdir}/libQt%{api}XmlPatterns.so.*
-%{_libdir}/libQt%{api}XmlPatterns.so.*
+%{_qt_libdir}/libQt%{api}XmlPatterns.so.%{major}*
+%{_libdir}/libQt%{api}XmlPatterns.so.%{major}*
 %lang(cs) %{_qt_translationsdir}/qtxmlpatterns_cs.qm
 %lang(de) %{_qt_translationsdir}/qtxmlpatterns_de.qm
 %lang(hu) %{_qt_translationsdir}/qtxmlpatterns_hu.qm
