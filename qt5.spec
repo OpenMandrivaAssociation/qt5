@@ -99,7 +99,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.gz
-Release:	6
+Release:	7
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
@@ -227,20 +227,6 @@ Qt Core library.
 %files -n %{qtcore}
 %{_libdir}/libQt%{api}Core.so.%{major}*
 %dir %{_qt_plugindir}
-%dir %{_qt_prefix}/phrasebooks
-%lang(da) %{_qt_prefix}/phrasebooks/danish.qph
-%lang(nl) %{_qt_prefix}/phrasebooks/dutch.qph
-%lang(fi) %{_qt_prefix}/phrasebooks/finnish.qph
-%lang(fr) %{_qt_prefix}/phrasebooks/french.qph
-%lang(de) %{_qt_prefix}/phrasebooks/german.qph
-%lang(hu) %{_qt_prefix}/phrasebooks/hungarian.qph
-%lang(it) %{_qt_prefix}/phrasebooks/italian.qph
-%lang(ja) %{_qt_prefix}/phrasebooks/japanese.qph
-%lang(no) %{_qt_prefix}/phrasebooks/norwegian.qph
-%lang(pl) %{_qt_prefix}/phrasebooks/polish.qph
-%lang(ru) %{_qt_prefix}/phrasebooks/russian.qph
-%lang(es) %{_qt_prefix}/phrasebooks/spanish.qph
-%lang(sv) %{_qt_prefix}/phrasebooks/swedish.qph
 
 #----------------------------------------------------------------------------
 
@@ -1679,6 +1665,20 @@ Translation tool for Qt based applications.
 %lang(uk) %{_qt_translationsdir}/linguist_uk.qm
 %lang(zh_CN) %{_qt_translationsdir}/linguist_zh_CN.qm
 %lang(zh_TW) %{_qt_translationsdir}/linguist_zh_TW.qm
+%dir %{_qt_prefix}/phrasebooks
+%lang(da) %{_qt_datadir}/phrasebooks/danish.qph
+%lang(nl) %{_qt_datadir}/phrasebooks/dutch.qph
+%lang(fi) %{_qt_datadir}/phrasebooks/finnish.qph
+%lang(fr) %{_qt_datadir}/phrasebooks/french.qph
+%lang(de) %{_qt_datadir}/phrasebooks/german.qph
+%lang(hu) %{_qt_datadir}/phrasebooks/hungarian.qph
+%lang(it) %{_qt_datadir}/phrasebooks/italian.qph
+%lang(ja) %{_qt_datadir}/phrasebooks/japanese.qph
+%lang(no) %{_qt_datadir}/phrasebooks/norwegian.qph
+%lang(pl) %{_qt_datadir}/phrasebooks/polish.qph
+%lang(ru) %{_qt_datadir}/phrasebooks/russian.qph
+%lang(es) %{_qt_datadir}/phrasebooks/spanish.qph
+%lang(sv) %{_qt_datadir}/phrasebooks/swedish.qph
 
 #----------------------------------------------------------------------------
 
@@ -1807,6 +1807,7 @@ Tools for Qt 5.
 	-prefix %{_qt_prefix} \
 	-bindir %{_qt_bindir} \
 	-libdir %{_libdir} \
+	-datadir %{_qt_datadir} \
 	-docdir %{_qt_docdir} \
 	-headerdir %{_qt_includedir} \
 	-plugindir %{_qt_plugindir} \
