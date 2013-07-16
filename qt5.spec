@@ -80,7 +80,7 @@
 %define qtscripttoolsd %mklibname qt%{api}scripttools -d
 %define qtsvg %mklibname qt%{api}svg %{major}
 %define qtsvgd %mklibname qt%{api}svg -d
-%define qtv8 %mklibname qt%{api}v8 %{major}
+%define qtv8 %mklibname qt%{api}v8_ %{major}
 %define qtv8d %mklibname qt%{api}v8 -d
 %define qtwebkit %mklibname qt%{api}webkit %{major}
 %define qtwebkitd %mklibname qt%{api}webkit -d
@@ -1335,6 +1335,7 @@ Development files for Qt's SVG rendering engine.
 %package -n %{qtv8}
 Summary:	Qt version of the V8 JavaScript engine
 Group:		System/Libraries
+Conflicts:	%{_lib}qt5v85 < 5.1.0-8
 
 %description -n %{qtv8}
 Qt version of the V8 JavaScript engine.
