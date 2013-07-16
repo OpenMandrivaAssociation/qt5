@@ -219,6 +219,7 @@ Development files for version 5 of the QtConcurrent library.
 %package -n %{qtcore}
 Summary:	Qt Core library
 Group:		System/Libraries
+Requires:	%{name}-qtcore-i18n = %{EVRD}
 
 %description -n %{qtcore}
 Qt Core library.
@@ -240,6 +241,44 @@ Qt Core library.
 %lang(ru) %{_qt_prefix}/phrasebooks/russian.qph
 %lang(es) %{_qt_prefix}/phrasebooks/spanish.qph
 %lang(sv) %{_qt_prefix}/phrasebooks/swedish.qph
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtcored}
+Summary:	Development files for version 5 of the QtCore library
+Group:		Development/KDE and Qt
+Requires:	%{qtcore} = %{EVRD}
+
+%description -n %{qtcored}
+Development files for version 5 of the QtCore library.
+
+%files -n %{qtcored}
+%{_qt_bindir}/moc
+%{_qt_bindir}/rcc
+%{_libdir}/libQt%{api}Core.so
+%{_libdir}/libQt%{api}Core.prl
+%{_qt_includedir}/QtCore
+%dir %{_libdir}/cmake
+%dir %{_libdir}/cmake/Qt%{api}
+%dir %{_libdir}/pkgconfig
+%{_libdir}/pkgconfig/Qt%{api}Core.pc
+%{_libdir}/cmake/Qt%{api}Core
+%{_libdir}/cmake/Qt%{api}/Qt%{api}Config.cmake
+%{_libdir}/cmake/Qt%{api}/Qt%{api}ConfigVersion.cmake
+%doc %{_docdir}/qt%{api}/global
+
+#----------------------------------------------------------------------------
+
+%package qtcore-i18n
+Summary:	Qt Core translations
+Group:		System/Libraries
+Conflicts:	%{qtcore} < 5.1.0-6
+BuildArch:	noarch
+
+%description qtcore-i18n
+Qt Core translations.
+
+%files qtcore-i18n
 %dir %{_qt_translationsdir}
 %lang(ar) %{_qt_translationsdir}/qt_ar.qm
 %lang(cs) %{_qt_translationsdir}/qt_cs.qm
@@ -284,31 +323,6 @@ Qt Core library.
 %lang(ru) %{_qt_translationsdir}/qtbase_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtbase_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtbase_uk.qm
-
-#----------------------------------------------------------------------------
-
-%package -n %{qtcored}
-Summary:	Development files for version 5 of the QtCore library
-Group:		Development/KDE and Qt
-Requires:	%{qtcore} = %{EVRD}
-
-%description -n %{qtcored}
-Development files for version 5 of the QtCore library.
-
-%files -n %{qtcored}
-%{_qt_bindir}/moc
-%{_qt_bindir}/rcc
-%{_libdir}/libQt%{api}Core.so
-%{_libdir}/libQt%{api}Core.prl
-%{_qt_includedir}/QtCore
-%dir %{_libdir}/cmake
-%dir %{_libdir}/cmake/Qt%{api}
-%dir %{_libdir}/pkgconfig
-%{_libdir}/pkgconfig/Qt%{api}Core.pc
-%{_libdir}/cmake/Qt%{api}Core
-%{_libdir}/cmake/Qt%{api}/Qt%{api}Config.cmake
-%{_libdir}/cmake/Qt%{api}/Qt%{api}ConfigVersion.cmake
-%doc %{_docdir}/qt%{api}/global
 
 #----------------------------------------------------------------------------
 
@@ -838,16 +852,13 @@ Development files for the Qt version of the CLucene search engine.
 %package -n %{qtdeclarative}
 Summary:	Runtime library for Qt Declarative
 Group:		System/Libraries
+Requires:	%{name}-qtdeclarative-i18n = %{EVRD}
 
 %description -n %{qtdeclarative}
 Runtime library for Qt Declarative.
 
 %files -n %{qtdeclarative}
 %{_libdir}/libQt%{api}Declarative.so.%{major}*
-%lang(de) %{_qt_translationsdir}/qtdeclarative_de.qm
-%lang(ru) %{_qt_translationsdir}/qtdeclarative_ru.qm
-%lang(sk) %{_qt_translationsdir}/qtdeclarative_sk.qm
-%lang(uk) %{_qt_translationsdir}/qtdeclarative_uk.qm
 %{_qt_plugindir}/qmltooling
 
 #----------------------------------------------------------------------------
@@ -866,6 +877,23 @@ Development files for Qt Declarative.
 %{_libdir}/pkgconfig/Qt%{api}Declarative.pc
 %{_qt_includedir}/QtDeclarative
 %{_libdir}/cmake/Qt%{api}Declarative
+
+#----------------------------------------------------------------------------
+
+%package qtdeclarative-i18n
+Summary:	Qt Declarative translations
+Group:		System/Libraries
+Conflicts:	%{qtdeclarative} < 5.1.0-6
+BuildArch:	noarch
+
+%description qtdeclarative-i18n
+Qt Declarative translations.
+
+%files qtdeclarative-i18n
+%lang(de) %{_qt_translationsdir}/qtdeclarative_de.qm
+%lang(ru) %{_qt_translationsdir}/qtdeclarative_ru.qm
+%lang(sk) %{_qt_translationsdir}/qtdeclarative_sk.qm
+%lang(uk) %{_qt_translationsdir}/qtdeclarative_uk.qm
 
 #----------------------------------------------------------------------------
 
@@ -959,6 +987,7 @@ to your application.
 %package -n %{qtmultimedia}
 Summary:	Qt Multimedia libraries
 Group:		System/Libraries
+Requires:	%{name}-qtmultimedia-i18n = %{EVRD}
 
 %description -n %{qtmultimedia}
 Qt Multimedia libraries.
@@ -968,12 +997,6 @@ Qt Multimedia libraries.
 %{_qt_plugindir}/audio
 %{_qt_plugindir}/mediaservice
 %{_qt_plugindir}/playlistformats
-%lang(cs) %{_qt_translationsdir}/qtmultimedia_cs.qm
-%lang(de) %{_qt_translationsdir}/qtmultimedia_de.qm
-%lang(hu) %{_qt_translationsdir}/qtmultimedia_hu.qm
-%lang(ru) %{_qt_translationsdir}/qtmultimedia_ru.qm
-%lang(sk) %{_qt_translationsdir}/qtmultimedia_sk.qm
-%lang(uk) %{_qt_translationsdir}/qtmultimedia_uk.qm
 
 #----------------------------------------------------------------------------
 
@@ -992,6 +1015,25 @@ Development files for Qt Multimedia.
 %{_qt_includedir}/QtMultimedia
 %{_libdir}/cmake/Qt%{api}Multimedia
 %{_qt_includedir}/QtMultimediaQuick_p
+
+#----------------------------------------------------------------------------
+
+%package qtmultimedia-i18n
+Summary:	Qt Multimedia translations
+Group:		System/Libraries
+Conflicts:	%{qtmultimedia} < 5.1.0-6
+BuildArch:	noarch
+
+%description qtmultimedia-i18n
+Qt Multimedia translations.
+
+%files qtmultimedia-i18n
+%lang(cs) %{_qt_translationsdir}/qtmultimedia_cs.qm
+%lang(de) %{_qt_translationsdir}/qtmultimedia_de.qm
+%lang(hu) %{_qt_translationsdir}/qtmultimedia_hu.qm
+%lang(ru) %{_qt_translationsdir}/qtmultimedia_ru.qm
+%lang(sk) %{_qt_translationsdir}/qtmultimedia_sk.qm
+%lang(uk) %{_qt_translationsdir}/qtmultimedia_uk.qm
 
 #----------------------------------------------------------------------------
 
@@ -1083,6 +1125,7 @@ Development files for the Qt QML library.
 %package -n %{qtquick}
 Summary:	Runtime library for Qt Quick
 Group:		System/Libraries
+Requires:	%{name}-qtquick-i18n = %{EVRD}
 
 %description -n %{qtquick}
 Runtime library for Qt Quick.
@@ -1099,12 +1142,6 @@ Runtime library for Qt Quick.
 %{_qt_importdir}/builtins.qmltypes
 %{_qt_prefix}/qml/QtQuick.2
 %{_qt_prefix}/qml/QtQuick
-%lang(cs) %{_qt_translationsdir}/qtquick1_cs.qm
-%lang(de) %{_qt_translationsdir}/qtquick1_de.qm
-%lang(hu) %{_qt_translationsdir}/qtquick1_hu.qm
-%lang(ru) %{_qt_translationsdir}/qtquick1_ru.qm
-%lang(sk) %{_qt_translationsdir}/qtquick1_sk.qm
-%lang(uk) %{_qt_translationsdir}/qtquick1_uk.qm
 
 #----------------------------------------------------------------------------
 
@@ -1122,6 +1159,25 @@ Development files for Qt Quick.
 %{_libdir}/pkgconfig/Qt%{api}Quick.pc
 %{_qt_includedir}/QtQuick
 %{_libdir}/cmake/Qt%{api}Quick
+
+#----------------------------------------------------------------------------
+
+%package qtquick-i18n
+Summary:	Qt Quick translations
+Group:		System/Libraries
+Conflicts:	%{qtquick} < 5.1.0-6
+BuildArch:	noarch
+
+%description qtquick-i18n
+Qt Quick translations.
+
+%files qtquick-i18n
+%lang(cs) %{_qt_translationsdir}/qtquick1_cs.qm
+%lang(de) %{_qt_translationsdir}/qtquick1_de.qm
+%lang(hu) %{_qt_translationsdir}/qtquick1_hu.qm
+%lang(ru) %{_qt_translationsdir}/qtquick1_ru.qm
+%lang(sk) %{_qt_translationsdir}/qtquick1_sk.qm
+%lang(uk) %{_qt_translationsdir}/qtquick1_uk.qm
 
 #----------------------------------------------------------------------------
 
@@ -1185,18 +1241,13 @@ Development files for Qt Quick's unit test module.
 %package -n %{qtscript}
 Summary:	Qt Script runtime library
 Group:		System/Libraries
+Requires:	%{name}-qtscript-i18n = %{EVRD}
 
 %description -n %{qtscript}
 Qt Script runtime library.
 
 %files -n %{qtscript}
 %{_libdir}/libQt%{api}Script.so.%{major}*
-%lang(cs) %{_qt_translationsdir}/qtscript_cs.qm
-%lang(de) %{_qt_translationsdir}/qtscript_de.qm
-%lang(hu) %{_qt_translationsdir}/qtscript_hu.qm
-%lang(ru) %{_qt_translationsdir}/qtscript_ru.qm
-%lang(sk) %{_qt_translationsdir}/qtscript_sk.qm
-%lang(uk) %{_qt_translationsdir}/qtscript_uk.qm
 
 #----------------------------------------------------------------------------
 
@@ -1214,6 +1265,25 @@ Development files for Qt Script.
 %{_libdir}/pkgconfig/Qt%{api}Script.pc
 %{_qt_includedir}/QtScript
 %{_libdir}/cmake/Qt%{api}Script
+
+#----------------------------------------------------------------------------
+
+%package qtscript-i18n
+Summary:	Qt Script translations
+Group:		System/Libraries
+Conflicts:	%{qtscript} < 5.1.0-6
+BuildArch:	noarch
+
+%description qtscript-i18n
+Qt Script translations.
+
+%files qtscript-i18n
+%lang(cs) %{_qt_translationsdir}/qtscript_cs.qm
+%lang(de) %{_qt_translationsdir}/qtscript_de.qm
+%lang(hu) %{_qt_translationsdir}/qtscript_hu.qm
+%lang(ru) %{_qt_translationsdir}/qtscript_ru.qm
+%lang(sk) %{_qt_translationsdir}/qtscript_sk.qm
+%lang(uk) %{_qt_translationsdir}/qtscript_uk.qm
 
 #----------------------------------------------------------------------------
 
@@ -1404,18 +1474,13 @@ Development files for the QtX11Extras library.
 Summary:	Qt XSLT engine
 Group:		System/Libraries
 Requires:	%{qtxml} = %{EVRD}
+Requires:	%{name}-qtxmlpatterns-i18n = %{EVRD}
 
 %description -n %{qtxmlpatterns}
 Qt XSLT engine.
 
 %files -n %{qtxmlpatterns}
 %{_libdir}/libQt%{api}XmlPatterns.so.%{major}*
-%lang(cs) %{_qt_translationsdir}/qtxmlpatterns_cs.qm
-%lang(de) %{_qt_translationsdir}/qtxmlpatterns_de.qm
-%lang(hu) %{_qt_translationsdir}/qtxmlpatterns_hu.qm
-%lang(ru) %{_qt_translationsdir}/qtxmlpatterns_ru.qm
-%lang(sk) %{_qt_translationsdir}/qtxmlpatterns_sk.qm
-%lang(uk) %{_qt_translationsdir}/qtxmlpatterns_uk.qm
 
 #----------------------------------------------------------------------------
 
@@ -1434,6 +1499,25 @@ Development files for Qt's XSLT engine.
 %{_libdir}/pkgconfig/Qt%{api}XmlPatterns.pc
 %{_qt_includedir}/QtXmlPatterns
 %{_libdir}/cmake/Qt%{api}XmlPatterns
+
+#----------------------------------------------------------------------------
+
+%package qtxmlpatterns-i18n
+Summary:	Qt XSLT engine translations
+Group:		System/Libraries
+Conflicts:	%{qtxmlpatterns} < 5.1.0-6
+BuildArch:	noarch
+
+%description qtxmlpatterns-i18n
+Qt XSLT engine translations.
+
+%files qtxmlpatterns-i18n
+%lang(cs) %{_qt_translationsdir}/qtxmlpatterns_cs.qm
+%lang(de) %{_qt_translationsdir}/qtxmlpatterns_de.qm
+%lang(hu) %{_qt_translationsdir}/qtxmlpatterns_hu.qm
+%lang(ru) %{_qt_translationsdir}/qtxmlpatterns_ru.qm
+%lang(sk) %{_qt_translationsdir}/qtxmlpatterns_sk.qm
+%lang(uk) %{_qt_translationsdir}/qtxmlpatterns_uk.qm
 
 #----------------------------------------------------------------------------
 
