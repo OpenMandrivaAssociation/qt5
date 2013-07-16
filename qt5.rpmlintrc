@@ -7,3 +7,4 @@ addFilter("E: non-executable-script")
 # Qt creates debuginfo files itself
 addFilter("E: empty-debuginfo-package")
 addFilter("E: hardcoded-library-path")
+addFilter("E: binary-or-shlib-defines-rpath")
