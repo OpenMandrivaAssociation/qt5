@@ -1665,7 +1665,7 @@ Translation tool for Qt based applications.
 %lang(uk) %{_qt_translationsdir}/linguist_uk.qm
 %lang(zh_CN) %{_qt_translationsdir}/linguist_zh_CN.qm
 %lang(zh_TW) %{_qt_translationsdir}/linguist_zh_TW.qm
-%dir %{_qt_prefix}/phrasebooks
+%dir %{_qt_datadir}/phrasebooks
 %lang(da) %{_qt_datadir}/phrasebooks/danish.qph
 %lang(nl) %{_qt_datadir}/phrasebooks/dutch.qph
 %lang(fi) %{_qt_datadir}/phrasebooks/finnish.qph
