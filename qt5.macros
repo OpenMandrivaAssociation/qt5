@@ -1,14 +1,14 @@
 # Qt5 macros, test version
-%_qt5_datadir %{_prefix}/lib/qt5/share
-%_qt5_bindir %{_prefix}/lib/qt5/bin
+%_qt5_datadir %{_datadir}/qt5
+%_qt5_bindir %{_libdir}/qt5/bin
 %_qt5_docdir %{_docdir}/qt5
-%_qt5_libdir %{_prefix}/lib/qt5/%{_lib}
-%_qt5_includedir %{_prefix}/lib/qt5/include
+%_qt5_libdir %{_libdir}
+%_qt5_includedir %{_includedir}/qt5
 %_qt5_plugindir %{_libdir}/qt5/plugins
-%_qt5_demodir %{_prefix}/lib/qt5/demos
-%_qt5_exampledir %{_prefix}/lib/qt5/examples
-%_qt5_importdir %{_prefix}/lib/qt5/imports
-%_qt5_translationsdir %{_prefix}/lib/qt5/translations
+%_qt5_demodir %{_libdir}/qt5/demos
+%_qt5_exampledir %{_libdir}/qt5/examples
+%_qt5_importdir %{_libdir}/qt5/imports
+%_qt5_translationsdir %{_datadir}/qt5/translations
 
 %qmake_qt5 \
   CPPFLAGS="${CPPFLAGS:-%optflags -DPIC -fPIC}" ; export CPPFLAGS ; \

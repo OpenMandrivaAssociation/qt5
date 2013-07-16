@@ -9,7 +9,6 @@
 %define _qt_docdir %{_docdir}/qt%{api}
 %define _qt_libexecdir %{_qt_prefix}/libexec
 %define _qt_includedir %{_includedir}/qt5
-#%{_qt_prefix}/include
 %define _qt_plugindir %{_libdir}/qt%{api}/plugins
 %define _qt_demodir %{_qt_prefix}/demos
 %define _qt_exampledir %{_qt_prefix}/examples
@@ -100,7 +99,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.gz
-Release:	5
+Release:	6
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
@@ -1820,7 +1819,7 @@ rm -f %{buildroot}%{_libdir}/libQt%{api}MultimediaQuick_p.so %{buildroot}%{_libd
 rm -f %{buildroot}%{_qt_translationsdir}/qtconfig_*.qm
 # Let's make life easier for packagers
 mkdir -p %{buildroot}%{_bindir}
-ln -s ../%_lib/qt%{api}/bin/qmake %{buildroot}%{_bindir}/qmake-qt%{api}
+ln -s ../%{_lib}/qt%{api}/bin/qmake %{buildroot}%{_bindir}/qmake-qt%{api}
 
 # Fix some wrong permissions
 find %{buildroot} -type f -perm -0755 -name "*.png" |xargs --no-run-if-empty chmod 0644
