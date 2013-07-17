@@ -99,7 +99,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.gz
-Release:	7
+Release:	8
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
@@ -251,7 +251,7 @@ Development files for version 5 of the QtCore library.
 %{_libdir}/cmake/Qt%{api}Core
 %{_libdir}/cmake/Qt%{api}/Qt%{api}Config.cmake
 %{_libdir}/cmake/Qt%{api}/Qt%{api}ConfigVersion.cmake
-%doc %{_docdir}/qt%{api}/global
+%doc %{_qt_docdir}/global
 
 #----------------------------------------------------------------------------
 
@@ -1558,6 +1558,7 @@ Meta-package for installing all Qt 5 development files.
 %package assistant
 Summary:	Qt help system
 Group:		Development/KDE and Qt
+Suggests:	%{name}-doc = %{EVRD}
 
 %description assistant
 Qt help system.
@@ -1609,6 +1610,19 @@ Qt interface design tool.
 %lang(zh_CN) %{_qt_translationsdir}/designer_zh_CN.qm
 %lang(zh_TW) %{_qt_translationsdir}/designer_zh_TW.qm
 %{_qt_plugindir}/designer
+
+#----------------------------------------------------------------------------
+
+%package doc
+Summary:	Qt QCH documentation
+Group:		Books/Computer books
+BuildArch:	noarch
+
+%description doc
+QCH documentation for the Qt toolkit.
+
+%files doc
+%{_qt_docdir}/*.qch
 
 #----------------------------------------------------------------------------
 
@@ -1739,12 +1753,12 @@ Qt documentation generator, version 5.
 #----------------------------------------------------------------------------
 
 %package -n qmake%{api}
-Summary:	Makefile generation system for Qt5
+Summary:	Makefile generation system for Qt 5
 Group:		Development/KDE and Qt
 Requires:	%{name}-macros = %{EVRD}
 
 %description -n qmake%{api}
-Makefile generation system for Qt5.
+Makefile generation system for Qt 5.
 
 %files -n qmake%{api}
 %{_bindir}/qmake-qt%{api}
@@ -1888,9 +1902,11 @@ Tools for Qt 5.
 
 %build
 %make STRIP=true
+%make docs
 
 %install
 make install STRIP=true INSTALL_ROOT=%{buildroot}
+make install_qch_docs INSTALL_ROOT=%{buildroot}
 
 # Installed, but not useful
 rm -f %{buildroot}%{_qt_bindir}/syncqt
