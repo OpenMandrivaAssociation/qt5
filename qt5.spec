@@ -90,6 +90,8 @@
 %define qtxmlpatternsd %mklibname qt%{api}xmlpatterns -d
 
 %bcond_without directfb
+# Requires qdoc5 to build
+%bcond_without docs
 
 Summary:	Version 5 of the Qt toolkit
 Name:		qt5
@@ -152,7 +154,7 @@ BuildRequires:	pkgconfig(xkbfile)
 # For proper font access
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(freetype2)
-%if %with directfb
+%if %{with directfb}
 # DirectFB platform plugin:
 BuildRequires:	pkgconfig(directfb)
 %endif
@@ -163,6 +165,9 @@ BuildRequires:	pkgconfig(libudev)
 BuildRequires:	flex bison gperf
 # Used for CPU feature detection in configure step
 BuildRequires:	gdb
+%if %{with docs}
+BuildRequires:	qdoc5
+%endif
 
 %description
 Version 5 of the Qt toolkit.
@@ -1613,6 +1618,7 @@ Qt interface design tool.
 
 #----------------------------------------------------------------------------
 
+%if %{with docs}
 %package doc
 Summary:	Qt QCH documentation
 Group:		Books/Computer books
@@ -1623,6 +1629,7 @@ QCH documentation for the Qt toolkit.
 
 %files doc
 %{_qt_docdir}/*.qch
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1869,7 +1876,7 @@ Tools for Qt 5.
 	-dbus-linked \
 	-reduce-relocations \
 	-xcb \
-%if %with directfb
+%if %{with directfb}
 	-directfb \
 %endif
 	-qpa xcb \
@@ -1902,11 +1909,17 @@ Tools for Qt 5.
 
 %build
 %make STRIP=true
+
+%if %{with docs}
 %make docs
+%endif
 
 %install
 make install STRIP=true INSTALL_ROOT=%{buildroot}
+
+%if %{with docs}
 make install_qch_docs INSTALL_ROOT=%{buildroot}
+%endif
 
 # Installed, but not useful
 rm -f %{buildroot}%{_qt_bindir}/syncqt
