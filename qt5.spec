@@ -90,7 +90,7 @@
 %define qtxmlpatternsd %mklibname qt%{api}xmlpatterns -d
 
 %bcond_without directfb
-# Requires qdoc5 to build
+# Requires qdoc5 and qt5-tools to build
 %bcond_without docs
 
 Summary:	Version 5 of the Qt toolkit
@@ -167,6 +167,7 @@ BuildRequires:	flex bison gperf
 BuildRequires:	gdb
 %if %{with docs}
 BuildRequires:	qdoc5
+BuildRequires:	qt5-tools
 %endif
 
 %description
