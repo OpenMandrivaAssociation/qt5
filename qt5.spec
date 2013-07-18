@@ -353,6 +353,7 @@ Development files for version 5 of the QtDBus library.
 %package -n %{qtgui}
 Summary:	Qt GUI library
 Group:		System/Libraries
+Suggests:	qt5-style-plugins
 
 %description -n %{qtgui}
 Qt GUI library.
