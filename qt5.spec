@@ -7,6 +7,8 @@
 %define _qt_prefix %{_libdir}/qt%{api}
 %define _qt_bindir %{_qt_prefix}/bin
 %define _qt_docdir %{_docdir}/qt%{api}
+#define _qt_libdir %{_qt_prefix}/%{_lib}
+%define _qt_libdir %{_libdir}
 %define _qt_libexecdir %{_qt_prefix}/libexec
 %define _qt_includedir %{_includedir}/qt5
 %define _qt_plugindir %{_libdir}/qt%{api}/plugins
@@ -101,7 +103,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.gz
-Release:	10
+Release:	10.2
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
@@ -186,9 +188,12 @@ Group:		Development/KDE and Qt
 Development files for version 5 if the QtBootstrap library.
 
 %files -n %{qtbootstrapd}
-%{_libdir}/libQt%{api}Bootstrap.a
-%{_libdir}/libQt%{api}Bootstrap.prl
+%{_qt_libdir}/libQt%{api}Bootstrap.a
+%{_qt_libdir}/libQt%{api}Bootstrap.prl
+%{_qt_libdir}/pkgconfig/Qt%{api}Bootstrap.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/pkgconfig/Qt%{api}Bootstrap.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -200,7 +205,10 @@ Group:		System/Libraries
 Qt threading library.
 
 %files -n %{qtconcurrent}
+%{_qt_libdir}/libQt%{api}Concurrent.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Concurrent.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -215,11 +223,14 @@ Obsoletes:	%{_lib}qt5concurrent5-devel < %{EVRD}
 Development files for version 5 of the QtConcurrent library.
 
 %files -n %{qtconcurrentd}
-%{_libdir}/libQt%{api}Concurrent.so
-%{_libdir}/libQt%{api}Concurrent.prl
-%{_libdir}/pkgconfig/Qt%{api}Concurrent.pc
 %{_qt_includedir}/QtConcurrent
-%{_libdir}/cmake/Qt%{api}Concurrent
+%{_qt_libdir}/libQt%{api}Concurrent.so
+%{_qt_libdir}/libQt%{api}Concurrent.prl
+%{_qt_libdir}/cmake/Qt%{api}Concurrent
+%{_qt_libdir}/pkgconfig/Qt%{api}Concurrent.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Concurrent.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -232,7 +243,10 @@ Requires:	%{name}-qtcore-i18n = %{EVRD}
 Qt Core library.
 
 %files -n %{qtcore}
+%{_qt_libdir}/libQt%{api}Core.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Core.so.%{major}*
+%endif
 %dir %{_qt_plugindir}
 
 #----------------------------------------------------------------------------
@@ -246,19 +260,22 @@ Requires:	%{qtcore} = %{EVRD}
 Development files for version 5 of the QtCore library.
 
 %files -n %{qtcored}
+%doc %{_qt_docdir}/global
 %{_qt_bindir}/moc
 %{_qt_bindir}/rcc
-%{_libdir}/libQt%{api}Core.so
-%{_libdir}/libQt%{api}Core.prl
 %{_qt_includedir}/QtCore
-%dir %{_libdir}/cmake
-%dir %{_libdir}/cmake/Qt%{api}
-%dir %{_libdir}/pkgconfig
+%{_qt_libdir}/libQt%{api}Core.so
+%{_qt_libdir}/libQt%{api}Core.prl
+%{_qt_libdir}/cmake/Qt%{api}Core
+%{_qt_libdir}/cmake/Qt%{api}/Qt%{api}Config.cmake
+%{_qt_libdir}/cmake/Qt%{api}/Qt%{api}ConfigVersion.cmake
+%{_qt_libdir}/pkgconfig/Qt%{api}Core.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/pkgconfig/Qt%{api}Core.pc
-%{_libdir}/cmake/Qt%{api}Core
-%{_libdir}/cmake/Qt%{api}/Qt%{api}Config.cmake
-%{_libdir}/cmake/Qt%{api}/Qt%{api}ConfigVersion.cmake
-%doc %{_qt_docdir}/global
+%endif
+%dir %{_qt_libdir}/cmake
+%dir %{_qt_libdir}/cmake/Qt%{api}
+%dir %{_qt_libdir}/pkgconfig
 
 #----------------------------------------------------------------------------
 
@@ -327,7 +344,10 @@ Group:		System/Libraries
 Qt DBus connector library.
 
 %files -n %{qtdbus}
+%{_qt_libdir}/libQt%{api}DBus.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}DBus.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -340,13 +360,16 @@ Requires:	%{qtdbus} = %{EVRD}
 Development files for version 5 of the QtDBus library.
 
 %files -n %{qtdbusd}
-%{_libdir}/libQt%{api}DBus.so
-%{_libdir}/libQt%{api}DBus.prl
-%{_libdir}/pkgconfig/Qt%{api}DBus.pc
-%{_qt_includedir}/QtDBus
-%{_libdir}/cmake/Qt%{api}DBus
 %{_qt_bindir}/qdbuscpp2xml
 %{_qt_bindir}/qdbusxml2cpp
+%{_qt_includedir}/QtDBus
+%{_qt_libdir}/libQt%{api}DBus.so
+%{_qt_libdir}/libQt%{api}DBus.prl
+%{_qt_libdir}/cmake/Qt%{api}DBus
+%{_qt_libdir}/pkgconfig/Qt%{api}DBus.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}DBus.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -359,7 +382,10 @@ Suggests:	qt5-style-plugins
 Qt GUI library.
 
 %files -n %{qtgui}
+%{_qt_libdir}/libQt%{api}Gui.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Gui.so.%{major}*
+%endif
 %{_qt_plugindir}/imageformats
 %dir %{_qt_plugindir}/platforminputcontexts
 %dir %{_qt_plugindir}/platforms
@@ -380,20 +406,25 @@ Development files for version 5 of the QtGui library.
 
 %files -n %{qtguid}
 %{_qt_bindir}/uic
-%{_libdir}/libQt%{api}Gui.so
-%{_libdir}/libQt%{api}Gui.prl
-%{_libdir}/pkgconfig/Qt%{api}Gui.pc
 %{_qt_includedir}/QtGui
-%{_libdir}/cmake/Qt%{api}Gui
-%{_libdir}/libQt%{api}PlatformSupport.a
-%{_libdir}/libQt%{api}PlatformSupport.prl
-%{_libdir}/pkgconfig/Qt%{api}PlatformSupport.pc
 %{_qt_includedir}/QtPlatformSupport
 %{_qt_includedir}/QtUiTools
-%{_libdir}/cmake/Qt%{api}UiTools
-%{_libdir}/libQt%{api}UiTools.a
-%{_libdir}/libQt%{api}UiTools.prl
+%{_qt_libdir}/libQt%{api}Gui.so
+%{_qt_libdir}/libQt%{api}Gui.prl
+%{_qt_libdir}/libQt%{api}PlatformSupport.a
+%{_qt_libdir}/libQt%{api}PlatformSupport.prl
+%{_qt_libdir}/libQt%{api}UiTools.a
+%{_qt_libdir}/libQt%{api}UiTools.prl
+%{_qt_libdir}/cmake/Qt%{api}Gui
+%{_qt_libdir}/cmake/Qt%{api}UiTools
+%{_qt_libdir}/pkgconfig/Qt%{api}Gui.pc
+%{_qt_libdir}/pkgconfig/Qt%{api}PlatformSupport.pc
+%{_qt_libdir}/pkgconfig/Qt%{api}UiTools.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Gui.pc
+%{_libdir}/pkgconfig/Qt%{api}PlatformSupport.pc
 %{_libdir}/pkgconfig/Qt%{api}UiTools.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -422,7 +453,7 @@ Linux Framebuffer output driver for QtGui v5.
 %{_qt_plugindir}/platforms/libqlinuxfb.so
 # FIXME need to determine why those aren't built all the time. We're probably
 # missing a BuildRequires: somewhere.
-%optional %{_libdir}/fonts
+%optional %{_qt_libdir}/fonts
 
 #----------------------------------------------------------------------------
 
@@ -476,7 +507,10 @@ Group:		System/Libraries
 Qt Networking library.
 
 %files -n %{qtnetwork}
+%{_qt_libdir}/libQt%{api}Network.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Network.so.%{major}*
+%endif
 %{_qt_plugindir}/bearer
 
 #----------------------------------------------------------------------------
@@ -490,11 +524,14 @@ Requires:	%{qtnetwork} = %{EVRD}
 Development files for version 5 of the QtNetwork library.
 
 %files -n %{qtnetworkd}
-%{_libdir}/libQt%{api}Network.so
-%{_libdir}/libQt%{api}Network.prl
-%{_libdir}/pkgconfig/Qt%{api}Network.pc
 %{_qt_includedir}/QtNetwork
-%{_libdir}/cmake/Qt%{api}Network
+%{_qt_libdir}/libQt%{api}Network.so
+%{_qt_libdir}/libQt%{api}Network.prl
+%{_qt_libdir}/cmake/Qt%{api}Network
+%{_qt_libdir}/pkgconfig/Qt%{api}Network.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Network.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -506,7 +543,10 @@ Group:		System/Libraries
 Qt OpenGL (3D Graphics) library.
 
 %files -n %{qtopengl}
+%{_qt_libdir}/libQt%{api}OpenGL.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}OpenGL.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -519,16 +559,20 @@ Requires:	%{qtopengl} = %{EVRD}
 Development files for version 5 of the QtOpenGL library.
 
 %files -n %{qtopengld}
-%{_libdir}/libQt%{api}OpenGL.so
-%{_libdir}/libQt%{api}OpenGL.prl
-%{_libdir}/pkgconfig/Qt%{api}OpenGL.pc
-%{_libdir}/pkgconfig/Qt%{api}OpenGLExtensions.pc
 %{_qt_includedir}/QtOpenGL
 %{_qt_includedir}/QtOpenGLExtensions
-%{_libdir}/cmake/Qt%{api}OpenGL
-%{_libdir}/cmake/Qt%{api}OpenGLExtensions
-%{_libdir}/libQt%{api}OpenGLExtensions.a
-%{_libdir}/libQt%{api}OpenGLExtensions.prl
+%{_qt_libdir}/libQt%{api}OpenGL.so
+%{_qt_libdir}/libQt%{api}OpenGL.prl
+%{_qt_libdir}/libQt%{api}OpenGLExtensions.a
+%{_qt_libdir}/libQt%{api}OpenGLExtensions.prl
+%{_qt_libdir}/cmake/Qt%{api}OpenGL
+%{_qt_libdir}/cmake/Qt%{api}OpenGLExtensions
+%{_qt_libdir}/pkgconfig/Qt%{api}OpenGL.pc
+%{_qt_libdir}/pkgconfig/Qt%{api}OpenGLExtensions.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}OpenGL.pc
+%{_libdir}/pkgconfig/Qt%{api}OpenGLExtensions.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -540,7 +584,10 @@ Group:		System/Libraries
 Qt printing library.
 
 %files -n %{qtprintsupport}
+%{_qt_libdir}/libQt%{api}PrintSupport.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}PrintSupport.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -553,11 +600,14 @@ Requires:	%{qtprintsupport} = %{EVRD}
 Development files for version 5 of the QtPrintSupport library.
 
 %files -n %{qtprintsupportd}
-%{_libdir}/libQt%{api}PrintSupport.so
-%{_libdir}/libQt%{api}PrintSupport.prl
-%{_libdir}/pkgconfig/Qt%{api}PrintSupport.pc
 %{_qt_includedir}/QtPrintSupport
-%{_libdir}/cmake/Qt%{api}PrintSupport
+%{_qt_libdir}/libQt%{api}PrintSupport.so
+%{_qt_libdir}/libQt%{api}PrintSupport.prl
+%{_qt_libdir}/cmake/Qt%{api}PrintSupport
+%{_qt_libdir}/pkgconfig/Qt%{api}PrintSupport.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}PrintSupport.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -569,7 +619,10 @@ Group:		System/Libraries
 Qt Sensors library.
 
 %files -n %{qtsensors}
+%{_qt_libdir}/libQt%{api}Sensors.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Sensors.so.%{major}*
+%endif
 %{_qt_prefix}/qml/QtSensors
 %{_qt_plugindir}/sensorgestures
 %{_qt_plugindir}/sensors
@@ -586,10 +639,13 @@ Development files for the QtSensors library.
 
 %files -n %{qtsensorsd}
 %{_qt_includedir}/QtSensors
-%{_libdir}/cmake/Qt%{api}Sensors
-%{_libdir}/libQt%{api}Sensors.so
-%{_libdir}/libQt%{api}Sensors.prl
+%{_qt_libdir}/libQt%{api}Sensors.so
+%{_qt_libdir}/libQt%{api}Sensors.prl
+%{_qt_libdir}/cmake/Qt%{api}Sensors
+%{_qt_libdir}/pkgconfig/Qt%{api}Sensors.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/pkgconfig/Qt%{api}Sensors.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -601,7 +657,10 @@ Group:		System/Libraries
 Qt Serial Port library.
 
 %files -n %{qtserialport}
+%{_qt_libdir}/libQt%{api}SerialPort.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}SerialPort.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -615,10 +674,13 @@ Development files for the QtSerialPort library.
 
 %files -n %{qtserialportd}
 %{_qt_includedir}/QtSerialPort
-%{_libdir}/cmake/Qt%{api}SerialPort
-%{_libdir}/libQt%{api}SerialPort.so
-%{_libdir}/libQt%{api}SerialPort.prl
+%{_qt_libdir}/libQt%{api}SerialPort.so
+%{_qt_libdir}/libQt%{api}SerialPort.prl
+%{_qt_libdir}/cmake/Qt%{api}SerialPort
+%{_qt_libdir}/pkgconfig/Qt%{api}SerialPort.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/pkgconfig/Qt%{api}SerialPort.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -630,7 +692,10 @@ Group:		System/Libraries
 Qt SQL library.
 
 %files -n %{qtsql}
+%{_qt_libdir}/libQt%{api}Sql.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Sql.so.%{major}*
+%endif
 %dir %{_qt_plugindir}/sqldrivers
 
 #----------------------------------------------------------------------------
@@ -644,11 +709,14 @@ Requires:	%{qtsql} = %{EVRD}
 Development files for version 5 of the QtSql library.
 
 %files -n %{qtsqld}
-%{_libdir}/libQt%{api}Sql.so
-%{_libdir}/libQt%{api}Sql.prl
-%{_libdir}/pkgconfig/Qt%{api}Sql.pc
 %{_qt_includedir}/QtSql
-%{_libdir}/cmake/Qt%{api}Sql
+%{_qt_libdir}/libQt%{api}Sql.so
+%{_qt_libdir}/libQt%{api}Sql.prl
+%{_qt_libdir}/cmake/Qt%{api}Sql
+%{_qt_libdir}/pkgconfig/Qt%{api}Sql.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Sql.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -720,7 +788,10 @@ Group:		System/Libraries
 Qt unit test library.
 
 %files -n %{qttest}
+%{_qt_libdir}/libQt%{api}Test.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Test.so.%{major}*
+%endif
 %{_qt_prefix}/qml/QtTest
 
 #----------------------------------------------------------------------------
@@ -734,11 +805,14 @@ Requires:	%{qttest} = %{EVRD}
 Development files for version 5 of the QtTest library.
 
 %files -n %{qttestd}
-%{_libdir}/libQt%{api}Test.so
-%{_libdir}/libQt%{api}Test.prl
-%{_libdir}/pkgconfig/Qt%{api}Test.pc
 %{_qt_includedir}/QtTest
-%{_libdir}/cmake/Qt%{api}Test
+%{_qt_libdir}/libQt%{api}Test.so
+%{_qt_libdir}/libQt%{api}Test.prl
+%{_qt_libdir}/cmake/Qt%{api}Test
+%{_qt_libdir}/pkgconfig/Qt%{api}Test.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Test.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -750,7 +824,10 @@ Group:		System/Libraries
 Qt Widget library.
 
 %files -n %{qtwidgets}
+%{_qt_libdir}/libQt%{api}Widgets.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Widgets.so.%{major}*
+%endif
 %{_qt_plugindir}/accessible
 
 #----------------------------------------------------------------------------
@@ -764,11 +841,14 @@ Requires:	%{qtwidgets} = %{EVRD}
 Development files for version 5 of the QtWidgets library.
 
 %files -n %{qtwidgetsd}
-%{_libdir}/libQt%{api}Widgets.so
-%{_libdir}/libQt%{api}Widgets.prl
-%{_libdir}/pkgconfig/Qt%{api}Widgets.pc
 %{_qt_includedir}/QtWidgets
-%{_libdir}/cmake/Qt%{api}Widgets
+%{_qt_libdir}/libQt%{api}Widgets.so
+%{_qt_libdir}/libQt%{api}Widgets.prl
+%{_qt_libdir}/cmake/Qt%{api}Widgets
+%{_qt_libdir}/pkgconfig/Qt%{api}Widgets.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Widgets.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -780,7 +860,10 @@ Group:		System/Libraries
 Qt XML library.
 
 %files -n %{qtxml}
+%{_qt_libdir}/libQt%{api}Xml.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Xml.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -793,11 +876,14 @@ Requires:	%{qtxml} = %{EVRD}
 Development files for version 5 of the QtXml library.
 
 %files -n %{qtxmld}
-%{_libdir}/libQt%{api}Xml.so
-%{_libdir}/libQt%{api}Xml.prl
-%{_libdir}/pkgconfig/Qt%{api}Xml.pc
 %{_qt_includedir}/QtXml
-%{_libdir}/cmake/Qt%{api}Xml
+%{_qt_libdir}/libQt%{api}Xml.so
+%{_qt_libdir}/libQt%{api}Xml.prl
+%{_qt_libdir}/cmake/Qt%{api}Xml
+%{_qt_libdir}/pkgconfig/Qt%{api}Xml.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Xml.pc
+%endif
 
 #----------------------------------------------------------------------------
 # qt extras
@@ -811,7 +897,10 @@ Group:		System/Libraries
 Runtime library for GStreamer support in Qt 5.
 
 %files -n %{qgsttools_p}
+%{_qt_libdir}/libqgsttools_p.so.%{qgstmajor}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libqgsttools_p.so.%{qgstmajor}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -823,7 +912,10 @@ Group:		System/Libraries
 Qt version of the CLucene search engine.
 
 %files -n %{qtclucene}
+%{_qt_libdir}/libQt%{api}CLucene.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}CLucene.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -836,10 +928,13 @@ Requires:	%{qtclucene} = %{EVRD}
 Development files for the Qt version of the CLucene search engine.
 
 %files -n %{qtclucened}
-%{_libdir}/libQt%{api}CLucene.so
-%{_libdir}/libQt%{api}CLucene.prl
-%{_libdir}/pkgconfig/Qt%{api}CLucene.pc
 %{_qt_includedir}/QtCLucene
+%{_qt_libdir}/libQt%{api}CLucene.so
+%{_qt_libdir}/libQt%{api}CLucene.prl
+%{_qt_libdir}/pkgconfig/Qt%{api}CLucene.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}CLucene.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -852,7 +947,10 @@ Requires:	%{name}-qtdeclarative-i18n = %{EVRD}
 Runtime library for Qt Declarative.
 
 %files -n %{qtdeclarative}
+%{_qt_libdir}/libQt%{api}Declarative.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Declarative.so.%{major}*
+%endif
 %{_qt_plugindir}/qmltooling
 
 #----------------------------------------------------------------------------
@@ -866,11 +964,14 @@ Requires:	%{qtdeclarative} = %{EVRD}
 Development files for Qt Declarative.
 
 %files -n %{qtdeclaratived}
-%{_libdir}/libQt%{api}Declarative.so
-%{_libdir}/libQt%{api}Declarative.prl
-%{_libdir}/pkgconfig/Qt%{api}Declarative.pc
 %{_qt_includedir}/QtDeclarative
-%{_libdir}/cmake/Qt%{api}Declarative
+%{_qt_libdir}/libQt%{api}Declarative.so
+%{_qt_libdir}/libQt%{api}Declarative.prl
+%{_qt_libdir}/cmake/Qt%{api}Declarative
+%{_qt_libdir}/pkgconfig/Qt%{api}Declarative.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Declarative.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -899,7 +1000,10 @@ Group:		System/Libraries
 Components for Qt Designer.
 
 %files -n %{qtdesignercomponents}
+%{_qt_libdir}/libQt%{api}DesignerComponents.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}DesignerComponents.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -912,10 +1016,13 @@ Requires:	%{qtdesignercomponents} = %{EVRD}
 Development files for Qt Designer Components.
 
 %files -n %{qtdesignercomponentsd}
-%{_libdir}/libQt%{api}DesignerComponents.so
-%{_libdir}/libQt%{api}DesignerComponents.prl
-%{_libdir}/pkgconfig/Qt%{api}DesignerComponents.pc
 %{_qt_includedir}/QtDesignerComponents
+%{_qt_libdir}/libQt%{api}DesignerComponents.so
+%{_qt_libdir}/libQt%{api}DesignerComponents.prl
+%{_qt_libdir}/pkgconfig/Qt%{api}DesignerComponents.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}DesignerComponents.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -927,7 +1034,10 @@ Group:		System/Libraries
 Qt Designer runtime libraries.
 
 %files -n %{qtdesigner}
+%{_qt_libdir}/libQt%{api}Designer.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Designer.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -940,11 +1050,14 @@ Requires:	%{qtdesigner} = %{EVRD}
 Development files for Qt Designer.
 
 %files -n %{qtdesignerd}
-%{_libdir}/libQt%{api}Designer.so
-%{_libdir}/libQt%{api}Designer.prl
-%{_libdir}/pkgconfig/Qt%{api}Designer.pc
 %{_qt_includedir}/QtDesigner
-%{_libdir}/cmake/Qt%{api}Designer
+%{_qt_libdir}/libQt%{api}Designer.so
+%{_qt_libdir}/libQt%{api}Designer.prl
+%{_qt_libdir}/cmake/Qt%{api}Designer
+%{_qt_libdir}/pkgconfig/Qt%{api}Designer.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Designer.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -956,7 +1069,10 @@ Group:		System/Libraries
 Runtime libraries for the Qt Help system.
 
 %files -n %{qthelp}
+%{_qt_libdir}/libQt%{api}Help.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Help.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -970,11 +1086,14 @@ Development files for Qt Help, useful if you wish to add a help system
 to your application.
 
 %files -n %{qthelpd}
-%{_libdir}/libQt%{api}Help.so
-%{_libdir}/libQt%{api}Help.prl
-%{_libdir}/pkgconfig/Qt%{api}Help.pc
 %{_qt_includedir}/QtHelp
-%{_libdir}/cmake/Qt%{api}Help
+%{_qt_libdir}/libQt%{api}Help.so
+%{_qt_libdir}/libQt%{api}Help.prl
+%{_qt_libdir}/cmake/Qt%{api}Help
+%{_qt_libdir}/pkgconfig/Qt%{api}Help.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Help.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -987,7 +1106,10 @@ Requires:	%{name}-qtmultimedia-i18n = %{EVRD}
 Qt Multimedia libraries.
 
 %files -n %{qtmultimedia}
+%{_qt_libdir}/libQt%{api}Multimedia.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Multimedia.so.%{major}*
+%endif
 %{_qt_plugindir}/audio
 %{_qt_plugindir}/mediaservice
 %{_qt_plugindir}/playlistformats
@@ -1003,12 +1125,15 @@ Requires:	%{qtmultimedia} = %{EVRD}
 Development files for Qt Multimedia.
 
 %files -n %{qtmultimediad}
-%{_libdir}/libQt%{api}Multimedia.so
-%{_libdir}/libQt%{api}Multimedia.prl
-%{_libdir}/pkgconfig/Qt%{api}Multimedia.pc
 %{_qt_includedir}/QtMultimedia
-%{_libdir}/cmake/Qt%{api}Multimedia
 %{_qt_includedir}/QtMultimediaQuick_p
+%{_qt_libdir}/libQt%{api}Multimedia.so
+%{_qt_libdir}/libQt%{api}Multimedia.prl
+%{_qt_libdir}/cmake/Qt%{api}Multimedia
+%{_qt_libdir}/pkgconfig/Qt%{api}Multimedia.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Multimedia.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1039,7 +1164,10 @@ Group:		System/Libraries
 Runtime support library for the Qt Multimedia Quick module.
 
 %files -n %{qtmultimediaquick_p}
+%{_qt_libdir}/libQt%{api}MultimediaQuick_p.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}MultimediaQuick_p.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1051,7 +1179,10 @@ Group:		System/Libraries
 Qt Multimedia Widgets library.
 
 %files -n %{qtmultimediawidgets}
+%{_qt_libdir}/libQt%{api}MultimediaWidgets.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}MultimediaWidgets.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1066,11 +1197,14 @@ Requires:	%{qtwidgetsd} = %{EVRD}
 Development files for the Qt Multimedia Widgets library.
 
 %files -n %{qtmultimediawidgetsd}
-%{_libdir}/libQt%{api}MultimediaWidgets.so
-%{_libdir}/libQt%{api}MultimediaWidgets.prl
-%{_libdir}/pkgconfig/Qt%{api}MultimediaWidgets.pc
 %{_qt_includedir}/QtMultimediaWidgets
-%{_libdir}/cmake/Qt%{api}MultimediaWidgets
+%{_qt_libdir}/libQt%{api}MultimediaWidgets.so
+%{_qt_libdir}/libQt%{api}MultimediaWidgets.prl
+%{_qt_libdir}/cmake/Qt%{api}MultimediaWidgets
+%{_qt_libdir}/pkgconfig/Qt%{api}MultimediaWidgets.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}MultimediaWidgets.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1082,7 +1216,10 @@ Group:		System/Libraries
 QML runtime support library.
 
 %files -n %{qtqml}
+%{_qt_libdir}/libQt%{api}Qml.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Qml.so.%{major}*
+%endif
 %dir %{_qt_prefix}/qml
 %dir %{_qt_prefix}/qml/Qt
 %dir %{_qt_prefix}/qml/Qt/labs
@@ -1105,14 +1242,18 @@ Requires:	%{qtqml} = %{EVRD}
 Development files for the Qt QML library.
 
 %files -n %{qtqmld}
-%{_libdir}/libQt%{api}Qml.so
-%{_libdir}/libQt%{api}Qml.prl
-%{_libdir}/pkgconfig/Qt%{api}Qml.pc
 %{_qt_includedir}/QtQml
-%{_libdir}/cmake/Qt%{api}Qml
-%{_libdir}/libQt%{api}QmlDevTools.a
-%{_libdir}/libQt%{api}QmlDevTools.prl
+%{_qt_libdir}/libQt%{api}Qml.so
+%{_qt_libdir}/libQt%{api}Qml.prl
+%{_qt_libdir}/libQt%{api}QmlDevTools.a
+%{_qt_libdir}/libQt%{api}QmlDevTools.prl
+%{_qt_libdir}/cmake/Qt%{api}Qml
+%{_qt_libdir}/pkgconfig/Qt%{api}Qml.pc
+%{_qt_libdir}/pkgconfig/Qt%{api}QmlDevTools.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Qml.pc
 %{_libdir}/pkgconfig/Qt%{api}QmlDevTools.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1125,7 +1266,10 @@ Requires:	%{name}-qtquick-i18n = %{EVRD}
 Runtime library for Qt Quick.
 
 %files -n %{qtquick}
+%{_qt_libdir}/libQt%{api}Quick.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Quick.so.%{major}*
+%endif
 %dir %{_qt_importdir}
 %dir %{_qt_importdir}/Qt
 %dir %{_qt_importdir}/Qt/labs
@@ -1148,11 +1292,14 @@ Requires:	%{qtquick} = %{EVRD}
 Development files for Qt Quick.
 
 %files -n %{qtquickd}
-%{_libdir}/libQt%{api}Quick.so
-%{_libdir}/libQt%{api}Quick.prl
-%{_libdir}/pkgconfig/Qt%{api}Quick.pc
 %{_qt_includedir}/QtQuick
-%{_libdir}/cmake/Qt%{api}Quick
+%{_qt_libdir}/libQt%{api}Quick.so
+%{_qt_libdir}/libQt%{api}Quick.prl
+%{_qt_libdir}/cmake/Qt%{api}Quick
+%{_qt_libdir}/pkgconfig/Qt%{api}Quick.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Quick.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1183,7 +1330,10 @@ Group:		System/Libraries
 Runtime library for Qt Quick's particle engine.
 
 %files -n %{qtquickparticles}
+%{_qt_libdir}/libQt%{api}QuickParticles.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}QuickParticles.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1196,10 +1346,13 @@ Requires:	%{qtquickparticles} = %{EVRD}
 Development files for Qt Quick's particle engine.
 
 %files -n %{qtquickparticlesd}
-%{_libdir}/libQt%{api}QuickParticles.so
-%{_libdir}/libQt%{api}QuickParticles.prl
-%{_libdir}/pkgconfig/Qt%{api}QuickParticles.pc
 %{_qt_includedir}/QtQuickParticles
+%{_qt_libdir}/libQt%{api}QuickParticles.so
+%{_qt_libdir}/libQt%{api}QuickParticles.prl
+%{_qt_libdir}/pkgconfig/Qt%{api}QuickParticles.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}QuickParticles.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1211,7 +1364,10 @@ Group:		System/Libraries
 Qt Quick unit test module.
 
 %files -n %{qtquicktest}
+%{_qt_libdir}/libQt%{api}QuickTest.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}QuickTest.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1224,11 +1380,14 @@ Requires:	%{qtquicktest} = %{EVRD}
 Development files for Qt Quick's unit test module.
 
 %files -n %{qtquicktestd}
-%{_libdir}/libQt%{api}QuickTest.so
-%{_libdir}/libQt%{api}QuickTest.prl
-%{_libdir}/pkgconfig/Qt%{api}QuickTest.pc
 %{_qt_includedir}/QtQuickTest
-%{_libdir}/cmake/Qt%{api}QuickTest
+%{_qt_libdir}/libQt%{api}QuickTest.so
+%{_qt_libdir}/libQt%{api}QuickTest.prl
+%{_qt_libdir}/cmake/Qt%{api}QuickTest
+%{_qt_libdir}/pkgconfig/Qt%{api}QuickTest.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}QuickTest.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1241,7 +1400,10 @@ Requires:	%{name}-qtscript-i18n = %{EVRD}
 Qt Script runtime library.
 
 %files -n %{qtscript}
+%{_qt_libdir}/libQt%{api}Script.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Script.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1254,11 +1416,14 @@ Requires:	%{qtscript} = %{EVRD}
 Development files for Qt Script.
 
 %files -n %{qtscriptd}
-%{_libdir}/libQt%{api}Script.so
-%{_libdir}/libQt%{api}Script.prl
-%{_libdir}/pkgconfig/Qt%{api}Script.pc
 %{_qt_includedir}/QtScript
-%{_libdir}/cmake/Qt%{api}Script
+%{_qt_libdir}/libQt%{api}Script.so
+%{_qt_libdir}/libQt%{api}Script.prl
+%{_qt_libdir}/cmake/Qt%{api}Script
+%{_qt_libdir}/pkgconfig/Qt%{api}Script.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Script.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1289,7 +1454,10 @@ Group:		System/Libraries
 Qt Script tools library.
 
 %files -n %{qtscripttools}
+%{_qt_libdir}/libQt%{api}ScriptTools.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}ScriptTools.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1302,11 +1470,14 @@ Requires:	%{qtscripttools} = %{EVRD}
 Development files for Qt Script tools.
 
 %files -n %{qtscripttoolsd}
-%{_libdir}/libQt%{api}ScriptTools.so
-%{_libdir}/libQt%{api}ScriptTools.prl
-%{_libdir}/pkgconfig/Qt%{api}ScriptTools.pc
 %{_qt_includedir}/QtScriptTools
-%{_libdir}/cmake/Qt%{api}ScriptTools
+%{_qt_libdir}/libQt%{api}ScriptTools.so
+%{_qt_libdir}/libQt%{api}ScriptTools.prl
+%{_qt_libdir}/cmake/Qt%{api}ScriptTools
+%{_qt_libdir}/pkgconfig/Qt%{api}ScriptTools.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}ScriptTools.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1318,7 +1489,10 @@ Group:		System/Libraries
 Qt SVG rendering engine.
 
 %files -n %{qtsvg}
+%{_qt_libdir}/libQt%{api}Svg.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Svg.so.%{major}*
+%endif
 %{_qt_plugindir}/iconengines/libqsvgicon.so
 
 #----------------------------------------------------------------------------
@@ -1332,11 +1506,14 @@ Requires:	%{qtsvg} = %{EVRD}
 Development files for Qt's SVG rendering engine.
 
 %files -n %{qtsvgd}
-%{_libdir}/libQt%{api}Svg.so
-%{_libdir}/libQt%{api}Svg.prl
-%{_libdir}/pkgconfig/Qt%{api}Svg.pc
 %{_qt_includedir}/QtSvg
-%{_libdir}/cmake/Qt%{api}Svg
+%{_qt_libdir}/libQt%{api}Svg.so
+%{_qt_libdir}/libQt%{api}Svg.prl
+%{_qt_libdir}/cmake/Qt%{api}Svg
+%{_qt_libdir}/pkgconfig/Qt%{api}Svg.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Svg.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1350,7 +1527,10 @@ Obsoletes:	%{_lib}qt5v85 < 5.1.0-8
 Qt version of the V8 JavaScript engine.
 
 %files -n %{qtv8}
+%{_qt_libdir}/libQt%{api}V8.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}V8.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1363,10 +1543,13 @@ Requires:	%{qtv8} = %{EVRD}
 Development files for the Qt version of the V8 JavaScript engine.
 
 %files -n %{qtv8d}
-%{_libdir}/libQt%{api}V8.so
-%{_libdir}/libQt%{api}V8.prl
-%{_libdir}/pkgconfig/Qt%{api}V8.pc
 %{_qt_includedir}/QtV8
+%{_qt_libdir}/libQt%{api}V8.so
+%{_qt_libdir}/libQt%{api}V8.prl
+%{_qt_libdir}/pkgconfig/Qt%{api}V8.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}V8.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1381,7 +1564,10 @@ BuildRequires:	icu-devel
 Qt WebKit web browsing library.
 
 %files -n %{qtwebkit}
+%{_qt_libdir}/libQt%{api}WebKit.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}WebKit.so.%{major}*
+%endif
 %{_qt_importdir}/QtWebKit
 %{_qt_prefix}/qml/QtWebKit
 %{_qt_libexecdir}/QtWebProcess
@@ -1398,11 +1584,14 @@ Requires:	%{qtwebkit} = %{EVRD}
 Development files for the Qt WebKit web browsing library.
 
 %files -n %{qtwebkitd}
-%{_libdir}/libQt%{api}WebKit.so
-%{_libdir}/libQt%{api}WebKit.prl
-%{_libdir}/pkgconfig/Qt%{api}WebKit.pc
 %{_qt_includedir}/QtWebKit
-%{_libdir}/cmake/Qt%{api}WebKit
+%{_qt_libdir}/libQt%{api}WebKit.so
+%{_qt_libdir}/libQt%{api}WebKit.prl
+%{_qt_libdir}/cmake/Qt%{api}WebKit
+%{_qt_libdir}/pkgconfig/Qt%{api}WebKit.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}WebKit.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1414,7 +1603,10 @@ Group:		System/Libraries
 Qt WebKit Widgets library.
 
 %files -n %{qtwebkitwidgets}
+%{_qt_libdir}/libQt%{api}WebKitWidgets.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}WebKitWidgets.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1429,11 +1621,14 @@ Requires:	%{qtwidgetsd} = %{EVRD}
 Development files for the Qt WebKit Widgets library.
 
 %files -n %{qtwebkitwidgetsd}
-%{_libdir}/libQt%{api}WebKitWidgets.so
-%{_libdir}/libQt%{api}WebKitWidgets.prl
-%{_libdir}/pkgconfig/Qt%{api}WebKitWidgets.pc
 %{_qt_includedir}/QtWebKitWidgets
-%{_libdir}/cmake/Qt%{api}WebKitWidgets
+%{_qt_libdir}/libQt%{api}WebKitWidgets.so
+%{_qt_libdir}/libQt%{api}WebKitWidgets.prl
+%{_qt_libdir}/cmake/Qt%{api}WebKitWidgets
+%{_qt_libdir}/pkgconfig/Qt%{api}WebKitWidgets.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}WebKitWidgets.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1445,7 +1640,10 @@ Group:		System/Libraries
 Qt X11 Extras library.
 
 %files -n %{qtx11extras}
+%{_qt_libdir}/libQt%{api}X11Extras.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}X11Extras.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1459,10 +1657,13 @@ Development files for the QtX11Extras library.
 
 %files -n %{qtx11extrasd}
 %{_qt_includedir}/QtX11Extras
-%{_libdir}/cmake/Qt%{api}X11Extras
-%{_libdir}/libQt%{api}X11Extras.so
-%{_libdir}/libQt%{api}X11Extras.prl
+%{_qt_libdir}/libQt%{api}X11Extras.so
+%{_qt_libdir}/libQt%{api}X11Extras.prl
+%{_qt_libdir}/cmake/Qt%{api}X11Extras
+%{_qt_libdir}/pkgconfig/Qt%{api}X11Extras.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/pkgconfig/Qt%{api}X11Extras.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1476,7 +1677,10 @@ Requires:	%{name}-qtxmlpatterns-i18n = %{EVRD}
 Qt XSLT engine.
 
 %files -n %{qtxmlpatterns}
+%{_qt_libdir}/libQt%{api}XmlPatterns.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}XmlPatterns.so.%{major}*
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1490,11 +1694,14 @@ Requires:	%{qtxmld} = %{EVRD}
 Development files for Qt's XSLT engine.
 
 %files -n %{qtxmlpatternsd}
-%{_libdir}/libQt%{api}XmlPatterns.so
-%{_libdir}/libQt%{api}XmlPatterns.prl
-%{_libdir}/pkgconfig/Qt%{api}XmlPatterns.pc
 %{_qt_includedir}/QtXmlPatterns
-%{_libdir}/cmake/Qt%{api}XmlPatterns
+%{_qt_libdir}/libQt%{api}XmlPatterns.so
+%{_qt_libdir}/libQt%{api}XmlPatterns.prl
+%{_qt_libdir}/cmake/Qt%{api}XmlPatterns
+%{_qt_libdir}/pkgconfig/Qt%{api}XmlPatterns.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}XmlPatterns.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -1663,7 +1870,7 @@ They are not required for the normal X11 output.
 
 # FIXME re-add when Qt/E is fixed
 #%%files fonts
-#%%{_libdir}/fonts
+#%%{_qt_libdir}/fonts
 
 #----------------------------------------------------------------------------
 
@@ -1719,7 +1926,7 @@ Tools for creating and updating Qt Linguist translation files.
 %{_qt_bindir}/lconvert
 %{_qt_bindir}/lrelease
 %{_qt_bindir}/lupdate
-%{_libdir}/cmake/Qt%{api}LinguistTools
+%{_qt_libdir}/cmake/Qt%{api}LinguistTools
 
 #----------------------------------------------------------------------------
 
@@ -1832,10 +2039,11 @@ Tools for Qt 5.
 
 %patch0 -p1
 
+%build
 ./configure \
 	-prefix %{_qt_prefix} \
 	-bindir %{_qt_bindir} \
-	-libdir %{_libdir} \
+	-libdir %{_qt_libdir} \
 	-datadir %{_qt_datadir} \
 	-docdir %{_qt_docdir} \
 	-headerdir %{_qt_includedir} \
@@ -1914,7 +2122,6 @@ Tools for Qt 5.
 # FIXME we should also build the KMS and EGLFS output plugins (-kms -eglfs), but
 # they require OpenGL ES v2 -- while we typically want to build Desktop GL bits
 
-%build
 %make STRIP=true
 
 %if %{with docs}
@@ -1935,13 +2142,22 @@ rm -f %{buildroot}%{_qt_bindir}/syncqt.pl
 rm -f %{buildroot}%{_qt_bindir}/qtmodule-configtests
 # Let's not ship -devel files for private libraries... At least not until
 # applications teach us otherwise
-rm -f %{buildroot}%{_libdir}/libqgsttools_p.so %{buildroot}%{_libdir}/libqgsttools_p.prl
-rm -f %{buildroot}%{_libdir}/libQt%{api}MultimediaQuick_p.so %{buildroot}%{_libdir}/libQt%{api}MultimediaQuick_p.prl %{buildroot}%{_libdir}/pkgconfig/Qt%{api}MultimediaQuick_p.pc
+rm -f %{buildroot}%{_qt_libdir}/libqgsttools_p.so %{buildroot}%{_qt_libdir}/libqgsttools_p.prl
+rm -f %{buildroot}%{_qt_libdir}/libQt%{api}MultimediaQuick_p.so %{buildroot}%{_qt_libdir}/libQt%{api}MultimediaQuick_p.prl %{buildroot}%{_qt_libdir}/pkgconfig/Qt%{api}MultimediaQuick_p.pc
 # qtconfig doesn't exist anymore - we don't need its translations
 rm -f %{buildroot}%{_qt_translationsdir}/qtconfig_*.qm
 # Let's make life easier for packagers
 mkdir -p %{buildroot}%{_bindir}
 ln -s ../%{_lib}/qt%{api}/bin/qmake %{buildroot}%{_bindir}/qmake-qt%{api}
+
+%if "%{_qt_libdir}" != "%{_libdir}"
+pushd %{buildroot}%{_libdir}
+ln -s ../%{_lib}/qt%{api}/%{_lib}/*.so.* .
+mkdir pkgconfig
+cd pkgconfig
+ln -s ../../%{_lib}/qt%{api}/%{_lib}/pkgconfig/*.pc .
+popd
+%endif
 
 # Fix some wrong permissions
 find %{buildroot} -type f -perm -0755 -name "*.png" |xargs --no-run-if-empty chmod 0644
