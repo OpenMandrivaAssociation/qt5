@@ -103,7 +103,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.gz
-Release:	10.2
+Release:	11
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
@@ -114,6 +114,8 @@ Source3:	rosa-designer-qt5.desktop
 Source4:	rosa-linguist-qt5.desktop
 Source100:	%{name}.rpmlintrc
 Patch0:		qt-everywhere-opensource-src-5.1.0-cmake.patch
+# See http://bugs.rosalinux.ru/show_bug.cgi?id=2367
+Patch1:		qt-everywhere-opensource-src-5.1.0-cmake-linguist.patch
 BuildRequires:	jpeg-devel
 BuildRequires:	pkgconfig(libpng)
 BuildRequires:	pkgconfig(zlib)
@@ -2038,6 +2040,9 @@ Tools for Qt 5.
 %endif
 
 %patch0 -p1
+%if "%{_qt_libdir}" == "%{_libdir}"
+%patch1 -p1
+%endif
 
 %build
 ./configure \
