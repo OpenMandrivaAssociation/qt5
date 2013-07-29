@@ -22,7 +22,7 @@
     QMAKE_LFLAGS="%{?ldflags}"
 
 %cmake_qt5 \
-  QTDIR="%" ; export QTDIR ; \
+  QTDIR="%{_libdir}/qt5" ; export QTDIR ; \
   PATH="%{_qt5_bindir}:$PATH" ; export PATH ; \
   CPPFLAGS="${CPPFLAGS:-%optflags -DPIC -fPIC}" ; export CPPFLAGS ; \
   %setup_compile_flags \
