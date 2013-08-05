@@ -103,7 +103,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.gz
-Release:	11
+Release:	12
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
@@ -2121,6 +2121,9 @@ Tools for Qt 5.
 	-glib \
 	-no-separate-debug-info \
 	-no-strip \
+%if "%{_qt_libdir}" == "%{_libdir}"
+	-no-rpath \
+%endif
 	-v \
 	-I %{_includedir}/iodbc
 
