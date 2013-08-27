@@ -103,15 +103,15 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.gz
-Release:	12
+Release:	13
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
 %endif
 Source1:	qt5.macros
-Source2:	rosa-assistant-qt5.desktop
-Source3:	rosa-designer-qt5.desktop
-Source4:	rosa-linguist-qt5.desktop
+Source2:	rosa-assistant-qt%{api}.desktop
+Source3:	rosa-designer-qt%{api}.desktop
+Source4:	rosa-linguist-qt%{api}.desktop
 Source100:	%{name}.rpmlintrc
 Patch0:		qt-everywhere-opensource-src-5.1.0-cmake.patch
 # See http://bugs.rosalinux.ru/show_bug.cgi?id=2367
@@ -263,7 +263,9 @@ Development files for version 5 of the QtCore library.
 
 %files -n %{qtcored}
 %doc %{_qt_docdir}/global
+%{_bindir}/moc-qt%{api}
 %{_qt_bindir}/moc
+%{_bindir}/rcc-qt%{api}
 %{_qt_bindir}/rcc
 %{_qt_includedir}/QtCore
 %{_qt_libdir}/libQt%{api}Core.so
@@ -363,7 +365,9 @@ Development files for version 5 of the QtDBus library.
 
 %files -n %{qtdbusd}
 %{_qt_bindir}/qdbuscpp2xml
+%{_bindir}/qdbuscpp2xml-qt%{api}
 %{_qt_bindir}/qdbusxml2cpp
+%{_bindir}/qdbusxml2cpp-qt%{api}
 %{_qt_includedir}/QtDBus
 %{_qt_libdir}/libQt%{api}DBus.so
 %{_qt_libdir}/libQt%{api}DBus.prl
@@ -408,6 +412,7 @@ Development files for version 5 of the QtGui library.
 
 %files -n %{qtguid}
 %{_qt_bindir}/uic
+%{_bindir}/uic-qt%{api}
 %{_qt_includedir}/QtGui
 %{_qt_includedir}/QtPlatformSupport
 %{_qt_includedir}/QtUiTools
@@ -1760,7 +1765,7 @@ Requires:	%{qtv8d} = %{EVRD}
 Requires:	%{qtwebkitd} = %{EVRD}
 Requires:	%{qtwebkitwidgetsd} = %{EVRD}
 Requires:	%{qtxmlpatternsd} = %{EVRD}
-Requires:	qmake5 = %{EVRD}
+Requires:	qmake%{api} = %{EVRD}
 Requires:	%{name}-macros = %{EVRD}
 
 %description devel
@@ -1783,7 +1788,7 @@ Qt help system.
 
 %files assistant
 %{_qt_bindir}/assistant
-%{_datadir}/applications/rosa-assistant-qt5.desktop
+%{_datadir}/applications/rosa-assistant-qt%{api}.desktop
 %lang(cs) %{_qt_translationsdir}/assistant_cs.qm
 %lang(da) %{_qt_translationsdir}/assistant_da.qm
 %lang(de) %{_qt_translationsdir}/assistant_de.qm
@@ -1813,7 +1818,7 @@ Qt interface design tool.
 
 %files designer
 %{_qt_bindir}/designer
-%{_datadir}/applications/rosa-designer-qt5.desktop
+%{_datadir}/applications/rosa-designer-qt%{api}.desktop
 %lang(cs) %{_qt_translationsdir}/designer_cs.qm
 %lang(de) %{_qt_translationsdir}/designer_de.qm
 %lang(fr) %{_qt_translationsdir}/designer_fr.qm
@@ -1886,7 +1891,7 @@ Translation tool for Qt based applications.
 
 %files linguist
 %{_qt_bindir}/linguist
-%{_datadir}/applications/rosa-linguist-qt5.desktop
+%{_datadir}/applications/rosa-linguist-qt%{api}.desktop
 %lang(cs) %{_qt_translationsdir}/linguist_cs.qm
 %lang(de) %{_qt_translationsdir}/linguist_de.qm
 %lang(fr) %{_qt_translationsdir}/linguist_fr.qm
@@ -1928,6 +1933,9 @@ Tools for creating and updating Qt Linguist translation files.
 %{_qt_bindir}/lconvert
 %{_qt_bindir}/lrelease
 %{_qt_bindir}/lupdate
+%{_bindir}/lconvert-qt%{api}
+%{_bindir}/lrelease-qt%{api}
+%{_bindir}/lupdate-qt%{api}
 %{_qt_libdir}/cmake/Qt%{api}LinguistTools
 
 #----------------------------------------------------------------------------
@@ -2156,7 +2164,9 @@ rm -f %{buildroot}%{_qt_libdir}/libQt%{api}MultimediaQuick_p.so %{buildroot}%{_q
 rm -f %{buildroot}%{_qt_translationsdir}/qtconfig_*.qm
 # Let's make life easier for packagers
 mkdir -p %{buildroot}%{_bindir}
-ln -s ../%{_lib}/qt%{api}/bin/qmake %{buildroot}%{_bindir}/qmake-qt%{api}
+for i in qmake moc uic rcc qdbuscpp2xml qdbusxml2cpp lrelease lupdate lconvert; do
+	ln -s ../%{_lib}/qt%{api}/bin/$i %{buildroot}%{_bindir}/$i-qt%{api}
+done
 
 %if "%{_qt_libdir}" != "%{_libdir}"
 pushd %{buildroot}%{_libdir}
