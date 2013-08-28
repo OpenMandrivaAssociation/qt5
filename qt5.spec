@@ -97,13 +97,13 @@
 
 Summary:	Version 5 of the Qt toolkit
 Name:		qt5
-Version:	5.1.0
+Version:	5.1.1
 License:	LGPLv3+
 Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
-Source0:	qt-everywhere-opensource-src-%{version}.tar.gz
-Release:	13
+Source0:	qt-everywhere-opensource-src-%{version}.tar.xz
+Release:	1
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
