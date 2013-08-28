@@ -113,7 +113,6 @@ Source2:	rosa-assistant-qt%{api}.desktop
 Source3:	rosa-designer-qt%{api}.desktop
 Source4:	rosa-linguist-qt%{api}.desktop
 Source100:	%{name}.rpmlintrc
-Patch0:		qt-everywhere-opensource-src-5.1.0-cmake.patch
 # See http://bugs.rosalinux.ru/show_bug.cgi?id=2367
 Patch1:		qt-everywhere-opensource-src-5.1.0-cmake-linguist.patch
 BuildRequires:	jpeg-devel
@@ -2047,7 +2046,6 @@ Tools for Qt 5.
 %setup -q -n qt-everywhere-opensource-src-%{version}
 %endif
 
-%patch0 -p1
 %if "%{_qt_libdir}" == "%{_libdir}"
 %patch1 -p1
 %endif
