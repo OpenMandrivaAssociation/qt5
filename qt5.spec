@@ -2083,8 +2083,15 @@ Tools for Qt 5.
 	-javascript-jit \
 %ifarch x86_64
 	-platform linux-g++-64 \
-%else
+%endif
+%ifarch %{ix86}
 	-platform linux-g++-32 \
+%endif
+# replace it when we get
+# to gcc 4.8
+# with linux-g++-32
+%ifarch %{arm}
+	-platform linux-g++ \
 %endif
 	-system-zlib \
 	-system-libpng \
