@@ -2087,9 +2087,6 @@ Tools for Qt 5.
 %ifarch %{ix86}
 	-platform linux-g++-32 \
 %endif
-# replace it when we get
-# to gcc 4.8
-# with linux-g++-32
 %ifarch %{arm}
 	-platform linux-g++ \
 %endif
