@@ -103,7 +103,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	1.1
+Release:	2
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
@@ -261,7 +261,7 @@ Requires:	%{qtcore} = %{EVRD}
 Development files for version 5 of the QtCore library.
 
 %files -n %{qtcored}
-%doc %{_qt_docdir}/global
+%{_qt_docdir}/global
 %{_bindir}/moc-qt%{api}
 %{_qt_bindir}/moc
 %{_bindir}/rcc-qt%{api}
