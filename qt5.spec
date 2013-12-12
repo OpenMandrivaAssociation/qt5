@@ -21,6 +21,8 @@
 %define _qt_translationsdir %{_qt_datadir}/translations
 
 # qt base components
+%define qtbluetooth %mklibname qt%{api}bluetooth %{major}
+%define qtbluetoothd %mklibname qt%{api}bluetooth -d
 %define qtbootstrapd %mklibname qt%{api}bootstrap -d
 %define qtconcurrent %mklibname qt%{api}concurrent %{major}
 %define qtconcurrentd %mklibname qt%{api}concurrent -d
@@ -32,8 +34,12 @@
 %define qtguid %mklibname qt%{api}gui -d
 %define qtnetwork %mklibname qt%{api}network %{major}
 %define qtnetworkd %mklibname qt%{api}network -d
+%define qtnfc %mklibname qt%{api}nfc %{major}
+%define qtnfcd %mklibname qt%{api}nfc -d
 %define qtopengl %mklibname qt%{api}opengl %{major}
 %define qtopengld %mklibname qt%{api}opengl -d
+%define qtpositioning %mklibname qt%{api}positioning %{major}
+%define qtpositioningd %mklibname qt%{api}positioning -d
 %define qtprintsupport %mklibname qt%{api}printsupport %{major}
 %define qtprintsupportd %mklibname qt%{api}printsupport -d
 %define qtsensors %mklibname qt%{api}sensors %{major}
@@ -82,8 +88,6 @@
 %define qtscripttoolsd %mklibname qt%{api}scripttools -d
 %define qtsvg %mklibname qt%{api}svg %{major}
 %define qtsvgd %mklibname qt%{api}svg -d
-%define qtv8 %mklibname qt%{api}v8_ %{major}
-%define qtv8d %mklibname qt%{api}v8 -d
 %define qtwebkit %mklibname qt%{api}webkit %{major}
 %define qtwebkitd %mklibname qt%{api}webkit -d
 %define qtwebkitwidgets %mklibname qt%{api}webkitwidgets %{major}
@@ -93,17 +97,17 @@
 
 %bcond_without directfb
 # Requires qdoc5 and qt5-tools to build
-%bcond_without docs
+%bcond_with docs
 
 Summary:	Version 5 of the Qt toolkit
 Name:		qt5
-Version:	5.1.1
+Version:	5.2.0
 License:	LGPLv3+
 Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	8
+Release:	0.1
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
@@ -114,7 +118,9 @@ Source3:	rosa-designer-qt%{api}.desktop
 Source4:	rosa-linguist-qt%{api}.desktop
 Source100:	%{name}.rpmlintrc
 # See http://bugs.rosalinux.ru/show_bug.cgi?id=2367
-Patch1:		qt-everywhere-opensource-src-5.1.0-cmake-linguist.patch
+Patch1:		qt-everywhere-opensource-src-5.2.0-cmake-linguist.patch
+# Build static library used in example to avoid missing dependency
+Patch2:		qt-everywhere-opensource-src-5.2.0-staticgrue.patch
 BuildRequires:	jpeg-devel
 BuildRequires:	pkgconfig(libpng)
 BuildRequires:	pkgconfig(zlib)
@@ -181,6 +187,42 @@ Version 5 of the Qt toolkit.
 # qt base components
 #----------------------------------------------------------------------------
 
+%package -n %{qtbluetooth}
+Summary:	Qt Bluetooth library
+Group:		System/Libraries
+
+%description -n %{qtbluetooth}
+Qt Bluetooth library.
+
+%files -n %{qtbluetooth}
+%{_qt_libdir}/libQt%{api}Bluetooth.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}Bluetooth.so.%{major}*
+%endif
+%{_qt_prefix}/qml/QtBluetooth
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtbluetoothd}
+Summary:	Development files for version 5 of the QtBluetooth library
+Group:		Development/KDE and Qt
+Requires:	%{qtbluetooth} = %{EVRD}
+
+%description -n %{qtbluetoothd}
+Development files for version 5 of the QtBluetooth library.
+
+%files -n %{qtbluetoothd}
+%{_qt_includedir}/QtBluetooth
+%{_qt_libdir}/libQt%{api}Bluetooth.so
+%{_qt_libdir}/libQt%{api}Bluetooth.prl
+%{_qt_libdir}/cmake/Qt%{api}Bluetooth
+%{_qt_libdir}/pkgconfig/Qt%{api}Bluetooth.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Bluetooth.pc
+%endif
+
+#----------------------------------------------------------------------------
+
 %package -n %{qtbootstrapd}
 Summary:	Development files for version 5 if the QtBootstrap library
 Group:		Development/KDE and Qt
@@ -239,6 +281,8 @@ Development files for version 5 of the QtConcurrent library.
 Summary:	Qt Core library
 Group:		System/Libraries
 Requires:	%{name}-qtcore-i18n = %{EVRD}
+Obsoletes:	%{_lib}qt5v85 < 5.1.0-8
+Obsoletes:	%{_lib}qt5v8_5 < 5.2.0
 
 %description -n %{qtcore}
 Qt Core library.
@@ -256,6 +300,7 @@ Qt Core library.
 Summary:	Development files for version 5 of the QtCore library
 Group:		Development/KDE and Qt
 Requires:	%{qtcore} = %{EVRD}
+Obsoletes:	%{_lib}qt5v8-devel < 5.2.0
 
 %description -n %{qtcored}
 Development files for version 5 of the QtCore library.
@@ -303,6 +348,7 @@ Qt Core translations.
 %lang(gl) %{_qt_translationsdir}/qt_gl.qm
 %lang(he) %{_qt_translationsdir}/qt_he.qm
 %lang(hu) %{_qt_translationsdir}/qt_hu.qm
+%lang(it) %{_qt_translationsdir}/qt_it.qm
 %lang(ja) %{_qt_translationsdir}/qt_ja.qm
 %lang(ko) %{_qt_translationsdir}/qt_ko.qm
 %lang(lt) %{_qt_translationsdir}/qt_lt.qm
@@ -333,6 +379,8 @@ Qt Core translations.
 %lang(cs) %{_qt_translationsdir}/qtbase_cs.qm
 %lang(de) %{_qt_translationsdir}/qtbase_de.qm
 %lang(hu) %{_qt_translationsdir}/qtbase_hu.qm
+%lang(it) %{_qt_translationsdir}/qtbase_it.qm
+%lang(ja) %{_qt_translationsdir}/qtbase_ja.qm
 %lang(ru) %{_qt_translationsdir}/qtbase_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtbase_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtbase_uk.qm
@@ -507,7 +555,6 @@ X11 output driver for QtGui v5.
 %files -n %{qtgui}-x11
 %{_qt_plugindir}/platforms/libqxcb.so
 %{_qt_plugindir}/platforminputcontexts/libibusplatforminputcontextplugin.so
-%{_qt_plugindir}/platforminputcontexts/libmaliitplatforminputcontextplugin.so
 %{_qt_plugindir}/platforminputcontexts/libcomposeplatforminputcontextplugin.so
 
 #----------------------------------------------------------------------------
@@ -544,6 +591,46 @@ Development files for version 5 of the QtNetwork library.
 %{_qt_libdir}/pkgconfig/Qt%{api}Network.pc
 %if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/pkgconfig/Qt%{api}Network.pc
+%endif
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtnfc}
+Summary:	Qt NFC library
+Group:		System/Libraries
+
+%description -n %{qtnfc}
+Qt NFC library.
+
+NFC is an extremely short-range (less than 20 centimeters) wireless technology
+and has a maximum transfer rate of 424 kbit/s. NFC is ideal for transferring
+small packets of data when two devices are touched together.
+
+%files -n %{qtnfc}
+%{_qt_libdir}/libQt%{api}Nfc.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}Nfc.so.%{major}*
+%endif
+%{_qt_prefix}/qml/QtNfc
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtnfcd}
+Summary:	Development files for version 5 of the QtNfc library
+Group:		Development/KDE and Qt
+Requires:	%{qtnfc} = %{EVRD}
+
+%description -n %{qtnfcd}
+Development files for version 5 of the QtNfc library.
+
+%files -n %{qtnfcd}
+%{_qt_includedir}/QtNfc
+%{_qt_libdir}/libQt%{api}Nfc.so
+%{_qt_libdir}/libQt%{api}Nfc.prl
+%{_qt_libdir}/cmake/Qt%{api}Nfc
+%{_qt_libdir}/pkgconfig/Qt%{api}Nfc.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Nfc.pc
 %endif
 
 #----------------------------------------------------------------------------
@@ -585,6 +672,49 @@ Development files for version 5 of the QtOpenGL library.
 %if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/pkgconfig/Qt%{api}OpenGL.pc
 %{_libdir}/pkgconfig/Qt%{api}OpenGLExtensions.pc
+%endif
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtpositioning}
+Summary:	Qt Positioning library
+Group:		System/Libraries
+
+%description -n %{qtpositioning}
+Qt Positioning library.
+
+The Qt Positioning API gives developers the ability to determine a position by
+using a variety of possible sources, including satellite, or wifi, or text
+file, and so on. That information can then be used to for example determine
+a position on a map. In addition satellite information can be retrieved and
+area based monitoring can be performed.
+
+%files -n %{qtpositioning}
+%{_qt_libdir}/libQt%{api}Positioning.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}Positioning.so.%{major}*
+%endif
+%{_qt_prefix}/qml/QtPositioning
+%{_qt_plugindir}/position
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtpositioningd}
+Summary:	Development files for version 5 of the QtPositioning library
+Group:		Development/KDE and Qt
+Requires:	%{qtpositioning} = %{EVRD}
+
+%description -n %{qtpositioningd}
+Development files for version 5 of the QtPositioning library.
+
+%files -n %{qtpositioningd}
+%{_qt_includedir}/QtPositioning
+%{_qt_libdir}/libQt%{api}Positioning.so
+%{_qt_libdir}/libQt%{api}Positioning.prl
+%{_qt_libdir}/cmake/Qt%{api}Positioning
+%{_qt_libdir}/pkgconfig/Qt%{api}Positioning.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Positioning.pc
 %endif
 
 #----------------------------------------------------------------------------
@@ -999,6 +1129,7 @@ Qt Declarative translations.
 
 %files qtdeclarative-i18n
 %lang(de) %{_qt_translationsdir}/qtdeclarative_de.qm
+%lang(ja) %{_qt_translationsdir}/qtdeclarative_ja.qm
 %lang(ru) %{_qt_translationsdir}/qtdeclarative_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtdeclarative_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtdeclarative_uk.qm
@@ -1163,6 +1294,8 @@ Qt Multimedia translations.
 %lang(cs) %{_qt_translationsdir}/qtmultimedia_cs.qm
 %lang(de) %{_qt_translationsdir}/qtmultimedia_de.qm
 %lang(hu) %{_qt_translationsdir}/qtmultimedia_hu.qm
+%lang(it) %{_qt_translationsdir}/qtmultimedia_it.qm
+%lang(ja) %{_qt_translationsdir}/qtmultimedia_ja.qm
 %lang(ru) %{_qt_translationsdir}/qtmultimedia_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtmultimedia_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtmultimedia_uk.qm
@@ -1237,6 +1370,7 @@ QML runtime support library.
 %dir %{_qt_prefix}/qml/Qt
 %dir %{_qt_prefix}/qml/Qt/labs
 %{_qt_prefix}/qml/Qt/labs/folderlistmodel
+%{_qt_prefix}/qml/Qt/labs/settings/
 %{_qt_prefix}/qml/QtAudioEngine
 %{_qt_prefix}/qml/QtGraphicalEffects
 %{_qt_prefix}/qml/QtMultimedia
@@ -1329,6 +1463,8 @@ Qt Quick translations.
 %lang(cs) %{_qt_translationsdir}/qtquick1_cs.qm
 %lang(de) %{_qt_translationsdir}/qtquick1_de.qm
 %lang(hu) %{_qt_translationsdir}/qtquick1_hu.qm
+%lang(it) %{_qt_translationsdir}/qtquick1_it.qm
+%lang(ja) %{_qt_translationsdir}/qtquick1_ja.qm
 %lang(ru) %{_qt_translationsdir}/qtquick1_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtquick1_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtquick1_uk.qm
@@ -1453,6 +1589,8 @@ Qt Script translations.
 %lang(cs) %{_qt_translationsdir}/qtscript_cs.qm
 %lang(de) %{_qt_translationsdir}/qtscript_de.qm
 %lang(hu) %{_qt_translationsdir}/qtscript_hu.qm
+%lang(it) %{_qt_translationsdir}/qtscript_it.qm
+%lang(ja) %{_qt_translationsdir}/qtscript_ja.qm
 %lang(ru) %{_qt_translationsdir}/qtscript_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtscript_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtscript_uk.qm
@@ -1526,42 +1664,6 @@ Development files for Qt's SVG rendering engine.
 %{_qt_libdir}/pkgconfig/Qt%{api}Svg.pc
 %if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/pkgconfig/Qt%{api}Svg.pc
-%endif
-
-#----------------------------------------------------------------------------
-
-%package -n %{qtv8}
-Summary:	Qt version of the V8 JavaScript engine
-Group:		System/Libraries
-Conflicts:	%{_lib}qt5v85 < 5.1.0-8
-Obsoletes:	%{_lib}qt5v85 < 5.1.0-8
-
-%description -n %{qtv8}
-Qt version of the V8 JavaScript engine.
-
-%files -n %{qtv8}
-%{_qt_libdir}/libQt%{api}V8.so.%{major}*
-%if "%{_qt_libdir}" != "%{_libdir}"
-%{_libdir}/libQt%{api}V8.so.%{major}*
-%endif
-
-#----------------------------------------------------------------------------
-
-%package -n %{qtv8d}
-Summary:	Development files for the Qt version of the V8 JavaScript engine
-Group:		Development/KDE and Qt
-Requires:	%{qtv8} = %{EVRD}
-
-%description -n %{qtv8d}
-Development files for the Qt version of the V8 JavaScript engine.
-
-%files -n %{qtv8d}
-%{_qt_includedir}/QtV8
-%{_qt_libdir}/libQt%{api}V8.so
-%{_qt_libdir}/libQt%{api}V8.prl
-%{_qt_libdir}/pkgconfig/Qt%{api}V8.pc
-%if "%{_qt_libdir}" != "%{_libdir}"
-%{_libdir}/pkgconfig/Qt%{api}V8.pc
 %endif
 
 #----------------------------------------------------------------------------
@@ -1731,6 +1833,8 @@ Qt XSLT engine translations.
 %lang(cs) %{_qt_translationsdir}/qtxmlpatterns_cs.qm
 %lang(de) %{_qt_translationsdir}/qtxmlpatterns_de.qm
 %lang(hu) %{_qt_translationsdir}/qtxmlpatterns_hu.qm
+%lang(it) %{_qt_translationsdir}/qtxmlpatterns_it.qm
+%lang(ja) %{_qt_translationsdir}/qtxmlpatterns_ja.qm
 %lang(ru) %{_qt_translationsdir}/qtxmlpatterns_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtxmlpatterns_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtxmlpatterns_uk.qm
@@ -1740,6 +1844,7 @@ Qt XSLT engine translations.
 %package devel
 Summary:	Meta-package for installing all Qt 5 development files
 Group:		Development/KDE and Qt
+Requires:	%{qtbluetoothd} = %{EVRD}
 Requires:	%{qtbootstrapd} = %{EVRD}
 Requires:	%{qtconcurrentd} = %{EVRD}
 Requires:	%{qtcored} = %{EVRD}
@@ -1747,6 +1852,7 @@ Requires:	%{qtdbusd} = %{EVRD}
 Requires:	%{qtguid} = %{EVRD}
 Requires:	%{qtnetworkd} = %{EVRD}
 Requires:	%{qtopengld} = %{EVRD}
+Requires:	%{qtpositioningd} = %{EVRD}
 Requires:	%{qtprintsupportd} = %{EVRD}
 Requires:	%{qtsensorsd} = %{EVRD}
 Requires:	%{qtsqld} = %{EVRD}
@@ -1760,6 +1866,7 @@ Requires:	%{qtdesignerd} = %{EVRD}
 Requires:	%{qthelpd} = %{EVRD}
 Requires:	%{qtmultimediad} = %{EVRD}
 Requires:	%{qtmultimediawidgetsd} = %{EVRD}
+Requires:	%{qtnfcd} = %{EVRD}
 Requires:	%{qtqmld} = %{EVRD}
 Requires:	%{qtquickd} = %{EVRD}
 Requires:	%{qtquickparticlesd} = %{EVRD}
@@ -1767,7 +1874,6 @@ Requires:	%{qtquicktestd} = %{EVRD}
 Requires:	%{qtscriptd} = %{EVRD}
 Requires:	%{qtscripttoolsd} = %{EVRD}
 Requires:	%{qtsvgd} = %{EVRD}
-Requires:	%{qtv8d} = %{EVRD}
 Requires:	%{qtwebkitd} = %{EVRD}
 Requires:	%{qtwebkitwidgetsd} = %{EVRD}
 Requires:	%{qtxmlpatternsd} = %{EVRD}
@@ -2009,8 +2115,10 @@ Group:		Development/KDE and Qt
 QML tools for Qt 5.
 
 %files qml-tools
+%{_qt_bindir}/qml
 %{_qt_bindir}/qml1plugindump
 %{_qt_bindir}/qmlbundle
+%{_qt_bindir}/qmlimportscanner
 %{_qt_bindir}/qmlmin
 %{_qt_bindir}/qmlplugindump
 %{_qt_bindir}/qmlprofiler
@@ -2019,6 +2127,7 @@ QML tools for Qt 5.
 %{_qt_bindir}/qmlviewer
 %lang(cs) %{_qt_translationsdir}/qmlviewer_cs.qm
 %lang(hu) %{_qt_translationsdir}/qmlviewer_hu.qm
+%lang(ja) %{_qt_translationsdir}/qmlviewer_ja.qm
 %lang(sk) %{_qt_translationsdir}/qmlviewer_sk.qm
 %lang(ru) %{_qt_translationsdir}/qmlviewer_ru.qm
 %lang(uk) %{_qt_translationsdir}/qmlviewer_uk.qm
@@ -2041,6 +2150,7 @@ Tools for Qt 5.
 %{_qt_bindir}/qdbusviewer
 %{_qt_bindir}/qhelpconverter
 %{_qt_bindir}/qhelpgenerator
+%{_qt_bindir}/qtpaths
 %{_qt_bindir}/xmlpatterns
 %{_qt_bindir}/xmlpatternsvalidator
 
@@ -2056,6 +2166,8 @@ Tools for Qt 5.
 %if "%{_qt_libdir}" == "%{_libdir}"
 %patch1 -p1
 %endif
+
+%patch2 -p1
 
 %build
 ./configure \

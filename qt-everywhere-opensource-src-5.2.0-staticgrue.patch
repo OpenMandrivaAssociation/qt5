@@ -1,0 +1,10 @@
+diff -urN qt-everywhere-opensource-src-5.2.0/qtsensors/examples/sensors/grue/lib/lib.pro qt-everywhere-opensource-src-5.2.0-patched/qtsensors/examples/sensors/grue/lib/lib.pro
+--- qt-everywhere-opensource-src-5.2.0/qtsensors/examples/sensors/grue/lib/lib.pro	2013-12-13 02:26:52.126089210 +1100
++++ qt-everywhere-opensource-src-5.2.0-patched/qtsensors/examples/sensors/grue/lib/lib.pro	2013-12-13 02:31:04.386876660 +1100
+@@ -1,5 +1,6 @@
+ TEMPLATE = lib
+ TARGET = gruesensor
++CONFIG += staticlib
+ 
+ DESTDIR = $$OUT_PWD/..
+ 

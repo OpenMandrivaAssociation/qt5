@@ -1,0 +1,30 @@
+diff -urN qt-everywhere-opensource-src-5.2.0/qttools/src/linguist/Qt5LinguistToolsConfig.cmake.in qt-everywhere-opensource-src-5.2.0-patched/qttools/src/linguist/Qt5LinguistToolsConfig.cmake.in
+--- qt-everywhere-opensource-src-5.2.0/qttools/src/linguist/Qt5LinguistToolsConfig.cmake.in	2013-12-09 04:10:14.000000000 +1100
++++ qt-everywhere-opensource-src-5.2.0-patched/qttools/src/linguist/Qt5LinguistToolsConfig.cmake.in	2013-12-12 23:07:51.413670788 +1100
+@@ -15,7 +15,7 @@
+ if(_realCurr STREQUAL _realOrig)
+     get_filename_component(_qt5_linguisttools_install_prefix \"$$CMAKE_INSTALL_LIBS_DIR\" PATH)
+ else()
+-    get_filename_component(_qt5_linguisttools_install_prefix \"${CMAKE_CURRENT_LIST_DIR}/$${CMAKE_RELATIVE_INSTALL_DIR}\" ABSOLUTE)
++    get_filename_component(_qt5_linguisttools_install_prefix \"${CMAKE_CURRENT_LIST_DIR}/$${CMAKE_RELATIVE_INSTALL_DIR}../../qt5\" ABSOLUTE)
+ endif()
+ unset(_realOrig)
+ unset(_realCurr)
+@@ -32,7 +32,7 @@
+ 
+     set_target_properties(Qt5::lrelease PROPERTIES
+ !!IF isEmpty(CMAKE_BIN_DIR_IS_ABSOLUTE)
+-        IMPORTED_LOCATION \"${_qt5_linguisttools_install_prefix}/$${CMAKE_BIN_DIR}lrelease$$CMAKE_BIN_SUFFIX\"
++        IMPORTED_LOCATION \"${_qt5_linguisttools_install_prefix}/bin/lrelease$$CMAKE_BIN_SUFFIX\"
+ !!ELSE
+         IMPORTED_LOCATION \"$${CMAKE_BIN_DIR}lrelease$$CMAKE_BIN_SUFFIX\"
+ !!ENDIF
+@@ -44,7 +44,7 @@
+ 
+     set_target_properties(Qt5::lupdate PROPERTIES
+ !!IF isEmpty(CMAKE_BIN_DIR_IS_ABSOLUTE)
+-        IMPORTED_LOCATION \"${_qt5_linguisttools_install_prefix}/$${CMAKE_BIN_DIR}lupdate$$CMAKE_BIN_SUFFIX\"
++        IMPORTED_LOCATION \"${_qt5_linguisttools_install_prefix}/bin/lupdate$$CMAKE_BIN_SUFFIX\"
+ !!ELSE
+         IMPORTED_LOCATION \"$${CMAKE_BIN_DIR}lupdate$$CMAKE_BIN_SUFFIX\"
+ !!ENDIF
