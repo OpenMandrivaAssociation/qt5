@@ -107,7 +107,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	1
+Release:	2
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
@@ -293,6 +293,7 @@ Qt Core library.
 %{_libdir}/libQt%{api}Core.so.%{major}*
 %endif
 %dir %{_qt_plugindir}
+%{_sysconfdir}/xdg/qtchooser/*.conf
 
 #----------------------------------------------------------------------------
 
@@ -2327,3 +2328,9 @@ install -m 644 %{SOURCE2} %{buildroot}%{_datadir}/applications
 install -m 644 %{SOURCE3} %{buildroot}%{_datadir}/applications
 install -m 644 %{SOURCE4} %{buildroot}%{_datadir}/applications
 
+# Tell qtchooser about us
+mkdir -p %{buildroot}%{_sysconfdir}/xdg/qtchooser
+cat >%{buildroot}%{_sysconfdir}/xdg/qtchooser/%{name}.conf <<'EOF'
+%{_qt_bindir}
+%{_qt_libdir}
+EOF
