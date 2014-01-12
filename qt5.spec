@@ -107,7 +107,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	2
+Release:	3
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
@@ -455,6 +455,16 @@ Qt GUI library.
 Summary:	Development files for version 5 of the QtGui library
 Group:		Development/KDE and Qt
 Requires:	%{qtgui} = %{EVRD}
+# We need all the Platform plugins because the plugin related cmake files in
+# %{_qt_libdir}/cmake/Qt%{api}Gui cause fatal errors if the plugins aren't
+# installed.
+Requires:	%{qtsql}-directfb = %{EVRD}
+%ifos linux
+Requires:	%{qtsql}-linuxfb = %{EVRD}
+%endif
+Requires:	%{qtsql}-minimal = %{EVRD}
+Requires:	%{qtsql}-offscreen = %{EVRD}
+Requires:	%{qtsql}-x11 = %{EVRD}
 
 %description -n %{qtguid}
 Development files for version 5 of the QtGui library.
@@ -848,6 +858,13 @@ Qt SQL library.
 Summary:	Development files for version 5 of the QtSql library
 Group:		Development/KDE and Qt
 Requires:	%{qtsql} = %{EVRD}
+# We need all the QtSql plugins because the plugin related cmake files in
+# %{_qt_libdir}/cmake/Qt%{api}Sql cause fatal errors if the plugins aren't
+# installed.
+Requires:	%{qtsql}-mysql = %{EVRD}
+Requires:	%{qtsql}-odbc = %{EVRD}
+Requires:	%{qtsql}-postgresql = %{EVRD}
+Requires:	%{qtsql}-sqlite = %{EVRD}
 
 %description -n %{qtsqld}
 Development files for version 5 of the QtSql library.
