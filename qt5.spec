@@ -2272,7 +2272,8 @@ Tools for Qt 5.
 	-no-rpath \
 %endif
 	-v \
-	-I %{_includedir}/iodbc
+	-I %{_includedir}/iodbc \
+	-I %{_includedir}/mysql
 
 # FIXME we should also build the KMS and EGLFS output plugins (-kms -eglfs), but
 # they require OpenGL ES v2 -- while we typically want to build Desktop GL bits
