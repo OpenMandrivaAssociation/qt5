@@ -107,7 +107,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	3
+Release:	4
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
