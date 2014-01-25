@@ -97,7 +97,7 @@
 
 %bcond_without directfb
 # Requires qdoc5 and qt5-tools to build
-%bcond_without docs
+%bcond_with docs
 
 Summary:	Version 5 of the Qt toolkit
 Name:		qt5
