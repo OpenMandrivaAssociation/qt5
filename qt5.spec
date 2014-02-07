@@ -97,17 +97,17 @@
 
 %bcond_without directfb
 # Requires qdoc5 and qt5-tools to build
-%bcond_without docs
+%bcond_with docs
 
 Summary:	Version 5 of the Qt toolkit
 Name:		qt5
-Version:	5.2.0
+Version:	5.2.1
 License:	LGPLv3+
 Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
-Source0:	qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	6
+Source0:	http://ftp.fau.de/qtproject/official_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}/single/qt-everywhere-opensource-src-%{version}.tar.xz
+Release:	1
 %else
 Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
@@ -2180,7 +2180,6 @@ Tools for Qt 5.
 %else
 %setup -q -n qt-everywhere-opensource-src-%{version}
 %endif
-
 %if "%{_qt_libdir}" == "%{_libdir}"
 %patch1 -p1
 %endif
@@ -2334,7 +2333,7 @@ find %{buildroot} -type f -perm -0755 -name "*.plist.app" |xargs --no-run-if-emp
 #   and  /usr/lib/qt5/bin/moc
 # ...
 # while generating debug info
-find %{buildroot} -type f -perm -0755 |grep -vE '\.(so|qml)' |xargs %__strip --strip-unneeded
+find %{buildroot} -type f -perm -0755 |grep -vE '\.(so|qml|sh)' |xargs %__strip --strip-unneeded
 
 # Install rpm macros
 mkdir -p %{buildroot}%{_sysconfdir}/rpm/macros.d
