@@ -1,5 +1,5 @@
 %define debug_package %{nil}
-%define beta %nil
+%define beta alpha
 %define api 5
 %define major 5
 %define qgstmajor 1
@@ -52,6 +52,10 @@
 %define qttestd %mklibname qt%{api}test -d
 %define qtwidgets %mklibname qt%{api}widgets %{major}
 %define qtwidgetsd %mklibname qt%{api}widgets -d
+%define qtquickwidgets %mklibname qt%{api}quickwidgets %{major}
+%define qtquickwidgetsd %mklibname qt%{api}quickwidgets -d
+%define qtwebsockets %mklibname qt%{api}websockets %{major}
+%define qtwebsocketsd %mklibname qt%{api}websockets -d
 %define qtx11extras %mklibname qt%{api}x11extras %{major}
 %define qtx11extrasd %mklibname qt%{api}x11extras -d
 %define qtxml %mklibname qt%{api}xml %{major}
@@ -97,19 +101,19 @@
 
 %bcond_without directfb
 # Requires qdoc5 and qt5-tools to build
-%bcond_without docs
+%bcond_with docs
 
 Summary:	Version 5 of the Qt toolkit
 Name:		qt5
-Version:	5.2.1
+Version:	5.3.0
 License:	LGPLv3+
 Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	http://ftp.fau.de/qtproject/official_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}/single/qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	2
+Release:	1
 %else
-Source0:	qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
+Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
 %endif
 Source1:	qt5.macros
@@ -1012,6 +1016,73 @@ Development files for version 5 of the QtWidgets library.
 %endif
 
 #----------------------------------------------------------------------------
+%package -n %{qtquickwidgets}
+Summary:	Library for integrating QtQuick with traditional Qt widgets
+Group:		System/Libraries
+
+%description -n %{qtquickwidgets}
+Library for integrating QtQuick with traditional Qt widgets
+
+%files -n %{qtquickwidgets}
+%{_qt_libdir}/libQt%{api}QuickWidgets.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}QuickWidgets.so.%{major}*
+%endif
+
+#----------------------------------------------------------------------------
+%package -n %{qtquickwidgetsd}
+Summary:	Development files for version 5 of the QtQuickWidgets library
+Group:		Development/KDE and Qt
+Requires:	%{qtquickwidgets} = %{EVRD}
+
+%description -n %{qtquickwidgetsd}
+Development files for version 5 of the QtQuickWidgets library.
+
+%files -n %{qtquickwidgetsd}
+%{_qt_includedir}/QtQuickWidgets
+%{_qt_libdir}/libQt%{api}QuickWidgets.so
+%{_qt_libdir}/libQt%{api}QuickWidgets.prl
+%{_qt_libdir}/cmake/Qt%{api}QuickWidgets
+%{_qt_libdir}/pkgconfig/Qt%{api}QuickWidgets.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}QuickWidgets.pc
+%endif
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebsockets}
+Summary:	Qt %{api} WebSockets library
+Group:		System/Libraries
+
+%description -n %{qtwebsockets}
+Qt %{api} WebSockets library
+
+%files -n %{qtwebsockets}
+%{_qt_libdir}/libQt%{api}WebSockets.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}WebSockets.so.%{major}*
+%endif
+%{_qt_prefix}/qml/Qt/WebSockets
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebsocketsd}
+Summary:	Development files for the Qt %{api} WebSockets library
+Group:		Development/KDE and Qt
+Requires:	%{qtwebsockets} = %{EVRD}
+
+%description -n %{qtwebsocketsd}
+Development files for version 5 of the QtWebSockets library.
+
+%files -n %{qtwebsocketsd}
+%{_qt_includedir}/QtWebSockets
+%{_qt_libdir}/libQt%{api}WebSockets.so
+%{_qt_libdir}/libQt%{api}WebSockets.prl
+%{_qt_libdir}/cmake/Qt%{api}WebSockets
+%{_qt_libdir}/pkgconfig/Qt%{api}WebSockets.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}WebSockets.pc
+%endif
+
+#----------------------------------------------------------------------------
 
 %package -n %{qtxml}
 Summary:	Qt XML library
@@ -1895,7 +1966,10 @@ Requires:	%{qtsvgd} = %{EVRD}
 Requires:	%{qtwebkitd} = %{EVRD}
 Requires:	%{qtwebkitwidgetsd} = %{EVRD}
 Requires:	%{qtxmlpatternsd} = %{EVRD}
+Requires:	%{qtwebsocketsd} = %{EVRD}
+Requires:	%{qtquickwidgetsd} = %{EVRD}
 Requires:	qmake%{api} = %{EVRD}
+Requires:	qlalr%{api} = %{EVRD}
 Requires:	%{name}-macros = %{EVRD}
 
 %description devel
@@ -2122,6 +2196,19 @@ Makefile generation system for Qt 5.
 %{_bindir}/qmake-qt%{api}
 %{_qt_bindir}/qmake
 %{_qt_prefix}/mkspecs
+
+#----------------------------------------------------------------------------
+
+%package -n qlalr%{api}
+Summary:	Qt LALR parser generator
+Group:		Development/KDE and Qt
+Provides:	qlalr = %{EVRD}
+
+%description -n qlalr%{api}
+Qt LALR parser generator
+
+%files -n qlalr%{api}
+%{_qt_bindir}/qlalr
 
 #----------------------------------------------------------------------------
 
