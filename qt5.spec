@@ -2432,6 +2432,8 @@ install -m 644 %{SOURCE2} %{buildroot}%{_datadir}/applications
 install -m 644 %{SOURCE3} %{buildroot}%{_datadir}/applications
 install -m 644 %{SOURCE4} %{buildroot}%{_datadir}/applications
 
+sed -i s,"/usr/lib/qt5/bin","%{_qt_bindir}",g %{buildroot}%{_datadir}/applications/*.desktop
+
 # Tell qtchooser about us
 mkdir -p %{buildroot}%{_sysconfdir}/xdg/qtchooser
 cat >%{buildroot}%{_sysconfdir}/xdg/qtchooser/%{name}.conf <<'EOF'
