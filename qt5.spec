@@ -134,6 +134,7 @@ BuildRequires:	pkgconfig(zlib)
 BuildRequires:	cups-devel
 # OpenGL
 BuildRequires:	pkgconfig(gl)
+BuildRequires:	pkgconfig(egl)
 # Event loop
 BuildRequires:	pkgconfig(glib-2.0)
 # GTK theme
