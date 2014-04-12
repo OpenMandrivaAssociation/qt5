@@ -1,5 +1,5 @@
 %define debug_package %{nil}
-%define beta alpha
+%define beta beta
 %define api 5
 %define major 5
 %define qgstmajor 1
@@ -98,6 +98,8 @@
 %define qtwebkitwidgetsd %mklibname qt%{api}webkitwidgets -d
 %define qtxmlpatterns %mklibname qt%{api}xmlpatterns %{major}
 %define qtxmlpatternsd %mklibname qt%{api}xmlpatterns -d
+%define enginio %mklibname enginio 1
+%define enginiod %mklibname enginio -d
 
 %bcond_without directfb
 # Requires qdoc5 and qt5-tools to build
@@ -389,6 +391,8 @@ Qt Core translations.
 %lang(ru) %{_qt_translationsdir}/qtbase_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtbase_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtbase_uk.qm
+%lang(de) %{_qt_translationsdir}/qtconnectivity_de.qm
+%lang(de) %{_qt_translationsdir}/qtlocation_de.qm
 
 #----------------------------------------------------------------------------
 
@@ -469,6 +473,9 @@ Requires:	%{qtgui}-linuxfb = %{EVRD}
 Requires:	%{qtgui}-minimal = %{EVRD}
 Requires:	%{qtgui}-offscreen = %{EVRD}
 Requires:	%{qtgui}-x11 = %{EVRD}
+Requires:	%{qtgui}-eglfs = %{EVRD}
+Requires:	%{qtgui}-kms = %{EVRD}
+Requires:	%{qtgui}-minimalegl = %{EVRD}
 
 %description -n %{qtguid}
 Development files for version 5 of the QtGui library.
@@ -571,6 +578,48 @@ X11 output driver for QtGui v5.
 %{_qt_plugindir}/platforms/libqxcb.so
 %{_qt_plugindir}/platforminputcontexts/libibusplatforminputcontextplugin.so
 %{_qt_plugindir}/platforminputcontexts/libcomposeplatforminputcontextplugin.so
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtgui}-eglfs
+Summary:	EGL fullscreen output driver for QtGui v5
+Group:		System/Libraries
+Requires:	%{qtgui} = %{EVRD}
+Provides:	qt5-output-driver = %{EVRD}
+
+%description -n %{qtgui}-eglfs
+EGL fullscreen output driver for QtGui v5.
+
+%files -n %{qtgui}-eglfs
+%{_qt_plugindir}/platforms/libqeglfs.so
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtgui}-kms
+Summary:	KMS output driver for QtGui v5
+Group:		System/Libraries
+Requires:	%{qtgui} = %{EVRD}
+Provides:	qt5-output-driver = %{EVRD}
+
+%description -n %{qtgui}-kms
+KMS output driver for QtGui v5.
+
+%files -n %{qtgui}-kms
+%{_qt_plugindir}/platforms/libqkms.so
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtgui}-minimalegl
+Summary:	Minimalistic EGL output driver for QtGui v5
+Group:		System/Libraries
+Requires:	%{qtgui} = %{EVRD}
+Provides:	qt5-output-driver = %{EVRD}
+
+%description -n %{qtgui}-minimalegl
+Minimalistic EGL output driver for QtGui v5.
+
+%files -n %{qtgui}-minimalegl
+%{_qt_plugindir}/platforms/libqminimalegl.so
 
 #----------------------------------------------------------------------------
 
@@ -1909,6 +1958,39 @@ Development files for Qt's XSLT engine.
 
 #----------------------------------------------------------------------------
 
+%package -n %{enginio}
+Summary:	Enginio (Qt Cloud Storage) library
+Group:		Development/KDE and Qt
+
+%description -n %{enginio}
+Enginio (Qt Cloud Storage) library
+
+%files -n %{enginio}
+%{_qt_libdir}/libEnginio.so.1*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libEnginio.so.1*
+%endif
+%{_qt_prefix}/qml/Enginio
+
+#----------------------------------------------------------------------------
+
+%package -n %{enginiod}
+Summary:	Development files for Enginio (Qt Cloud Storage)
+Group:		Development/KDE and Qt
+Requires:	%{enginio} = %{EVRD}
+
+%description -n %{enginiod}
+Development files for Enginio (Qt Cloud Storage)
+
+%files -n %{enginiod}
+%{_qt_includedir}/Enginio
+%{_qt_libdir}/libEnginio.so
+%{_qt_libdir}/libEnginio.prl
+%{_qt_libdir}/cmake/Qt%{api}Enginio
+%{_libdir}/pkgconfig/Enginio.pc
+
+#----------------------------------------------------------------------------
+
 %package qtxmlpatterns-i18n
 Summary:	Qt XSLT engine translations
 Group:		System/Libraries
@@ -2253,6 +2335,7 @@ Tools for Qt 5.
 %{_qt_bindir}/qcollectiongenerator
 %{_qt_bindir}/qdbus
 %{_qt_bindir}/qdbusviewer
+%{_qt_bindir}/qtdiag
 %{_qt_bindir}/qhelpconverter
 %{_qt_bindir}/qhelpgenerator
 %{_qt_bindir}/qtpaths
@@ -2268,10 +2351,10 @@ Tools for Qt 5.
 %setup -q -n qt-everywhere-opensource-src-%{version}
 %endif
 %if "%{_qt_libdir}" == "%{_libdir}"
-%patch1 -p1
+%patch1 -p1 -b .0001~
 %endif
 
-%patch2 -p1
+%patch2 -p1 -b .0002~
 
 %build
 ./configure \
@@ -2303,7 +2386,6 @@ Tools for Qt 5.
 	-no-sql-sqlite2 \
 	-no-sql-tds \
 	-system-sqlite \
-	-javascript-jit \
 %ifarch x86_64
 	-platform linux-g++-64 \
 %endif
@@ -2335,8 +2417,10 @@ Tools for Qt 5.
 	-qpa xcb \
 	-fontconfig \
 	-accessibility \
+	-eglfs \
 	-gnumake \
 	-pkg-config \
+	-kms \
 	-sm \
 	-xinerama \
 	-xshape \
@@ -2361,8 +2445,9 @@ Tools for Qt 5.
 	-I %{_includedir}/iodbc \
 	-I %{_includedir}/mysql
 
-# FIXME we should also build the KMS and EGLFS output plugins (-kms -eglfs), but
-# they require OpenGL ES v2 -- while we typically want to build Desktop GL bits
+# Fix confused Makefiles refering to Enginio includes by Enginio's version number
+# (1.0.4) while other bits refer to it by Qt's version number
+ln -s %{version} qtenginio/include/Enginio/1.0.4
 
 %make STRIP=true
 
