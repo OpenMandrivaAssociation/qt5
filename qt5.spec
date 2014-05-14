@@ -1,5 +1,5 @@
 %define debug_package %{nil}
-%define beta beta
+%define beta rc
 %define api 5
 %define major 5
 %define qgstmajor 1
@@ -115,7 +115,11 @@ Url:		http://qt-project.org/
 Source0:	http://ftp.fau.de/qtproject/official_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}/single/qt-everywhere-opensource-src-%{version}.tar.xz
 Release:	1
 %else
+%if "%{beta}" == "rc"
+Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-RC.tar.xz
+%else
 Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
+%endif
 Release:	0.%{beta}.1
 %endif
 Source1:	qt5.macros
@@ -2348,7 +2352,11 @@ Tools for Qt 5.
 
 %prep
 %if "%{beta}" != ""
+%if "%{beta}" == "rc"
+%setup -q -n qt-everywhere-opensource-src-%{version}-RC
+%else
 %setup -q -n qt-everywhere-opensource-src-%{version}-%{beta}
+%endif
 %else
 %setup -q -n qt-everywhere-opensource-src-%{version}
 %endif
