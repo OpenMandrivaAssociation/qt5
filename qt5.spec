@@ -391,6 +391,7 @@ Qt Core translations.
 %lang(zh_TW) %{_qt_translationsdir}/qt_help_zh_TW.qm
 %lang(cs) %{_qt_translationsdir}/qtbase_cs.qm
 %lang(de) %{_qt_translationsdir}/qtbase_de.qm
+%lang(fi) %{_qt_translationsdir}/qtbase_fi.qm
 %lang(hu) %{_qt_translationsdir}/qtbase_hu.qm
 %lang(it) %{_qt_translationsdir}/qtbase_it.qm
 %lang(ja) %{_qt_translationsdir}/qtbase_ja.qm
@@ -398,7 +399,9 @@ Qt Core translations.
 %lang(sk) %{_qt_translationsdir}/qtbase_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtbase_uk.qm
 %lang(de) %{_qt_translationsdir}/qtconnectivity_de.qm
+%lang(uk) %{_qt_translationsdir}/qtconnectivity_uk.qm
 %lang(de) %{_qt_translationsdir}/qtlocation_de.qm
+%lang(uk) %{_qt_translationsdir}/qtlocation_uk.qm
 
 #----------------------------------------------------------------------------
 
@@ -1273,6 +1276,7 @@ Qt Declarative translations.
 
 %files qtdeclarative-i18n
 %lang(de) %{_qt_translationsdir}/qtdeclarative_de.qm
+%lang(fi) %{_qt_translationsdir}/qtdeclarative_fi.qm
 %lang(ja) %{_qt_translationsdir}/qtdeclarative_ja.qm
 %lang(ru) %{_qt_translationsdir}/qtdeclarative_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtdeclarative_sk.qm
@@ -1437,6 +1441,7 @@ Qt Multimedia translations.
 %files qtmultimedia-i18n
 %lang(cs) %{_qt_translationsdir}/qtmultimedia_cs.qm
 %lang(de) %{_qt_translationsdir}/qtmultimedia_de.qm
+%lang(fi) %{_qt_translationsdir}/qtmultimedia_fi.qm
 %lang(hu) %{_qt_translationsdir}/qtmultimedia_hu.qm
 %lang(it) %{_qt_translationsdir}/qtmultimedia_it.qm
 %lang(ja) %{_qt_translationsdir}/qtmultimedia_ja.qm
@@ -1606,6 +1611,7 @@ Qt Quick translations.
 %files qtquick-i18n
 %lang(cs) %{_qt_translationsdir}/qtquick1_cs.qm
 %lang(de) %{_qt_translationsdir}/qtquick1_de.qm
+%lang(fi) %{_qt_translationsdir}/qtquick1_fi.qm
 %lang(hu) %{_qt_translationsdir}/qtquick1_hu.qm
 %lang(it) %{_qt_translationsdir}/qtquick1_it.qm
 %lang(ja) %{_qt_translationsdir}/qtquick1_ja.qm
@@ -1732,6 +1738,7 @@ Qt Script translations.
 %files qtscript-i18n
 %lang(cs) %{_qt_translationsdir}/qtscript_cs.qm
 %lang(de) %{_qt_translationsdir}/qtscript_de.qm
+%lang(fi) %{_qt_translationsdir}/qtscript_fi.qm
 %lang(hu) %{_qt_translationsdir}/qtscript_hu.qm
 %lang(it) %{_qt_translationsdir}/qtscript_it.qm
 %lang(ja) %{_qt_translationsdir}/qtscript_ja.qm
@@ -2319,6 +2326,7 @@ QML tools for Qt 5.
 %{_qt_bindir}/qmltestrunner
 %{_qt_bindir}/qmlviewer
 %lang(cs) %{_qt_translationsdir}/qmlviewer_cs.qm
+%lang(fi) %{_qt_translationsdir}/qmlviewer_fi.qm
 %lang(hu) %{_qt_translationsdir}/qmlviewer_hu.qm
 %lang(ja) %{_qt_translationsdir}/qmlviewer_ja.qm
 %lang(sk) %{_qt_translationsdir}/qmlviewer_sk.qm
