@@ -1823,7 +1823,7 @@ Development files for Qt's SVG rendering engine.
 Summary:	Qt WebKit web browsing library
 Group:		System/Libraries
 BuildRequires:	pkgconfig(libxslt)
-BuildRequires:	flex bison gperf ruby
+BuildRequires:	flex bison gperf ruby ruby(rubygems)
 BuildRequires:	icu-devel
 
 %description -n %{qtwebkit}
