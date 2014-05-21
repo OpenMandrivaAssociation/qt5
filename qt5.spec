@@ -1,5 +1,5 @@
 %define debug_package %{nil}
-%define beta rc
+%define beta %{nil}
 %define api 5
 %define major 5
 %define qgstmajor 1
@@ -357,6 +357,7 @@ Qt Core translations.
 %lang(de) %{_qt_translationsdir}/qt_de.qm
 %lang(es) %{_qt_translationsdir}/qt_es.qm
 %lang(fa) %{_qt_translationsdir}/qt_fa.qm
+%lang(fi) %{_qt_translationsdir}/qt_fi.qm
 %lang(fr) %{_qt_translationsdir}/qt_fr.qm
 %lang(gl) %{_qt_translationsdir}/qt_gl.qm
 %lang(he) %{_qt_translationsdir}/qt_he.qm
