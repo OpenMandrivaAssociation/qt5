@@ -113,7 +113,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	http://ftp.fau.de/qtproject/official_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}/single/qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	1
+Release:	2
 %else
 %if "%{beta}" == "rc"
 Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-RC.tar.xz
@@ -173,6 +173,8 @@ BuildRequires:	pkgconfig(xcb-randr)
 BuildRequires:	pkgconfig(xrandr)
 BuildRequires:	pkgconfig(xkbcomp)
 BuildRequires:	pkgconfig(xkbfile)
+BuildRequires:	pkgconfig(xkbcommon) >= 0.4.1
+BuildRequires:	pkgconfig(xkbcommon-x11) >= 0.4.1
 # For proper font access
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(freetype2)
