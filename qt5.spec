@@ -113,7 +113,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	http://ftp.fau.de/qtproject/official_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}/single/qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	2
+Release:	3
 %else
 %if "%{beta}" == "rc"
 Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-RC.tar.xz
@@ -488,6 +488,7 @@ Requires:	%{qtgui}-x11 = %{EVRD}
 Requires:	%{qtgui}-eglfs = %{EVRD}
 Requires:	%{qtgui}-kms = %{EVRD}
 Requires:	%{qtgui}-minimalegl = %{EVRD}
+Requires:	%{name}-platformtheme-gtk2 = %{EVRD}
 
 %description -n %{qtguid}
 Development files for version 5 of the QtGui library.
