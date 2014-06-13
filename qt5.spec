@@ -452,6 +452,7 @@ Summary:	Qt GUI library
 Group:		System/Libraries
 Suggests:	qt5-style-plugins
 Requires:	qt5-output-driver = %{EVRD}
+Suggests:	qt5-output-driver-default = %{EVRD}
 
 %description -n %{qtgui}
 Qt GUI library.
