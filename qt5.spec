@@ -2441,7 +2441,9 @@ sed -i -e "s,python,python2,g" qtwebkit/Source/*/DerivedSources.pri
 	-no-strip \
 	-pch \
 	-dbus-linked \
+%ifarch %ix86 x86_64
 	-reduce-relocations \
+%endif
 	-xcb \
 %if %{with directfb}
 	-directfb \
@@ -2476,6 +2478,10 @@ sed -i -e "s,python,python2,g" qtwebkit/Source/*/DerivedSources.pri
 	-v \
 	-I %{_includedir}/iodbc \
 	-I %{_includedir}/mysql
+
+# FIXME reduce-relocations is disabled for anything but x86 because
+# of QTBUG-36129. This should be changed as soon as we get a new
+# binutils and/or switch to linaro binutils.
 
 # Fix confused Makefiles refering to Enginio includes by Enginio's version number
 # (1.0.4) while other bits refer to it by Qt's version number
