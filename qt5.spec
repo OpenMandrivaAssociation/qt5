@@ -107,13 +107,13 @@
 
 Summary:	Version 5 of the Qt toolkit
 Name:		qt5
-Version:	5.3.0
+Version:	5.3.1
 License:	LGPLv3+
 Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	http://ftp.fau.de/qtproject/official_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}/single/qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	4
+Release:	1
 %else
 %if "%{beta}" == "rc"
 Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-RC.tar.xz
@@ -123,15 +123,17 @@ Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |
 Release:	0.%{beta}.1
 %endif
 Source1:	qt5.macros
-Source2:	rosa-assistant-qt%{api}.desktop
-Source3:	rosa-designer-qt%{api}.desktop
-Source4:	rosa-linguist-qt%{api}.desktop
+Source2:	openmandriva-assistant-qt%{api}.desktop
+Source3:	openmandriva-designer-qt%{api}.desktop
+Source4:	openmandriva-linguist-qt%{api}.desktop
 Source100:	%{name}.rpmlintrc
 # See http://bugs.rosalinux.ru/show_bug.cgi?id=2367
-Patch1:		qt-everywhere-opensource-src-5.2.0-cmake-linguist.patch
+Patch1:		qt-everywhere-opensource-src-5.3.1-cmake-linguist.patch
 # Build static library used in example to avoid missing dependency
 Patch2:		qt-everywhere-opensource-src-5.2.0-staticgrue.patch
 BuildRequires:	jpeg-devel
+# Build scripts
+BuildRequires:	python >= 3.0 python2
 BuildRequires:	pkgconfig(libpng)
 BuildRequires:	pkgconfig(zlib)
 # CUPS
@@ -383,6 +385,7 @@ Qt Core translations.
 %lang(fr) %{_qt_translationsdir}/qt_help_fr.qm
 %lang(gl) %{_qt_translationsdir}/qt_help_gl.qm
 %lang(hu) %{_qt_translationsdir}/qt_help_hu.qm
+%lang(it) %{_qt_translationsdir}/qt_help_it.qm
 %lang(ja) %{_qt_translationsdir}/qt_help_ja.qm
 %lang(ko) %{_qt_translationsdir}/qt_help_ko.qm
 %lang(pl) %{_qt_translationsdir}/qt_help_pl.qm
@@ -2033,6 +2036,7 @@ Qt XSLT engine translations.
 %package devel
 Summary:	Meta-package for installing all Qt 5 development files
 Group:		Development/KDE and Qt
+Requires:	%{enginiod} = %{EVRD}
 Requires:	%{qtbluetoothd} = %{EVRD}
 Requires:	%{qtbootstrapd} = %{EVRD}
 Requires:	%{qtconcurrentd} = %{EVRD}
@@ -2060,14 +2064,14 @@ Requires:	%{qtqmld} = %{EVRD}
 Requires:	%{qtquickd} = %{EVRD}
 Requires:	%{qtquickparticlesd} = %{EVRD}
 Requires:	%{qtquicktestd} = %{EVRD}
+Requires:	%{qtquickwidgetsd} = %{EVRD}
 Requires:	%{qtscriptd} = %{EVRD}
 Requires:	%{qtscripttoolsd} = %{EVRD}
 Requires:	%{qtsvgd} = %{EVRD}
 Requires:	%{qtwebkitd} = %{EVRD}
 Requires:	%{qtwebkitwidgetsd} = %{EVRD}
-Requires:	%{qtxmlpatternsd} = %{EVRD}
 Requires:	%{qtwebsocketsd} = %{EVRD}
-Requires:	%{qtquickwidgetsd} = %{EVRD}
+Requires:	%{qtxmlpatternsd} = %{EVRD}
 Requires:	qmake%{api} = %{EVRD}
 Requires:	qlalr%{api} = %{EVRD}
 Requires:	%{name}-macros = %{EVRD}
@@ -2092,7 +2096,7 @@ Qt help system.
 
 %files assistant
 %{_qt_bindir}/assistant
-%{_datadir}/applications/rosa-assistant-qt%{api}.desktop
+%{_datadir}/applications/openmandriva-assistant-qt%{api}.desktop
 %lang(cs) %{_qt_translationsdir}/assistant_cs.qm
 %lang(da) %{_qt_translationsdir}/assistant_da.qm
 %lang(de) %{_qt_translationsdir}/assistant_de.qm
@@ -2122,7 +2126,7 @@ Qt interface design tool.
 
 %files designer
 %{_qt_bindir}/designer
-%{_datadir}/applications/rosa-designer-qt%{api}.desktop
+%{_datadir}/applications/openmandriva-designer-qt%{api}.desktop
 %lang(cs) %{_qt_translationsdir}/designer_cs.qm
 %lang(de) %{_qt_translationsdir}/designer_de.qm
 %lang(fr) %{_qt_translationsdir}/designer_fr.qm
@@ -2195,7 +2199,7 @@ Translation tool for Qt based applications.
 
 %files linguist
 %{_qt_bindir}/linguist
-%{_datadir}/applications/rosa-linguist-qt%{api}.desktop
+%{_datadir}/applications/openmandriva-linguist-qt%{api}.desktop
 %lang(cs) %{_qt_translationsdir}/linguist_cs.qm
 %lang(de) %{_qt_translationsdir}/linguist_de.qm
 %lang(fr) %{_qt_translationsdir}/linguist_fr.qm
@@ -2378,6 +2382,11 @@ Tools for Qt 5.
 %endif
 
 %patch2 -p1 -b .0002~
+
+# Build scripts aren't ready for python3
+grep -rl "env python" . |xargs sed -i -e "s,env python,env python2,g"
+grep -rl "/python" . |xargs sed -i -e "s,/python,/python2,g"
+sed -i -e "s,python,python2,g" qtwebkit/Source/*/DerivedSources.pri
 
 %build
 ./configure \
