@@ -113,7 +113,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	http://ftp.fau.de/qtproject/official_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}/single/qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	2
+Release:	3
 %else
 %if "%{beta}" == "rc"
 Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-RC.tar.xz
@@ -131,6 +131,8 @@ Source100:	%{name}.rpmlintrc
 Patch1:		qt-everywhere-opensource-src-5.3.1-cmake-linguist.patch
 # Build static library used in example to avoid missing dependency
 Patch2:		qt-everywhere-opensource-src-5.2.0-staticgrue.patch
+# Styles plugins stpport seems to be missing so add it
+Patch3:		qt-everywhere-opensource-src-5.3.1-styles-plugins.patch
 BuildRequires:	jpeg-devel
 # Build scripts
 BuildRequires:	python >= 3.0 python2
@@ -2385,6 +2387,7 @@ Tools for Qt 5.
 %endif
 
 %patch2 -p1 -b .0002~
+%patch3 -p1 -b .0003~
 
 # Build scripts aren't ready for python3
 grep -rl "env python" . |xargs sed -i -e "s,env python,env python2,g"

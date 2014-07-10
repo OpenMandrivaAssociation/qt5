@@ -1,0 +1,11 @@
+diff -urN qt-everywhere-opensource-src-5.3.1/qtbase/src/widgets/widgets.pro qt-everywhere-opensource-src-5.3.1-patched/qtbase/src/widgets/widgets.pro
+--- qt-everywhere-opensource-src-5.3.1/qtbase/src/widgets/widgets.pro	2014-06-19 21:08:03.000000000 +1100
++++ qt-everywhere-opensource-src-5.3.1-patched/qtbase/src/widgets/widgets.pro	2014-07-05 14:25:19.575180366 +1100
+@@ -9,6 +9,7 @@
+ irix-cc*:QMAKE_CXXFLAGS += -no_prelink -ptused
+ 
+ MODULE_PLUGIN_TYPES += \
++    styles \
+     accessible/libqtaccessiblewidgets.so
+ 
+ QMAKE_DOCS = $$PWD/doc/qtwidgets.qdocconf
