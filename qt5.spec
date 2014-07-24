@@ -113,7 +113,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	http://ftp.fau.de/qtproject/official_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}/single/qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	4
+Release:	1
 %else
 %if "%{beta}" == "rc"
 Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-RC.tar.xz
@@ -1836,7 +1836,7 @@ Development files for Qt's SVG rendering engine.
 Summary:	Qt WebKit web browsing library
 Group:		System/Libraries
 BuildRequires:	pkgconfig(libxslt)
-BuildRequires:	flex bison gperf ruby ruby(rubygems)
+BuildRequires:	flex bison gperf ruby ruby-RubyGems
 BuildRequires:	icu-devel
 
 %description -n %{qtwebkit}
