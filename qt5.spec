@@ -107,7 +107,7 @@
 
 Summary:	Version 5 of the Qt toolkit
 Name:		qt5
-Version:	5.3.1
+Version:	5.3.2
 License:	LGPLv3+
 Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
@@ -131,8 +131,6 @@ Source100:	%{name}.rpmlintrc
 Patch1:		qt-everywhere-opensource-src-5.3.1-cmake-linguist.patch
 # Build static library used in example to avoid missing dependency
 Patch2:		qt-everywhere-opensource-src-5.2.0-staticgrue.patch
-# Styles plugins stpport seems to be missing so add it
-Patch3:		qt-everywhere-opensource-src-5.3.1-styles-plugins.patch
 BuildRequires:	jpeg-devel
 # Build scripts
 BuildRequires:	python >= 3.0 python2
@@ -2387,7 +2385,6 @@ Tools for Qt 5.
 %endif
 
 %patch2 -p1 -b .0002~
-%patch3 -p1 -b .0003~
 
 # Build scripts aren't ready for python3
 grep -rl "env python" . |xargs sed -i -e "s,env python,env python2,g"
