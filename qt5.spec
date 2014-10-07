@@ -131,6 +131,8 @@ Source100:	%{name}.rpmlintrc
 Patch1:		qt-everywhere-opensource-src-5.3.1-cmake-linguist.patch
 # Build static library used in example to avoid missing dependency
 Patch2:		qt-everywhere-opensource-src-5.2.0-staticgrue.patch
+# upstream patch to build gsttools with gstreamer 1.0
+Patch3:		Initial-porting-effort-to-GStreamer-1.0.patch
 BuildRequires:	jpeg-devel
 # Build scripts
 BuildRequires:	python >= 3.0 python2
@@ -2385,6 +2387,10 @@ Tools for Qt 5.
 %endif
 
 %patch2 -p1 -b .0002~
+
+pushd qtmultimedia
+%patch3 -p1 -b .gst1
+popd
 
 # Build scripts aren't ready for python3
 grep -rl "env python" . |xargs sed -i -e "s,env python,env python2,g"
