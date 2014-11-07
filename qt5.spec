@@ -1,5 +1,5 @@
 %define debug_package %{nil}
-%define beta %{nil}
+%define beta beta
 %define api 5
 %define major 5
 %define qgstmajor 1
@@ -32,6 +32,8 @@
 %define qtdbusd %mklibname qt%{api}dbus -d
 %define qtgui %mklibname qt%{api}gui %{major}
 %define qtguid %mklibname qt%{api}gui -d
+%define qtlocation %mklibname qt%{api}location %{major}
+%define qtlocationd %mklibname qt%{api}location -d
 %define qtnetwork %mklibname qt%{api}network %{major}
 %define qtnetworkd %mklibname qt%{api}network -d
 %define qtnfc %mklibname qt%{api}nfc %{major}
@@ -54,6 +56,8 @@
 %define qtwidgetsd %mklibname qt%{api}widgets -d
 %define qtquickwidgets %mklibname qt%{api}quickwidgets %{major}
 %define qtquickwidgetsd %mklibname qt%{api}quickwidgets -d
+%define qtwebchannel %mklibname qt%{api}webchannel %{major}
+%define qtwebchanneld %mklibname qt%{api}webchannel -d
 %define qtwebsockets %mklibname qt%{api}websockets %{major}
 %define qtwebsocketsd %mklibname qt%{api}websockets -d
 %define qtx11extras %mklibname qt%{api}x11extras %{major}
@@ -92,6 +96,8 @@
 %define qtscripttoolsd %mklibname qt%{api}scripttools -d
 %define qtsvg %mklibname qt%{api}svg %{major}
 %define qtsvgd %mklibname qt%{api}svg -d
+%define qtwaylandclient %mklibname qt%{api}waylandclient %{major}
+%define qtwaylandclientd %mklibname qt%{api}waylandclient -d
 %define qtwebkit %mklibname qt%{api}webkit %{major}
 %define qtwebkitd %mklibname qt%{api}webkit -d
 %define qtwebkitwidgets %mklibname qt%{api}webkitwidgets %{major}
@@ -107,13 +113,13 @@
 
 Summary:	Version 5 of the Qt toolkit
 Name:		qt5
-Version:	5.3.2
+Version:	5.4.0
 License:	LGPLv3+
 Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	http://ftp.fau.de/qtproject/official_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}/single/qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	7
+Release:	1
 %else
 %if "%{beta}" == "rc"
 Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-RC.tar.xz
@@ -218,6 +224,7 @@ Qt Bluetooth library.
 %{_libdir}/libQt%{api}Bluetooth.so.%{major}*
 %endif
 %{_qt_prefix}/qml/QtBluetooth
+%{_qt_bindir}/sdpscanner
 
 #----------------------------------------------------------------------------
 
@@ -358,6 +365,7 @@ Qt Core translations.
 %files qtcore-i18n
 %dir %{_qt_translationsdir}
 %lang(ar) %{_qt_translationsdir}/qt_ar.qm
+%lang(ca) %{_qt_translationsdir}/qt_ca.qm
 %lang(cs) %{_qt_translationsdir}/qt_cs.qm
 %lang(da) %{_qt_translationsdir}/qt_da.qm
 %lang(de) %{_qt_translationsdir}/qt_de.qm
@@ -397,6 +405,7 @@ Qt Core translations.
 %lang(uk) %{_qt_translationsdir}/qt_help_uk.qm
 %lang(zh_CN) %{_qt_translationsdir}/qt_help_zh_CN.qm
 %lang(zh_TW) %{_qt_translationsdir}/qt_help_zh_TW.qm
+%lang(ca) %{_qt_translationsdir}/qtbase_ca.qm
 %lang(cs) %{_qt_translationsdir}/qtbase_cs.qm
 %lang(de) %{_qt_translationsdir}/qtbase_de.qm
 %lang(fi) %{_qt_translationsdir}/qtbase_fi.qm
@@ -506,6 +515,7 @@ Development files for version 5 of the QtGui library.
 %{_qt_bindir}/uic
 %{_bindir}/uic-qt%{api}
 %{_qt_includedir}/QtGui
+%{_qt_includedir}/QtPlatformHeaders
 %{_qt_includedir}/QtPlatformSupport
 %{_qt_includedir}/QtUiTools
 %{_qt_libdir}/libQt%{api}Gui.so
@@ -644,6 +654,45 @@ Minimalistic EGL output driver for QtGui v5.
 %{_qt_plugindir}/platforms/libqminimalegl.so
 
 #----------------------------------------------------------------------------
+%package -n %{qtlocation}
+Summary:	Qt Location library
+Group:		System/Libraries
+
+%description -n %{qtlocation}
+Qt Location library
+
+%files -n %{qtlocation}
+%{_qt_libdir}/libQt%{api}Location.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}Location.so.%{major}*
+%endif
+%dir %{_qt_plugindir}/geoservices
+%{_qt_plugindir}/geoservices/libqtgeoservices_nokia.so
+%{_qt_plugindir}/geoservices/libqtgeoservices_osm.so
+%{_qt_prefix}/qml/QtLocation
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtlocationd}
+Summary:	Development files for version %{api} of the QtLocation library
+Group:		Development/KDE and Qt
+Requires:	%{qtlocation} = %{EVRD}
+
+%description -n %{qtlocationd}
+Development files for version %{api} of the QtLocation library.
+
+%files -n %{qtlocationd}
+%{_qt_includedir}/QtLocation
+%{_qt_libdir}/libQt%{api}Location.so
+%{_qt_libdir}/libQt%{api}Location.prl
+%{_qt_libdir}/cmake/Qt%{api}Location
+%{_qt_libdir}/pkgconfig/Qt%{api}Location.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Location.pc
+%endif
+
+
+#----------------------------------------------------------------------------
 
 %package -n %{qtnetwork}
 Summary:	Qt Networking library
@@ -662,12 +711,12 @@ Qt Networking library.
 #----------------------------------------------------------------------------
 
 %package -n %{qtnetworkd}
-Summary:	Development files for version 5 of the QtNetwork library
+Summary:	Development files for version %{api} of the QtNetwork library
 Group:		Development/KDE and Qt
 Requires:	%{qtnetwork} = %{EVRD}
 
 %description -n %{qtnetworkd}
-Development files for version 5 of the QtNetwork library.
+Development files for version %{api} of the QtNetwork library.
 
 %files -n %{qtnetworkd}
 %{_qt_includedir}/QtNetwork
@@ -1064,7 +1113,6 @@ Qt Widget library.
 %if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Widgets.so.%{major}*
 %endif
-%{_qt_plugindir}/accessible
 
 #----------------------------------------------------------------------------
 
@@ -1118,6 +1166,44 @@ Development files for version 5 of the QtQuickWidgets library.
 %if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/pkgconfig/Qt%{api}QuickWidgets.pc
 %endif
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebchannel}
+Summary:	Qt %{api} WebChannel library
+Group:		System/Libraries
+
+%description -n %{qtwebchannel}
+Qt %{api} WebChannel library,  a library for communication between
+HTML/JavaScript and Qt/QML objects.
+
+%files -n %{qtwebchannel}
+%{_qt_libdir}/libQt%{api}WebChannel.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}WebChannel.so.%{major}*
+%endif
+%{_qt_prefix}/qml/QtWebChannel
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebchanneld}
+Summary:	Development files for the Qt %{api} WebChannel library
+Group:		Development/KDE and Qt
+Requires:	%{qtwebchannel} = %{EVRD}
+
+%description -n %{qtwebchanneld}
+Development files for version %{api} of the QtWebChannel library,
+a library for communication between HTML/JavaScript and Qt/QML
+objects.
+
+%files -n %{qtwebchanneld}
+%{_qt_includedir}/QtWebChannel
+%{_qt_libdir}/libQt%{api}WebChannel.so
+%{_qt_libdir}/libQt%{api}WebChannel.prl
+%{_qt_libdir}/cmake/Qt%{api}WebChannel
+%{_qt_libdir}/pkgconfig/Qt%{api}WebChannel.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}WebChannel.pc
+%endif
+
 
 #----------------------------------------------------------------------------
 %package -n %{qtwebsockets}
@@ -1255,6 +1341,8 @@ Runtime library for Qt Declarative.
 %{_libdir}/libQt%{api}Declarative.so.%{major}*
 %endif
 %{_qt_plugindir}/qmltooling
+%{_qt_bindir}/qmleasing
+%{_qt_bindir}/qmllint
 
 #----------------------------------------------------------------------------
 
@@ -1452,6 +1540,7 @@ BuildArch:	noarch
 Qt Multimedia translations.
 
 %files qtmultimedia-i18n
+%lang(ca) %{_qt_translationsdir}/qtmultimedia_ca.qm
 %lang(cs) %{_qt_translationsdir}/qtmultimedia_cs.qm
 %lang(de) %{_qt_translationsdir}/qtmultimedia_de.qm
 %lang(fi) %{_qt_translationsdir}/qtmultimedia_fi.qm
@@ -1622,6 +1711,7 @@ BuildArch:	noarch
 Qt Quick translations.
 
 %files qtquick-i18n
+%lang(ca) %{_qt_translationsdir}/qtquick1_ca.qm
 %lang(cs) %{_qt_translationsdir}/qtquick1_cs.qm
 %lang(de) %{_qt_translationsdir}/qtquick1_de.qm
 %lang(fi) %{_qt_translationsdir}/qtquick1_fi.qm
@@ -1631,6 +1721,10 @@ Qt Quick translations.
 %lang(ru) %{_qt_translationsdir}/qtquick1_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtquick1_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtquick1_uk.qm
+%lang(de) %{_qt_translationsdir}/qtquickcontrols_de.qm
+%lang(ja) %{_qt_translationsdir}/qtquickcontrols_ja.qm
+%lang(ru) %{_qt_translationsdir}/qtquickcontrols_ru.qm
+%lang(uk) %{_qt_translationsdir}/qtquickcontrols_uk.qm
 
 #----------------------------------------------------------------------------
 
@@ -1749,6 +1843,7 @@ BuildArch:	noarch
 Qt Script translations.
 
 %files qtscript-i18n
+%lang(ca) %{_qt_translationsdir}/qtscript_ca.qm
 %lang(cs) %{_qt_translationsdir}/qtscript_cs.qm
 %lang(de) %{_qt_translationsdir}/qtscript_de.qm
 %lang(fi) %{_qt_translationsdir}/qtscript_fi.qm
@@ -1829,6 +1924,52 @@ Development files for Qt's SVG rendering engine.
 %if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/pkgconfig/Qt%{api}Svg.pc
 %endif
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtwaylandclient}
+Summary:	Wayland display system integration for Qt
+Group:		System/Libraries
+BuildRequires:	pkgconfig(wayland-client)
+BuildRequires:	pkgconfig(wayland-cursor)
+BuildRequires:	pkgconfig(wayland-egl)
+BuildRequires:	pkgconfig(wayland-scanner)
+BuildRequires:	pkgconfig(wayland-server)
+
+%description -n %{qtwaylandclient}
+Wayland display system integration for Qt
+
+%files -n %{qtwaylandclient}
+%{_qt_bindir}/qtwaylandscanner
+%{_qt_libdir}/libQt%{api}WaylandClient.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}WaylandClient.so.%{major}*
+%endif
+%{_qt_plugindir}/platforms/libqwayland-egl.so
+%{_qt_plugindir}/platforms/libqwayland-generic.so
+%{_qt_plugindir}/wayland-decoration-client
+%{_qt_plugindir}/wayland-graphics-integration-client
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtwaylandclientd}
+Summary:	Development files for the Qt WebKit web browsing library
+Group:		Development/KDE and Qt
+Requires:	%{qtwaylandclient} = %{EVRD}
+
+%description -n %{qtwaylandclientd}
+Development files for the Qt WebKit web browsing library.
+
+%files -n %{qtwaylandclientd}
+%{_qt_includedir}/QtWaylandClient
+%{_qt_libdir}/libQt%{api}WaylandClient.so
+%{_qt_libdir}/libQt%{api}WaylandClient.prl
+%{_qt_libdir}/cmake/Qt%{api}WaylandClient
+%{_qt_libdir}/pkgconfig/Qt%{api}WaylandClient.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}WaylandClient.pc
+%endif
+
 
 #----------------------------------------------------------------------------
 
@@ -2027,6 +2168,7 @@ BuildArch:	noarch
 Qt XSLT engine translations.
 
 %files qtxmlpatterns-i18n
+%lang(ca) %{_qt_translationsdir}/qtxmlpatterns_ca.qm
 %lang(cs) %{_qt_translationsdir}/qtxmlpatterns_cs.qm
 %lang(de) %{_qt_translationsdir}/qtxmlpatterns_de.qm
 %lang(hu) %{_qt_translationsdir}/qtxmlpatterns_hu.qm
@@ -2048,6 +2190,7 @@ Requires:	%{qtconcurrentd} = %{EVRD}
 Requires:	%{qtcored} = %{EVRD}
 Requires:	%{qtdbusd} = %{EVRD}
 Requires:	%{qtguid} = %{EVRD}
+Requires:	%{qtlocationd} = %{EVRD}
 Requires:	%{qtnetworkd} = %{EVRD}
 Requires:	%{qtopengld} = %{EVRD}
 Requires:	%{qtpositioningd} = %{EVRD}
@@ -2073,8 +2216,10 @@ Requires:	%{qtquickwidgetsd} = %{EVRD}
 Requires:	%{qtscriptd} = %{EVRD}
 Requires:	%{qtscripttoolsd} = %{EVRD}
 Requires:	%{qtsvgd} = %{EVRD}
+Suggests:	%{qtwaylandclientd} = %{EVRD}
 Requires:	%{qtwebkitd} = %{EVRD}
 Requires:	%{qtwebkitwidgetsd} = %{EVRD}
+Requires:	%{qtwebchanneld} = %{EVRD}
 Requires:	%{qtwebsocketsd} = %{EVRD}
 Requires:	%{qtxmlpatternsd} = %{EVRD}
 Requires:	qmake%{api} = %{EVRD}
