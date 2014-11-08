@@ -9,3 +9,5 @@ addFilter("E: empty-debuginfo-package")
 addFilter("E: hardcoded-library-path")
 addFilter("E: binary-or-shlib-defines-rpath")
 addFilter("E: devel-file-in-non-devel-package")
+# False positives
+addFilter("E: no-dependency-on")

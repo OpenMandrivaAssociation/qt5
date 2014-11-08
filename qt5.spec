@@ -2692,6 +2692,9 @@ find %{buildroot} -type f -perm -0755 -name "*.html" |xargs --no-run-if-empty ch
 find %{buildroot} -type f -perm -0755 -name "*.js" |xargs --no-run-if-empty chmod 0644
 find %{buildroot} -type f -perm -0755 -name "*.plist.app" |xargs --no-run-if-empty chmod 0644
 
+# "make dep" output packaged into examples is bogus...
+find %{buildroot} -name .deps |xargs rm -rf
+
 # Workaround for
 # *** ERROR: same build ID in nonidentical files!
 #        /usr/lib/qt5/bin/qdbuscpp2xml
