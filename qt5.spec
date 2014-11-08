@@ -214,6 +214,7 @@ Version 5 of the Qt toolkit.
 %package -n %{qtbluetooth}
 Summary:	Qt Bluetooth library
 Group:		System/Libraries
+BuildRequires:	pkgconfig(bluez)
 
 %description -n %{qtbluetooth}
 Qt Bluetooth library.
