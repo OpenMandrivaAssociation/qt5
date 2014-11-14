@@ -126,7 +126,7 @@ Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |
 %else
 Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 %endif
-Release:	0.%{beta}.1
+Release:	0.%{beta}.2
 %endif
 Source1:	qt5.macros
 Source2:	openmandriva-assistant-qt%{api}.desktop
@@ -336,6 +336,7 @@ Development files for version 5 of the QtCore library.
 %{_qt_docdir}/global
 %{_bindir}/moc-qt%{api}
 %{_qt_bindir}/moc
+%{_qt_bindir}/syncqt*
 %{_bindir}/rcc-qt%{api}
 %{_qt_bindir}/rcc
 %{_qt_includedir}/QtCore
@@ -2655,9 +2656,6 @@ make install STRIP=true INSTALL_ROOT=%{buildroot}
 make install_qch_docs INSTALL_ROOT=%{buildroot}
 %endif
 
-# Installed, but not useful
-rm -f %{buildroot}%{_qt_bindir}/syncqt
-rm -f %{buildroot}%{_qt_bindir}/syncqt.pl
 # Probably not useful outside of Qt source tree?
 rm -f %{buildroot}%{_qt_bindir}/qtmodule-configtests
 # Let's not ship -devel files for private libraries... At least not until
