@@ -2545,6 +2545,11 @@ grep -rl "/python" . |xargs sed -i -e "s,/python,/python2,g"
 sed -i -e "s,python,python2,g" qtwebkit/Source/*/DerivedSources.pri
 
 %build
+# build with python2
+mkdir pybin
+ln -s %{_bindir}/python2 pybin/python
+export PATH=`pwd`/pybin:$PATH
+
 ./configure \
 	-prefix %{_qt_prefix} \
 	-bindir %{_qt_bindir} \
