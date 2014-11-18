@@ -107,7 +107,7 @@
 %define enginio %mklibname enginio 1
 %define enginiod %mklibname enginio -d
 
-%bcond_without directfb
+%bcond_with directfb
 # Requires qdoc5 and qt5-tools to build
 %bcond_with docs
 
@@ -495,7 +495,9 @@ Requires:	%{qtgui} = %{EVRD}
 # We need all the Platform plugins because the plugin related cmake files in
 # %{_qt_libdir}/cmake/Qt%{api}Gui cause fatal errors if the plugins aren't
 # installed.
+%if %{with directfb}
 Requires:	%{qtgui}-directfb = %{EVRD}
+%endif
 %ifos linux
 Requires:	%{qtgui}-linuxfb = %{EVRD}
 %endif
@@ -538,7 +540,7 @@ Development files for version 5 of the QtGui library.
 %endif
 
 #----------------------------------------------------------------------------
-
+%if %{with directfb}
 %package -n %{qtgui}-directfb
 Summary:	DirectFB output driver for QtGui v5
 Group:		System/Libraries
@@ -550,6 +552,7 @@ DirectFB output driver for QtGui v5.
 
 %files -n %{qtgui}-directfb
 %{_qt_plugindir}/platforms/libqdirectfb.so
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -2544,6 +2547,22 @@ grep -rl "env python" . |xargs sed -i -e "s,env python,env python2,g"
 grep -rl "/python" . |xargs sed -i -e "s,/python,/python2,g"
 sed -i -e "s,python,python2,g" qtwebkit/Source/*/DerivedSources.pri
 
+# respect cflags
+sed -i -e '/^CPPFLAGS\s*=/ s/-g //' \
+	qtbase/qmake/Makefile.unix
+
+sed -i -e "s|^\(QMAKE_LFLAGS_RELEASE.*\)|\1 %{ldflags}|" \
+  qtbase/mkspecs/common/g++-unix.conf
+
+sed -i -e "s|-O2|%{optflags}|g" qtbase/mkspecs/common/gcc-base.conf
+sed -i -e "s|-O3|%{optflags}|g" qtbase/mkspecs/common/gcc-base.conf
+
+# move some bundled libs to ensure they're not accidentally used
+pushd qtbase/src/3rdparty
+mkdir UNUSED
+mv freetype libjpeg libpng zlib xcb sqlite UNUSED/
+popd
+
 %build
 # build with python2
 mkdir pybin
@@ -2704,7 +2723,7 @@ find %{buildroot} -name .deps |xargs rm -rf
 #   and  /usr/lib/qt5/bin/moc
 # ...
 # while generating debug info
-find %{buildroot} -type f -perm -0755 |grep -vE '\.(so|qml|sh)' |xargs %__strip --strip-unneeded
+find %{buildroot} -type f -perm -0755 |grep -vE '\.(so|qml|sh|pl)' |xargs %__strip --strip-unneeded
 
 # Install rpm macros
 mkdir -p %{buildroot}%{_sysconfdir}/rpm/macros.d
