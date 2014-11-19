@@ -110,6 +110,11 @@
 %bcond_with directfb
 # Requires qdoc5 and qt5-tools to build
 %bcond_with docs
+# https://bugs.gentoo.org/show_bug.cgi?id=433826
+# 100%-related for cooker
+# disable gtkstyle because it adds qt4 include paths to the compiler
+# command line if x11-libs/cairo is built with USE=qt4 (bug 433826)
+%bcond_with gtk
 
 Summary:	Version 5 of the Qt toolkit
 Name:		qt5
@@ -152,8 +157,10 @@ BuildRequires:	pkgconfig(egl)
 BuildRequires:	pkgconfig(glesv2)
 # Event loop
 BuildRequires:	pkgconfig(glib-2.0)
+%if %{with gtk}
 # GTK theme
 BuildRequires:	pkgconfig(gtk+-2.0)
+%endif
 # ICU
 BuildRequires:	pkgconfig(icu-uc)
 # Multimedia
@@ -481,7 +488,9 @@ Qt GUI library.
 %{_qt_plugindir}/imageformats
 %dir %{_qt_plugindir}/platforminputcontexts
 %dir %{_qt_plugindir}/platforms
+%if %{with gtk}
 %dir %{_qt_plugindir}/platformthemes
+%endif
 %dir %{_qt_plugindir}/iconengines
 %{_qt_plugindir}/generic
 %{_qt_plugindir}/printsupport
@@ -497,9 +506,9 @@ Requires:	%{qtgui} = %{EVRD}
 # installed.
 %if %{with directfb}
 Requires:	%{qtgui}-directfb = %{EVRD}
-%endif
 %ifos linux
 Requires:	%{qtgui}-linuxfb = %{EVRD}
+%endif
 %endif
 Requires:	%{qtgui}-minimal = %{EVRD}
 Requires:	%{qtgui}-offscreen = %{EVRD}
@@ -507,7 +516,9 @@ Requires:	%{qtgui}-x11 = %{EVRD}
 Requires:	%{qtgui}-eglfs = %{EVRD}
 Requires:	%{qtgui}-kms = %{EVRD}
 Requires:	%{qtgui}-minimalegl = %{EVRD}
+%if %{with gtk}
 Requires:	%{name}-platformtheme-gtk2 = %{EVRD}
+%endif
 Requires:	pkgconfig(gl)
 Requires:	pkgconfig(egl)
 Requires:	pkgconfig(glesv2)
@@ -552,7 +563,6 @@ DirectFB output driver for QtGui v5.
 
 %files -n %{qtgui}-directfb
 %{_qt_plugindir}/platforms/libqdirectfb.so
-%endif
 
 #----------------------------------------------------------------------------
 
@@ -570,6 +580,7 @@ Linux Framebuffer output driver for QtGui v5.
 # FIXME need to determine why those aren't built all the time. We're probably
 # missing a BuildRequires: somewhere.
 %optional %{_qt_libdir}/fonts
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -2414,7 +2425,7 @@ Base macros for Qt 5.
 %{_sysconfdir}/rpm/macros.d/qt5.macros
 
 #----------------------------------------------------------------------------
-
+%if %{with gtk}
 %package platformtheme-gtk2
 Summary:	GTK 2.x platform theme for Qt 5
 Group:		Graphical desktop/KDE
@@ -2428,7 +2439,7 @@ based desktops.
 
 %files platformtheme-gtk2
 %{_qt_plugindir}/platformthemes/libqgtk2.so
-
+%endif
 #----------------------------------------------------------------------------
 
 %package -n qdoc%{api}
