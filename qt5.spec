@@ -506,9 +506,9 @@ Requires:	%{qtgui} = %{EVRD}
 # installed.
 %if %{with directfb}
 Requires:	%{qtgui}-directfb = %{EVRD}
+%endif
 %ifos linux
 Requires:	%{qtgui}-linuxfb = %{EVRD}
-%endif
 %endif
 Requires:	%{qtgui}-minimal = %{EVRD}
 Requires:	%{qtgui}-offscreen = %{EVRD}
@@ -563,6 +563,7 @@ DirectFB output driver for QtGui v5.
 
 %files -n %{qtgui}-directfb
 %{_qt_plugindir}/platforms/libqdirectfb.so
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -580,7 +581,6 @@ Linux Framebuffer output driver for QtGui v5.
 # FIXME need to determine why those aren't built all the time. We're probably
 # missing a BuildRequires: somewhere.
 %optional %{_qt_libdir}/fonts
-%endif
 
 #----------------------------------------------------------------------------
 
@@ -2569,10 +2569,10 @@ sed -i -e "s|-O2|%{optflags}|g" qtbase/mkspecs/common/gcc-base.conf
 sed -i -e "s|-O3|%{optflags}|g" qtbase/mkspecs/common/gcc-base.conf
 
 # move some bundled libs to ensure they're not accidentally used
-pushd qtbase/src/3rdparty
-mkdir UNUSED
-mv freetype libjpeg libpng zlib xcb sqlite UNUSED/
-popd
+#pushd qtbase/src/3rdparty
+#mkdir UNUSED
+#mv freetype libjpeg libpng zlib xcb sqlite UNUSED/
+#popd
 
 %build
 # build with python2
