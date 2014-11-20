@@ -144,6 +144,7 @@ Patch1:		qt-everywhere-opensource-src-5.3.1-cmake-linguist.patch
 Patch2:		qt-everywhere-opensource-src-5.2.0-staticgrue.patch
 # upstream patch to build gsttools with gstreamer 1.0
 Patch3:		Initial-porting-effort-to-GStreamer-1.0.patch
+Patch4:		0001-Add-ARM-64-support.patch
 BuildRequires:	jpeg-devel
 # Build scripts
 BuildRequires:	python >= 3.0 python2
@@ -2552,6 +2553,8 @@ Tools for Qt 5.
 pushd qtmultimedia
 %patch3 -p1 -b .gst1
 popd
+# aarch64 support in webkit
+%patch4 -p1
 
 # Build scripts aren't ready for python3
 grep -rl "env python" . |xargs sed -i -e "s,env python,env python2,g"
@@ -2615,7 +2618,7 @@ export PATH=`pwd`/pybin:$PATH
 %ifarch %{ix86}
 	-platform linux-g++-32 \
 %endif
-%ifarch %{arm}
+%ifarch %{armx}
 	-platform linux-g++ \
 %endif
 	-system-zlib \
