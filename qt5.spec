@@ -98,6 +98,8 @@
 %define qtsvgd %mklibname qt%{api}svg -d
 %define qtwaylandclient %mklibname qt%{api}waylandclient %{major}
 %define qtwaylandclientd %mklibname qt%{api}waylandclient -d
+%define qtwaylandcompositor %mklibname qt%{api}waylandcompositor %{major}
+%define qtwaylandcompositord %mklibname qt%{api}compositor -d
 %define qtwebkit %mklibname qt%{api}webkit %{major}
 %define qtwebkitd %mklibname qt%{api}webkit -d
 %define qtwebkitwidgets %mklibname qt%{api}webkitwidgets %{major}
@@ -145,6 +147,7 @@ Patch2:		qt-everywhere-opensource-src-5.2.0-staticgrue.patch
 # upstream patch to build gsttools with gstreamer 1.0
 Patch3:		Initial-porting-effort-to-GStreamer-1.0.patch
 Patch4:		0001-Add-ARM-64-support.patch
+Patch5:		qt5-5.4.0-qtwayland-enable-compositor.patch
 BuildRequires:	jpeg-devel
 # Build scripts
 BuildRequires:	python >= 3.0 python2
@@ -1975,7 +1978,7 @@ Group:		Development/KDE and Qt
 Requires:	%{qtwaylandclient} = %{EVRD}
 
 %description -n %{qtwaylandclientd}
-Development files for the Qt WebKit web browsing library.
+Development files for the Qt Wayland display system integration for Qt
 
 %files -n %{qtwaylandclientd}
 %{_qt_includedir}/QtWaylandClient
@@ -1987,6 +1990,49 @@ Development files for the Qt WebKit web browsing library.
 %{_libdir}/pkgconfig/Qt%{api}WaylandClient.pc
 %endif
 
+#----------------------------------------------------------------------------
+
+%package -n	%{qtwaylandcompositor}
+Summary:	Wayland platform QtCompositor module
+Group:		System/Libraries
+
+%description -n %{qtwaylandcompositor}
+Qt Wayland QtCompositor module
+
+%files -n %{qtwaylandcompositor}
+%{_qt_libdir}/libQt%{api}Compositor.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}Compositor.so.%{major}*
+%endif
+%{_qt_plugindir}/platforms/libqwayland-xcomposite-egl.so
+%{_qt_plugindir}/platforms/libqwayland-xcomposite-glx.so
+%{_qt_plugindir}/platforms/wayland-graphics-integration-server/libdrm-egl-server.so
+%{_qt_plugindir}/platforms/wayland-graphics-integration-server/libwayland-egl.so
+%{_qt_plugindir}/platforms/wayland-graphics-integration-server/libxcomposite-egl.so
+%{_qt_plugindir}/platforms/wayland-graphics-integration-server/libxcomposite-glx.so
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtwaylandcompositord}
+Summary:	Development files for the Qt WebKit web browsing library
+Group:		Development/KDE and Qt
+Requires:	%{qtwaylandcompositor} = %{EVRD}
+Requires:	%{qtwaylandclient} = %{EVRD}
+Requires:	%{qtwaylandclient} = %{EVRD}
+Requires:	%{qtwaylandclientd} = %{EVRD}
+
+%description -n %{qtwaylandcompositord}
+Development files for the Qt Wayland QtCompositor module
+
+%files -n %{qtwaylandcompositord}
+%{_qt_includedir}/QtCompositor
+%{_qt_libdir}/libQt%{api}Compositor.so
+%{_qt_libdir}/libQt%{api}Compositor.prl
+%{_qt_libdir}/cmake/Qt%{api}Compositor
+%{_qt_libdir}/pkgconfig/Qt%{api}Compositor.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Compositor.pc
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -2555,6 +2601,10 @@ pushd qtmultimedia
 popd
 # aarch64 support in webkit
 %patch4 -p1
+# if you know how to pass an argue to build env
+# CONFIG+=wayland-compositor
+# remove this patch
+%patch5 -p1
 
 # Build scripts aren't ready for python3
 grep -rl "env python" . |xargs sed -i -e "s,env python,env python2,g"
@@ -2757,3 +2807,16 @@ cat >%{buildroot}%{_sysconfdir}/xdg/qtchooser/%{name}.conf <<'EOF'
 %{_qt_bindir}
 %{_qt_libdir}
 EOF
+
+# QMAKE_PRL_BUILD_DIR = /builddir/build/BUILD/qt-everywhere-opensource-src-5.4.0-beta/qtwayland/src/client
+## .prl/.la file love
+# nuke .prl reference(s) to %%buildroot, excessive (.la-like) libs
+pushd %{buildroot}%{_qt5_libdir}
+for prl_file in libQt5*.prl ; do
+  sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" ${prl_file}
+  if [ -f "$(basename ${prl_file} .prl).so" ]; then
+    rm -fv "$(basename ${prl_file} .prl).la"
+    sed -i -e "/^QMAKE_PRL_LIBS/d" ${prl_file}
+  fi
+done
+popd
