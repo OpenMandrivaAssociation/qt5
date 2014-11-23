@@ -2004,12 +2004,12 @@ Qt Wayland QtCompositor module
 %if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Compositor.so.%{major}*
 %endif
-%{_qt_plugindir}/platforms/libqwayland-xcomposite-egl.so
-%{_qt_plugindir}/platforms/libqwayland-xcomposite-glx.so
-%{_qt_plugindir}/platforms/wayland-graphics-integration-server/libdrm-egl-server.so
-%{_qt_plugindir}/platforms/wayland-graphics-integration-server/libwayland-egl.so
-%{_qt_plugindir}/platforms/wayland-graphics-integration-server/libxcomposite-egl.so
-%{_qt_plugindir}/platforms/wayland-graphics-integration-server/libxcomposite-glx.so
+%{_qt_plugindir}/libqwayland-xcomposite-egl.so
+%{_qt_plugindir}/libqwayland-xcomposite-glx.so
+%{_qt_plugindir}/wayland-graphics-integration-server/libdrm-egl-server.so
+%{_qt_plugindir}/wayland-graphics-integration-server/libwayland-egl.so
+%{_qt_plugindir}/wayland-graphics-integration-server/libxcomposite-egl.so
+%{_qt_plugindir}/wayland-graphics-integration-server/libxcomposite-glx.so
 
 #----------------------------------------------------------------------------
 
