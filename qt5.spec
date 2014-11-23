@@ -2620,6 +2620,10 @@ sed -i -e "s|^\(QMAKE_LFLAGS_RELEASE.*\)|\1 %{ldflags}|" \
 
 sed -i -e "s|-O2|%{optflags}|g" qtbase/mkspecs/common/gcc-base.conf
 sed -i -e "s|-O3|%{optflags}|g" qtbase/mkspecs/common/gcc-base.conf
+# replace c++ with g++
+# c++ -Xassembler --version -x assembler -c /dev/null
+# clang: error: unsupported argument '--version' to option 'Xassembler'
+sed -i 's/c++/g++/g' qtwebengine/src/3rdparty/chromium/build/compiler_version.py
 
 # move some bundled libs to ensure they're not accidentally used
 #pushd qtbase/src/3rdparty
