@@ -1955,6 +1955,7 @@ BuildRequires:	pkgconfig(wayland-cursor)
 BuildRequires:	pkgconfig(wayland-egl)
 BuildRequires:	pkgconfig(wayland-scanner)
 BuildRequires:	pkgconfig(wayland-server)
+BuildRequires:	pkgconfig(xcomposite)
 
 %description -n %{qtwaylandclient}
 Wayland display system integration for Qt
@@ -2280,6 +2281,7 @@ Requires:	%{qtscriptd} = %{EVRD}
 Requires:	%{qtscripttoolsd} = %{EVRD}
 Requires:	%{qtsvgd} = %{EVRD}
 Suggests:	%{qtwaylandclientd} = %{EVRD}
+Suggests:	%{qtwaylandcompositord} = %{EVRD}
 Requires:	%{qtwebkitd} = %{EVRD}
 Requires:	%{qtwebkitwidgetsd} = %{EVRD}
 Requires:	%{qtwebchanneld} = %{EVRD}
