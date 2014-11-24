@@ -2625,6 +2625,9 @@ sed -i -e "s|-O3|%{optflags}|g" qtbase/mkspecs/common/gcc-base.conf
 # clang: error: unsupported argument '--version' to option 'Xassembler'
 sed -i 's/c++/g++/g' qtwebengine/src/3rdparty/chromium/build/compiler_version.py
 
+# drop weird X11R6 lib from path in *.pc files
+sed -i 's!X11R6/!!g' qtbase/mkspecs/linux-g++*/qmake.conf
+
 # move some bundled libs to ensure they're not accidentally used
 #pushd qtbase/src/3rdparty
 #mkdir UNUSED
