@@ -171,6 +171,7 @@ BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(openal)
 BuildRequires:	pkgconfig(xkbcommon)
 BuildRequires:	pkgconfig(xorg-evdev)
+BuildRequires:	pkgconfig(vg)
 # For XCB platform plugin:
 BuildRequires:	pkgconfig(xcb) >= 1.5
 BuildRequires:	pkgconfig(xcb-icccm)
