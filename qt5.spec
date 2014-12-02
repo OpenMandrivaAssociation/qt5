@@ -1046,6 +1046,7 @@ Group:		System/Libraries
 Requires:	%{qtsql} = %{EVRD}
 Provides:	%{name}-database-plugin-odbc = %{EVRD}
 BuildRequires:	pkgconfig(libiodbc)
+BuildRequires:	unixODBC-devel
 
 %description -n %{qtsql}-odbc
 ODBC support for the QtSql library v5.
