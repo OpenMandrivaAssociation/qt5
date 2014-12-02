@@ -168,6 +168,8 @@ BuildRequires:	pkgconfig(gstreamer-1.0)
 BuildRequires:	pkgconfig(gstreamer-plugins-base-1.0)
 BuildRequires:	pkgconfig(libpulse)
 BuildRequires:	pkgconfig(openal)
+BuildRequires:	pkgconfig(xkbcommon)
+BuildRequires:	pkgconfig(xorg-evdev)
 # For XCB platform plugin:
 BuildRequires:	pkgconfig(xcb) >= 1.5
 BuildRequires:	pkgconfig(xcb-icccm)
@@ -2727,6 +2729,9 @@ export PATH=`pwd`/pybin:$PATH
 	-alsa \
 	-linuxfb \
 	-kms \
+	-evdev \
+	-silent \
+	-system-xkbcommon \
 	-no-separate-debug-info \
 	-no-strip \
 %if "%{_qt_libdir}" == "%{_libdir}"
