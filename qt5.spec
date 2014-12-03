@@ -2741,7 +2741,8 @@ export PATH=`pwd`/pybin:$PATH
 %endif
 	-v \
 	-I %{_includedir}/iodbc \
-	-I %{_includedir}/mysql
+	-I %{_includedir}/mysql \
+    -I %{_includedir}/VG
 
 # FIXME reduce-relocations is disabled for anything but x86 because
 # of QTBUG-36129. This should be changed as soon as we get a new
