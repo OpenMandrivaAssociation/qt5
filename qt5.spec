@@ -171,6 +171,7 @@ BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(openal)
 BuildRequires:	pkgconfig(xkbcommon)
 BuildRequires:	pkgconfig(xorg-evdev)
+BuildRequires:	pkgconfig(vg)
 # For XCB platform plugin:
 BuildRequires:	pkgconfig(xcb) >= 1.5
 BuildRequires:	pkgconfig(xcb-icccm)
@@ -2608,6 +2609,10 @@ popd
 # remove this patch
 %patch5 -p1
 
+%ifarch %ix86 x86_64
+%global optflags %{optflags} -fPIC
+%endif
+
 # Build scripts aren't ready for python3
 grep -rl "env python" . |xargs sed -i -e "s,env python,env python2,g"
 grep -rl "/python" . |xargs sed -i -e "s,/python,/python2,g"
@@ -2629,6 +2634,9 @@ sed -i 's/c++/g++/g' qtwebengine/src/3rdparty/chromium/build/compiler_version.py
 
 # drop weird X11R6 lib from path in *.pc files
 sed -i 's!X11R6/!!g' qtbase/mkspecs/linux-g++*/qmake.conf
+
+# (tpg) correct is VG/openvg.h
+grep -rl "vg/openvg.h" . |xargs sed -i -e "s,vg/openvg.h,VG/openvg.h,g"
 
 # move some bundled libs to ensure they're not accidentally used
 #pushd qtbase/src/3rdparty
@@ -2735,13 +2743,13 @@ export PATH=`pwd`/pybin:$PATH
 	-system-xkbcommon \
 	-no-separate-debug-info \
 	-no-strip \
-    -no-openvg \
 %if "%{_qt_libdir}" == "%{_libdir}"
 	-no-rpath \
 %endif
 	-v \
 	-I %{_includedir}/iodbc \
-	-I %{_includedir}/mysql 
+	-I %{_includedir}/mysql \
+    -I %{_includedir}/VG
 
 # FIXME reduce-relocations is disabled for anything but x86 because
 # of QTBUG-36129. This should be changed as soon as we get a new
