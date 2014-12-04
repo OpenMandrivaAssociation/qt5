@@ -2609,10 +2609,6 @@ popd
 # remove this patch
 %patch5 -p1
 
-%ifarch %ix86 x86_64
-%global optflags %{optflags} -fPIC
-%endif
-
 # Build scripts aren't ready for python3
 grep -rl "env python" . |xargs sed -i -e "s,env python,env python2,g"
 grep -rl "/python" . |xargs sed -i -e "s,/python,/python2,g"
