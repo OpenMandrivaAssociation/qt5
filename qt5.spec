@@ -126,7 +126,7 @@ Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
 Source0:	http://ftp.fau.de/qtproject/official_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}/single/qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	1
+Release:	2
 %else
 Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
@@ -173,6 +173,7 @@ BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(openal)
 BuildRequires:	pkgconfig(xkbcommon)
 BuildRequires:	pkgconfig(xorg-evdev)
+BuildRequires:	pkgconfig(vg)
 # For XCB platform plugin:
 BuildRequires:	pkgconfig(xcb) >= 1.5
 BuildRequires:	pkgconfig(xcb-icccm)
@@ -2632,6 +2633,9 @@ sed -i 's/c++/g++/g' qtwebengine/src/3rdparty/chromium/build/compiler_version.py
 # drop weird X11R6 lib from path in *.pc files
 sed -i 's!X11R6/!!g' qtbase/mkspecs/linux-g++*/qmake.conf
 
+# (tpg) correct is VG/openvg.h
+grep -rl "vg/openvg.h" . |xargs sed -i -e "s,vg/openvg.h,VG/openvg.h,g"
+
 # move some bundled libs to ensure they're not accidentally used
 #pushd qtbase/src/3rdparty
 #mkdir UNUSED
@@ -2742,7 +2746,8 @@ export PATH=`pwd`/pybin:$PATH
 %endif
 	-v \
 	-I %{_includedir}/iodbc \
-	-I %{_includedir}/mysql
+	-I %{_includedir}/mysql \
+    -I %{_includedir}/VG
 
 # FIXME reduce-relocations is disabled for anything but x86 because
 # of QTBUG-36129. This should be changed as soon as we get a new
