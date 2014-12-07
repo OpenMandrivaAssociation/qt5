@@ -155,6 +155,8 @@ BuildRequires:	cups-devel
 BuildRequires:	pkgconfig(gl)
 BuildRequires:	pkgconfig(egl)
 BuildRequires:	pkgconfig(glesv2)
+# OpenVG
+BuildRequires:	openvg-devel
 # Event loop
 BuildRequires:	pkgconfig(glib-2.0)
 %if %{with gtk}
