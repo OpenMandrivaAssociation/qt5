@@ -116,7 +116,9 @@
 # 100%-related for cooker
 # disable gtkstyle because it adds qt4 include paths to the compiler
 # command line if x11-libs/cairo is built with USE=qt4 (bug 433826)
-%bcond_with gtk
+# Our cairo actually isn't built with --enable-qt because nothing uses that combo.
+# We can leave gtkstyle support enabled.
+%bcond_without gtk
 
 Summary:	Version 5 of the Qt toolkit
 Name:		qt5
@@ -144,6 +146,7 @@ Patch2:		qt-everywhere-opensource-src-5.2.0-staticgrue.patch
 Patch3:		Initial-porting-effort-to-GStreamer-1.0.patch
 Patch4:		0001-Add-ARM-64-support.patch
 Patch5:		qt5-5.4.0-qtwayland-enable-compositor.patch
+Patch6:		qt-5.4.0-no-execstack-in-chromium-ffmpeg.patch
 BuildRequires:	jpeg-devel
 # Build scripts
 BuildRequires:	python >= 3.0 python2
@@ -430,6 +433,7 @@ Qt Core translations.
 %lang(hu) %{_qt_translationsdir}/qtbase_hu.qm
 %lang(it) %{_qt_translationsdir}/qtbase_it.qm
 %lang(ja) %{_qt_translationsdir}/qtbase_ja.qm
+%lang(lv) %{_qt_translationsdir}/qtbase_lv.qm
 %lang(ru) %{_qt_translationsdir}/qtbase_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtbase_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtbase_uk.qm
@@ -1405,6 +1409,7 @@ Qt Declarative translations.
 %lang(de) %{_qt_translationsdir}/qtdeclarative_de.qm
 %lang(fi) %{_qt_translationsdir}/qtdeclarative_fi.qm
 %lang(ja) %{_qt_translationsdir}/qtdeclarative_ja.qm
+%lang(lv) %{_qt_translationsdir}/qtdeclarative_lv.qm
 %lang(ru) %{_qt_translationsdir}/qtdeclarative_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtdeclarative_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtdeclarative_uk.qm
@@ -1876,6 +1881,7 @@ Qt Script translations.
 %lang(hu) %{_qt_translationsdir}/qtscript_hu.qm
 %lang(it) %{_qt_translationsdir}/qtscript_it.qm
 %lang(ja) %{_qt_translationsdir}/qtscript_ja.qm
+%lang(lv) %{_qt_translationsdir}/qtscript_lv.qm
 %lang(ru) %{_qt_translationsdir}/qtscript_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtscript_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtscript_uk.qm
@@ -2609,10 +2615,12 @@ popd
 # CONFIG+=wayland-compositor
 # remove this patch
 %patch5 -p1
+%patch6 -p1 -b .yasm~
 
 # Build scripts aren't ready for python3
 grep -rl "env python" . |xargs sed -i -e "s,env python,env python2,g"
-grep -rl "/python" . |xargs sed -i -e "s,/python,/python2,g"
+grep -rl "/python$" . |xargs sed -i -e "s,/python$,/python2,g"
+grep -rl "'python'" . |xargs sed -i -e "s,'python','python2',g"
 sed -i -e "s,python,python2,g" qtwebkit/Source/*/DerivedSources.pri
 
 # respect cflags
@@ -2624,6 +2632,12 @@ sed -i -e "s|^\(QMAKE_LFLAGS_RELEASE.*\)|\1 %{ldflags}|" \
 
 sed -i -e "s|-O2|%{optflags}|g" qtbase/mkspecs/common/gcc-base.conf
 sed -i -e "s|-O3|%{optflags}|g" qtbase/mkspecs/common/gcc-base.conf
+
+# chromium is a huge bogosity -- references to hidden SQLite symbols, has
+# asm files forcing an executable stack etc., but still tries to force ld
+# into --fatal-warnings mode...
+sed -i -e 's|--fatal-warnings|-O2|' qtwebengine/src/3rdparty/chromium/build/config/compiler/BUILD.gn qtwebengine/src/3rdparty/chromium/build/common.gypi qtwebengine/src/3rdparty/chromium/android_webview/android_webview.gyp
+
 # replace c++ with g++
 # c++ -Xassembler --version -x assembler -c /dev/null
 # clang: error: unsupported argument '--version' to option 'Xassembler'
@@ -2703,6 +2717,11 @@ export PATH=`pwd`/pybin:$PATH
 	-xcb \
 %if %{with directfb}
 	-directfb \
+%else
+	-no-directfb \
+%endif
+%if %{without gtk}
+	-no-gtkstyle \
 %endif
 	-qpa xcb \
 	-fontconfig \
@@ -2753,14 +2772,14 @@ export PATH=`pwd`/pybin:$PATH
 # (1.0.4) while other bits refer to it by Qt's version number
 ln -s %{version} qtenginio/include/Enginio/1.0.4
 
-%make STRIP=true
+%make STRIP=/bin/true || make STRIP=/bin/true
 
 %if %{with docs}
 %make docs
 %endif
 
 %install
-make install STRIP=true INSTALL_ROOT=%{buildroot}
+make install STRIP=/bin/true INSTALL_ROOT=%{buildroot}
 
 %if %{with docs}
 make install_qch_docs INSTALL_ROOT=%{buildroot}
