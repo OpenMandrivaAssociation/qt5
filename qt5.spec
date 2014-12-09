@@ -196,6 +196,7 @@ BuildRequires:	pkgconfig(xcb-xfixes)
 BuildRequires:	pkgconfig(xfixes)
 BuildRequires:	pkgconfig(xcb-randr)
 BuildRequires:	pkgconfig(xrandr)
+BuildRequires:	pkgconfig(xtst)
 BuildRequires:	pkgconfig(xkbcomp)
 BuildRequires:	pkgconfig(xkbfile)
 BuildRequires:	pkgconfig(xkbcommon) >= 0.4.1
