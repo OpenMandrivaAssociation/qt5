@@ -1,5 +1,5 @@
 %define debug_package %{nil}
-%define beta rc
+%define beta %{nil}
 %define api 5
 %define major 5
 %define qgstmajor 1
@@ -58,6 +58,12 @@
 %define qtquickwidgetsd %mklibname qt%{api}quickwidgets -d
 %define qtwebchannel %mklibname qt%{api}webchannel %{major}
 %define qtwebchanneld %mklibname qt%{api}webchannel -d
+%define qtwebengine %mklibname qt%{api}webengine %{major}
+%define qtwebengined %mklibname qt%{api}webengine -d
+%define qtwebenginecore %mklibname qt%{api}webenginecore %{major}
+%define qtwebenginecored %mklibname qt%{api}webenginecore -d
+%define qtwebenginewidgets %mklibname qt%{api}webenginewidgets %{major}
+%define qtwebenginewidgetsd %mklibname qt%{api}webenginewidgets -d
 %define qtwebsockets %mklibname qt%{api}websockets %{major}
 %define qtwebsocketsd %mklibname qt%{api}websockets -d
 %define qtx11extras %mklibname qt%{api}x11extras %{major}
@@ -127,10 +133,10 @@ License:	LGPLv3+
 Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
-Source0:	http://ftp.fau.de/qtproject/official_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}/single/qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	2
+Source0:	http://download.qt-project.org/official_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}/single/qt-everywhere-opensource-src-%{version}.tar.xz
+Release:	1
 %else
-Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
+Source0:	http://download.qt-project.org/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
 %endif
 Source1:	qt5.macros
@@ -1237,6 +1243,112 @@ objects.
 %{_libdir}/pkgconfig/Qt%{api}WebChannel.pc
 %endif
 
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebengine}
+Summary:	Qt %{api} WebEngine library
+Group:		System/Libraries
+
+%description -n %{qtwebengine}
+Qt %{api} WebEngine library, a library for rendering web content.
+
+%files -n %{qtwebengine}
+%{_qt_libdir}/libQt%{api}WebEngine.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}WebEngine.so.%{major}*
+%endif
+%{_qt_prefix}/qml/QtWebEngine
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebengined}
+Summary:	Development files for the Qt %{api} WebEngine library
+Group:		Development/KDE and Qt
+Requires:	%{qtwebengine} = %{EVRD}
+
+%description -n %{qtwebengined}
+Development files for version %{api} of the QtWebEngine library,
+a library for rendering web content.
+objects.
+
+%files -n %{qtwebengined}
+%{_qt_includedir}/QtWebEngine
+%{_qt_libdir}/libQt%{api}WebEngine.so
+%{_qt_libdir}/libQt%{api}WebEngine.prl
+%{_qt_libdir}/cmake/Qt%{api}WebEngine
+%{_qt_libdir}/pkgconfig/Qt%{api}WebEngine.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}WebEngine.pc
+%endif
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebenginecore}
+Summary:	Qt %{api} WebEngine Core library
+Group:		System/Libraries
+
+%description -n %{qtwebenginecore}
+Qt %{api} WebEngine Core library, a library for rendering web content.
+
+%files -n %{qtwebenginecore}
+%{_qt_libdir}/libQt%{api}WebEngineCore.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}WebEngineCore.so.%{major}*
+%endif
+%{_libdir}/qt5/libexec/QtWebEngineProcess
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebenginecored}
+Summary:	Development files for the Qt %{api} WebEngine Core library
+Group:		Development/KDE and Qt
+Requires:	%{qtwebengined} = %{EVRD}
+Requires:	%{qtwebenginecore} = %{EVRD}
+
+%description -n %{qtwebenginecored}
+Development files for version %{api} of the QtWebEngine Core library,
+a library for rendering web content.
+objects.
+
+%files -n %{qtwebenginecored}
+%{_qt_libdir}/libQt%{api}WebEngineCore.so
+%{_qt_libdir}/libQt%{api}WebEngineCore.prl
+%{_qt_libdir}/cmake/Qt%{api}WebEngineCore
+%{_qt_libdir}/pkgconfig/Qt%{api}WebEngineCore.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}WebEngineCore.pc
+%endif
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebenginewidgets}
+Summary:	Qt %{api} WebEngine Widgets library
+Group:		System/Libraries
+
+%description -n %{qtwebenginewidgets}
+Qt %{api} WebEngine Widgets library, a library for rendering web content.
+
+%files -n %{qtwebenginewidgets}
+%{_qt_libdir}/libQt%{api}WebEngineWidgets.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}WebEngineWidgets.so.%{major}*
+%endif
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebenginewidgetsd}
+Summary:	Development files for the Qt %{api} WebEngine Widgets library
+Group:		Development/KDE and Qt
+Requires:	%{qtwebenginewidgets} = %{EVRD}
+
+%description -n %{qtwebenginewidgetsd}
+Development files for version %{api} of the QtWebEngine Widgets library,
+a library for rendering web content.
+
+%files -n %{qtwebenginewidgetsd}
+%{_qt_includedir}/QtWebEngineWidgets
+%{_qt_libdir}/libQt%{api}WebEngineWidgets.so
+%{_qt_libdir}/libQt%{api}WebEngineWidgets.prl
+%{_qt_libdir}/cmake/Qt%{api}WebEngineWidgets
+%{_qt_libdir}/pkgconfig/Qt%{api}WebEngineWidgets.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}WebEngineWidgets.pc
+%endif
 
 #----------------------------------------------------------------------------
 %package -n %{qtwebsockets}
@@ -2788,6 +2900,22 @@ make install STRIP=/bin/true INSTALL_ROOT=%{buildroot}
 make install_qch_docs INSTALL_ROOT=%{buildroot}
 %endif
 
+#############################################################################
+# Workaround for QTBUG-43242 -- once it is fixed, remove everything until the
+# next line of # characters.
+if [ -e %{buildroot}%{_qt_libdir/libQt%{api}WebEngine.so ]; then
+	echo QTBUG-43242 has been fixed.
+	echo Please remove the workaround from the spec file.
+	exit 1
+else
+	cp -a qtwebengine/lib/* %{buildroot}%{_qt_libdir}
+	cp -a qtwebengine/include/* %{buildroot}%{_qt_includedir}
+	cp -a qtwebengine/libexec/* %{buildroot}%{_qt_libexecdir}
+	cp -a qtwebengine/qml/* %{buildroot}%{_qt_prefix}/qml/
+	cp -a qtwebengine/mkspecs/* %{buildroot}%{_qt_prefix}/mkspecs
+fi
+#############################################################################
+
 # Probably not useful outside of Qt source tree?
 rm -f %{buildroot}%{_qt_bindir}/qtmodule-configtests
 # Let's not ship -devel files for private libraries... At least not until
@@ -2831,7 +2959,7 @@ find %{buildroot} -name .deps |xargs rm -rf
 #   and  /usr/lib/qt5/bin/moc
 # ...
 # while generating debug info
-find %{buildroot} -type f -perm -0755 |grep -vE '\.(so|qml|sh|pl)' |xargs %__strip --strip-unneeded
+find %{buildroot} -type f -perm -0755 |grep -vE '\.(so|qml|sh|pl|ttf|eot|woff)' |xargs %__strip --strip-unneeded
 
 # Install rpm macros
 mkdir -p %{buildroot}%{_sysconfdir}/rpm/macros.d
