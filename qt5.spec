@@ -216,6 +216,7 @@ BuildRequires:	pkgconfig(directfb)
 BuildRequires:	pkgconfig(atspi-2)
 # Assorted...
 BuildRequires:	pkgconfig(libudev)
+BuildRequires:	pkgconfig(libpci)
 BuildRequires:	flex bison gperf
 # Used for CPU feature detection in configure step
 BuildRequires:	gdb
