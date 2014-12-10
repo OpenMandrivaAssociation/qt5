@@ -1258,6 +1258,11 @@ Qt %{api} WebEngine library, a library for rendering web content.
 %{_libdir}/libQt%{api}WebEngine.so.%{major}*
 %endif
 %{_qt_prefix}/qml/QtWebEngine
+%{_qt_prefix}/plugins/qtwebengine
+%{_qt_datadir}/icudtl.dat
+%{_qt_datadir}/qtwebengine_resources.pak
+%dir %{_qt_datadir}/translations/qtwebengine_locales
+%{expand:%(for i in am ar bg bn ca cs da de el en-GB en-US es-419 es et fa fi fil fr gu he hi hr hu id it ja kn ko lt lv ml mr ms nb nl pl pt-BR pt-PT ro ru sk sl sr sv sw ta te th tr uk vi zh-CN zh-TW; do echo "%%lang(${i/-/_}) %{_qt_datadir}/translations/qtwebengine_locales/$i.pak"; done)}
 
 #----------------------------------------------------------------------------
 %package -n %{qtwebengined}
@@ -2894,27 +2899,13 @@ ln -s %{version} qtenginio/include/Enginio/1.0.4
 %endif
 
 %install
+export PATH=`pwd`/pybin:$PATH
+
 make install STRIP=/bin/true INSTALL_ROOT=%{buildroot}
 
 %if %{with docs}
 make install_qch_docs INSTALL_ROOT=%{buildroot}
 %endif
-
-#############################################################################
-# Workaround for QTBUG-43242 -- once it is fixed, remove everything until the
-# next line of # characters.
-if [ -e %{buildroot}%{_qt_libdir/libQt%{api}WebEngine.so ]; then
-	echo QTBUG-43242 has been fixed.
-	echo Please remove the workaround from the spec file.
-	exit 1
-else
-	cp -a qtwebengine/lib/* %{buildroot}%{_qt_libdir}
-	cp -a qtwebengine/include/* %{buildroot}%{_qt_includedir}
-	cp -a qtwebengine/libexec/* %{buildroot}%{_qt_libexecdir}
-	cp -a qtwebengine/qml/* %{buildroot}%{_qt_prefix}/qml/
-	cp -a qtwebengine/mkspecs/* %{buildroot}%{_qt_prefix}/mkspecs
-fi
-#############################################################################
 
 # Probably not useful outside of Qt source tree?
 rm -f %{buildroot}%{_qt_bindir}/qtmodule-configtests
