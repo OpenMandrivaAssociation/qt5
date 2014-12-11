@@ -334,7 +334,7 @@ Development files for version 5 of the QtConcurrent library.
 %package -n %{qtcore}
 Summary:	Qt Core library
 Group:		System/Libraries
-Requires:	%{name}-qtcore-i18n = %{EVRD}
+Suggests:	%{name}-qtcore-i18n = %{EVRD}
 Obsoletes:	%{_lib}qt5v85 < 5.1.0-8
 Obsoletes:	%{_lib}qt5v8_5 < 5.2.0
 
@@ -1248,6 +1248,7 @@ objects.
 %package -n %{qtwebengine}
 Summary:	Qt %{api} WebEngine library
 Group:		System/Libraries
+Suggests:	%{name}-qtwebengine-i18n = %{EVRD}
 
 %description -n %{qtwebengine}
 Qt %{api} WebEngine library, a library for rendering web content.
@@ -1261,6 +1262,18 @@ Qt %{api} WebEngine library, a library for rendering web content.
 %{_qt_prefix}/plugins/qtwebengine
 %{_qt_datadir}/icudtl.dat
 %{_qt_datadir}/qtwebengine_resources.pak
+%dir %{_qt_datadir}/translations/qtwebengine_locales
+
+#----------------------------------------------------------------------------
+%package qtwebengine-i18n
+Summary:	Qt %{api} WebEngine translations
+Group:		System/Libraries
+BuildArch:	noarch
+
+%description qtwebengine-i18n
+Qt %{api} WebEngine translations
+
+%files qtwebengine-i18n
 %dir %{_qt_datadir}/translations/qtwebengine_locales
 %{expand:%(for i in am ar bg bn ca cs da de el en-GB en-US es-419 es et fa fi fil fr gu he hi hr hu id it ja kn ko lt lv ml mr ms nb nl pl pt-BR pt-PT ro ru sk sl sr sv sw ta te th tr uk vi zh-CN zh-TW; do echo "%%lang(${i/-/_}) %{_qt_datadir}/translations/qtwebengine_locales/$i.pak"; done)}
 
@@ -1480,7 +1493,7 @@ Development files for the Qt version of the CLucene search engine.
 %package -n %{qtdeclarative}
 Summary:	Runtime library for Qt Declarative
 Group:		System/Libraries
-Requires:	%{name}-qtdeclarative-i18n = %{EVRD}
+Suggests:	%{name}-qtdeclarative-i18n = %{EVRD}
 
 %description -n %{qtdeclarative}
 Runtime library for Qt Declarative.
@@ -1644,7 +1657,7 @@ to your application.
 %package -n %{qtmultimedia}
 Summary:	Qt Multimedia libraries
 Group:		System/Libraries
-Requires:	%{name}-qtmultimedia-i18n = %{EVRD}
+Suggests:	%{name}-qtmultimedia-i18n = %{EVRD}
 
 %description -n %{qtmultimedia}
 Qt Multimedia libraries.
@@ -1809,7 +1822,7 @@ Development files for the Qt QML library.
 %package -n %{qtquick}
 Summary:	Runtime library for Qt Quick
 Group:		System/Libraries
-Requires:	%{name}-qtquick-i18n = %{EVRD}
+Suggests:	%{name}-qtquick-i18n = %{EVRD}
 
 %description -n %{qtquick}
 Runtime library for Qt Quick.
@@ -1951,7 +1964,7 @@ Development files for Qt Quick's unit test module.
 %package -n %{qtscript}
 Summary:	Qt Script runtime library
 Group:		System/Libraries
-Requires:	%{name}-qtscript-i18n = %{EVRD}
+Suggests:	%{name}-qtscript-i18n = %{EVRD}
 
 %description -n %{qtscript}
 Qt Script runtime library.
@@ -2287,7 +2300,7 @@ Development files for the QtX11Extras library.
 Summary:	Qt XSLT engine
 Group:		System/Libraries
 Requires:	%{qtxml} = %{EVRD}
-Requires:	%{name}-qtxmlpatterns-i18n = %{EVRD}
+Suggests:	%{name}-qtxmlpatterns-i18n = %{EVRD}
 
 %description -n %{qtxmlpatterns}
 Qt XSLT engine.
