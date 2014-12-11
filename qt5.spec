@@ -153,6 +153,10 @@ Patch3:		Initial-porting-effort-to-GStreamer-1.0.patch
 Patch4:		0001-Add-ARM-64-support.patch
 Patch5:		qt5-5.4.0-qtwayland-enable-compositor.patch
 Patch6:		qt-5.4.0-no-execstack-in-chromium-ffmpeg.patch
+# Don't apply subpixel gamma-correction on XCB, matching Qt 4.8 and other toolkits
+Patch7:		https://qt.gitorious.org/qt/qtbase/commit/501c510cc3cb6215aed27af7599395480a049667.patch
+# FIXME This needs porting to Qt 5.4.0
+# https://github.com/maui-packages/qtwayland/commit/737e006290ace623552105f97c0f6a623a8e1d02.patch
 BuildRequires:	jpeg-devel
 # Build scripts
 BuildRequires:	python >= 3.0 python2
@@ -2749,6 +2753,10 @@ popd
 # remove this patch
 %patch5 -p1
 %patch6 -p1 -b .yasm~
+
+cd qtbase
+%patch7 -p1 -b .subpixelgc~
+cd ..
 
 # Build scripts aren't ready for python3
 grep -rl "env python" . |xargs sed -i -e "s,env python,env python2,g"
