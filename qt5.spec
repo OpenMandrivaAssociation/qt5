@@ -1252,6 +1252,7 @@ objects.
 %package -n %{qtwebengine}
 Summary:	Qt %{api} WebEngine library
 Group:		System/Libraries
+Requires:	%{name}-qtwebengine-common = %{EVRD}
 Suggests:	%{name}-qtwebengine-i18n = %{EVRD}
 
 %description -n %{qtwebengine}
@@ -1264,11 +1265,24 @@ Qt %{api} WebEngine library, a library for rendering web content.
 %endif
 %{_qt_prefix}/qml/QtWebEngine
 %{_qt_prefix}/plugins/qtwebengine
-%{_qt_datadir}/icudtl.dat
-%{_qt_datadir}/qtwebengine_resources.pak
-%dir %{_qt_datadir}/translations/qtwebengine_locales
+%{_qt_plugindir}/qtwebengine/libffmpegsumo.so
 
 #----------------------------------------------------------------------------
+
+%package qtwebengine-common
+Summary:	Qt WebEngine noarch data files
+Group:		System/Libraries
+BuildArch:	noarch
+
+%description qtwebengine-common
+Qt WebEngine noarch data files.
+
+%files qtwebengine-common
+%{_qt_datadir}/icudtl.dat
+%{_qt_datadir}/qtwebengine_resources.pak
+
+#----------------------------------------------------------------------------
+
 %package qtwebengine-i18n
 Summary:	Qt %{api} WebEngine translations
 Group:		System/Libraries
@@ -1508,8 +1522,6 @@ Runtime library for Qt Declarative.
 %{_libdir}/libQt%{api}Declarative.so.%{major}*
 %endif
 %{_qt_plugindir}/qmltooling
-%{_qt_bindir}/qmleasing
-%{_qt_bindir}/qmllint
 
 #----------------------------------------------------------------------------
 
@@ -2691,7 +2703,9 @@ QML tools for Qt 5.
 %{_qt_bindir}/qml
 %{_qt_bindir}/qml1plugindump
 %{_qt_bindir}/qmlbundle
+%{_qt_bindir}/qmleasing
 %{_qt_bindir}/qmlimportscanner
+%{_qt_bindir}/qmllint
 %{_qt_bindir}/qmlmin
 %{_qt_bindir}/qmlplugindump
 %{_qt_bindir}/qmlprofiler
