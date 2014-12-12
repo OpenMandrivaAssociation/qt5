@@ -1264,7 +1264,7 @@ Qt %{api} WebEngine library, a library for rendering web content.
 %{_libdir}/libQt%{api}WebEngine.so.%{major}*
 %endif
 %{_qt_prefix}/qml/QtWebEngine
-%{_qt_prefix}/plugins/qtwebengine
+%dir %{_qt_plugindir}/qtwebengine
 %{_qt_plugindir}/qtwebengine/libffmpegsumo.so
 
 #----------------------------------------------------------------------------
