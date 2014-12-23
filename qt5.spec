@@ -157,6 +157,7 @@ Patch6:		qt-5.4.0-no-execstack-in-chromium-ffmpeg.patch
 Patch7:		https://qt.gitorious.org/qt/qtbase/commit/501c510cc3cb6215aed27af7599395480a049667.patch
 # FIXME This needs porting to Qt 5.4.0
 # https://github.com/maui-packages/qtwayland/commit/737e006290ace623552105f97c0f6a623a8e1d02.patch
+Patch8:		0001-omv-arm-gnueabihf-g++.patch
 BuildRequires:	jpeg-devel
 # Build scripts
 BuildRequires:	python >= 3.0 python2
@@ -2771,6 +2772,7 @@ popd
 cd qtbase
 %patch7 -p1 -b .subpixelgc~
 cd ..
+%patch8 -p1 -b .armhf
 
 # Build scripts aren't ready for python3
 grep -rl "env python" . |xargs sed -i -e "s,env python,env python2,g"
