@@ -2852,7 +2852,6 @@ export PATH=`pwd`/pybin:$PATH
 %endif
 %ifarch %{armx}
 	-platform linux-g++ \
-	-xplatform omv-arm-gnueabihf-g++ \
 %endif
 	-system-zlib \
 	-system-libpng \
