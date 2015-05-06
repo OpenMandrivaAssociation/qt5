@@ -32,6 +32,8 @@
 %define qtdbusd %mklibname qt%{api}dbus -d
 %define qtgui %mklibname qt%{api}gui %{major}
 %define qtguid %mklibname qt%{api}gui -d
+%define qtlocation %mklibname qt%{api}location %{major}
+%define qtlocationd %mklibname qt%{api}location -d
 %define qtnetwork %mklibname qt%{api}network %{major}
 %define qtnetworkd %mklibname qt%{api}network -d
 %define qtnfc %mklibname qt%{api}nfc %{major}
@@ -54,6 +56,14 @@
 %define qtwidgetsd %mklibname qt%{api}widgets -d
 %define qtquickwidgets %mklibname qt%{api}quickwidgets %{major}
 %define qtquickwidgetsd %mklibname qt%{api}quickwidgets -d
+%define qtwebchannel %mklibname qt%{api}webchannel %{major}
+%define qtwebchanneld %mklibname qt%{api}webchannel -d
+%define qtwebengine %mklibname qt%{api}webengine %{major}
+%define qtwebengined %mklibname qt%{api}webengine -d
+%define qtwebenginecore %mklibname qt%{api}webenginecore %{major}
+%define qtwebenginecored %mklibname qt%{api}webenginecore -d
+%define qtwebenginewidgets %mklibname qt%{api}webenginewidgets %{major}
+%define qtwebenginewidgetsd %mklibname qt%{api}webenginewidgets -d
 %define qtwebsockets %mklibname qt%{api}websockets %{major}
 %define qtwebsocketsd %mklibname qt%{api}websockets -d
 %define qtx11extras %mklibname qt%{api}x11extras %{major}
@@ -92,6 +102,10 @@
 %define qtscripttoolsd %mklibname qt%{api}scripttools -d
 %define qtsvg %mklibname qt%{api}svg %{major}
 %define qtsvgd %mklibname qt%{api}svg -d
+%define qtwaylandclient %mklibname qt%{api}waylandclient %{major}
+%define qtwaylandclientd %mklibname qt%{api}waylandclient -d
+%define qtwaylandcompositor %mklibname qt%{api}waylandcompositor %{major}
+%define qtwaylandcompositord %mklibname qt%{api}compositor -d
 %define qtwebkit %mklibname qt%{api}webkit %{major}
 %define qtwebkitd %mklibname qt%{api}webkit -d
 %define qtwebkitwidgets %mklibname qt%{api}webkitwidgets %{major}
@@ -101,25 +115,28 @@
 %define enginio %mklibname enginio 1
 %define enginiod %mklibname enginio -d
 
-%bcond_without directfb
+%bcond_with directfb
 # Requires qdoc5 and qt5-tools to build
 %bcond_with docs
+# https://bugs.gentoo.org/show_bug.cgi?id=433826
+# 100%-related for cooker
+# disable gtkstyle because it adds qt4 include paths to the compiler
+# command line if x11-libs/cairo is built with USE=qt4 (bug 433826)
+# Our cairo actually isn't built with --enable-qt because nothing uses that combo.
+# We can leave gtkstyle support enabled.
+%bcond_without gtk
 
 Summary:	Version 5 of the Qt toolkit
 Name:		qt5
-Version:	5.3.1
+Version:	5.4.0
 License:	LGPLv3+
 Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
 %if "%{beta}" == ""
-Source0:	http://ftp.fau.de/qtproject/official_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}/single/qt-everywhere-opensource-src-%{version}.tar.xz
-Release:	1
+Source0:	http://download.qt-project.org/official_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}/single/qt-everywhere-opensource-src-%{version}.tar.xz
+Release:	0.1
 %else
-%if "%{beta}" == "rc"
-Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-RC.tar.xz
-%else
-Source0:	http://ftp.fau.de/qtproject/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
-%endif
+Source0:	http://download.qt-project.org/development_releases/qt/%(echo %{version} |cut -d. -f1-2)/%{version}-%{beta}/single/qt-everywhere-opensource-src-%{version}-%{beta}.tar.xz
 Release:	0.%{beta}.1
 %endif
 Source1:	qt5.macros
@@ -131,8 +148,16 @@ Source100:	%{name}.rpmlintrc
 Patch1:		qt-everywhere-opensource-src-5.3.1-cmake-linguist.patch
 # Build static library used in example to avoid missing dependency
 Patch2:		qt-everywhere-opensource-src-5.2.0-staticgrue.patch
-# Styles plugins stpport seems to be missing so add it
-Patch3:		qt-everywhere-opensource-src-5.3.1-styles-plugins.patch
+# upstream patch to build gsttools with gstreamer 1.0
+Patch3:		Initial-porting-effort-to-GStreamer-1.0.patch
+Patch4:		0001-Add-ARM-64-support.patch
+Patch5:		qt5-5.4.0-qtwayland-enable-compositor.patch
+Patch6:		qt-5.4.0-no-execstack-in-chromium-ffmpeg.patch
+# Don't apply subpixel gamma-correction on XCB, matching Qt 4.8 and other toolkits
+Patch7:		https://qt.gitorious.org/qt/qtbase/commit/501c510cc3cb6215aed27af7599395480a049667.patch
+# FIXME This needs porting to Qt 5.4.0
+# https://github.com/maui-packages/qtwayland/commit/737e006290ace623552105f97c0f6a623a8e1d02.patch
+Patch8:		0001-omv-arm-gnueabihf-g++.patch
 BuildRequires:	jpeg-devel
 # Build scripts
 BuildRequires:	python >= 3.0 python2
@@ -144,17 +169,24 @@ BuildRequires:	cups-devel
 BuildRequires:	pkgconfig(gl)
 BuildRequires:	pkgconfig(egl)
 BuildRequires:	pkgconfig(glesv2)
+# OpenVG
+BuildRequires:	openvg-devel
 # Event loop
 BuildRequires:	pkgconfig(glib-2.0)
+%if %{with gtk}
 # GTK theme
 BuildRequires:	pkgconfig(gtk+-2.0)
+%endif
 # ICU
 BuildRequires:	pkgconfig(icu-uc)
 # Multimedia
-BuildRequires:	pkgconfig(gstreamer-0.10)
-BuildRequires:	pkgconfig(gstreamer-plugins-base-0.10)
+BuildRequires:	pkgconfig(gstreamer-1.0)
+BuildRequires:	pkgconfig(gstreamer-plugins-base-1.0)
 BuildRequires:	pkgconfig(libpulse)
+BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(openal)
+BuildRequires:	pkgconfig(xkbcommon)
+BuildRequires:	pkgconfig(xorg-evdev)
 # For XCB platform plugin:
 BuildRequires:	pkgconfig(xcb) >= 1.5
 BuildRequires:	pkgconfig(xcb-icccm)
@@ -175,10 +207,15 @@ BuildRequires:	pkgconfig(xcb-xfixes)
 BuildRequires:	pkgconfig(xfixes)
 BuildRequires:	pkgconfig(xcb-randr)
 BuildRequires:	pkgconfig(xrandr)
+BuildRequires:	pkgconfig(xtst)
 BuildRequires:	pkgconfig(xkbcomp)
 BuildRequires:	pkgconfig(xkbfile)
 BuildRequires:	pkgconfig(xkbcommon) >= 0.4.1
 BuildRequires:	pkgconfig(xkbcommon-x11) >= 0.4.1
+BuildRequires:	pkgconfig(libsystemd)
+BuildRequires:	pkgconfig(libsystemd-journal)
+BuildRequires:	pkgconfig(mtdev)
+BuildRequires:	pkgconfig(harfbuzz)
 # For proper font access
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(freetype2)
@@ -190,6 +227,8 @@ BuildRequires:	pkgconfig(directfb)
 BuildRequires:	pkgconfig(atspi-2)
 # Assorted...
 BuildRequires:	pkgconfig(libudev)
+BuildRequires:	pkgconfig(libpci)
+BuildRequires:	pkgconfig(libcap)
 BuildRequires:	flex bison gperf
 # Used for CPU feature detection in configure step
 BuildRequires:	gdb
@@ -208,6 +247,7 @@ Version 5 of the Qt toolkit.
 %package -n %{qtbluetooth}
 Summary:	Qt Bluetooth library
 Group:		System/Libraries
+BuildRequires:	pkgconfig(bluez)
 
 %description -n %{qtbluetooth}
 Qt Bluetooth library.
@@ -218,6 +258,7 @@ Qt Bluetooth library.
 %{_libdir}/libQt%{api}Bluetooth.so.%{major}*
 %endif
 %{_qt_prefix}/qml/QtBluetooth
+%{_qt_bindir}/sdpscanner
 
 #----------------------------------------------------------------------------
 
@@ -298,7 +339,7 @@ Development files for version 5 of the QtConcurrent library.
 %package -n %{qtcore}
 Summary:	Qt Core library
 Group:		System/Libraries
-Requires:	%{name}-qtcore-i18n = %{EVRD}
+Suggests:	%{name}-qtcore-i18n = %{EVRD}
 Obsoletes:	%{_lib}qt5v85 < 5.1.0-8
 Obsoletes:	%{_lib}qt5v8_5 < 5.2.0
 
@@ -328,6 +369,7 @@ Development files for version 5 of the QtCore library.
 %{_qt_docdir}/global
 %{_bindir}/moc-qt%{api}
 %{_qt_bindir}/moc
+%{_qt_bindir}/syncqt*
 %{_bindir}/rcc-qt%{api}
 %{_qt_bindir}/rcc
 %{_qt_includedir}/QtCore
@@ -358,6 +400,7 @@ Qt Core translations.
 %files qtcore-i18n
 %dir %{_qt_translationsdir}
 %lang(ar) %{_qt_translationsdir}/qt_ar.qm
+%lang(ca) %{_qt_translationsdir}/qt_ca.qm
 %lang(cs) %{_qt_translationsdir}/qt_cs.qm
 %lang(da) %{_qt_translationsdir}/qt_da.qm
 %lang(de) %{_qt_translationsdir}/qt_de.qm
@@ -397,12 +440,14 @@ Qt Core translations.
 %lang(uk) %{_qt_translationsdir}/qt_help_uk.qm
 %lang(zh_CN) %{_qt_translationsdir}/qt_help_zh_CN.qm
 %lang(zh_TW) %{_qt_translationsdir}/qt_help_zh_TW.qm
+%lang(ca) %{_qt_translationsdir}/qtbase_ca.qm
 %lang(cs) %{_qt_translationsdir}/qtbase_cs.qm
 %lang(de) %{_qt_translationsdir}/qtbase_de.qm
 %lang(fi) %{_qt_translationsdir}/qtbase_fi.qm
 %lang(hu) %{_qt_translationsdir}/qtbase_hu.qm
 %lang(it) %{_qt_translationsdir}/qtbase_it.qm
 %lang(ja) %{_qt_translationsdir}/qtbase_ja.qm
+%lang(lv) %{_qt_translationsdir}/qtbase_lv.qm
 %lang(ru) %{_qt_translationsdir}/qtbase_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtbase_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtbase_uk.qm
@@ -470,7 +515,9 @@ Qt GUI library.
 %{_qt_plugindir}/imageformats
 %dir %{_qt_plugindir}/platforminputcontexts
 %dir %{_qt_plugindir}/platforms
+%if %{with gtk}
 %dir %{_qt_plugindir}/platformthemes
+%endif
 %dir %{_qt_plugindir}/iconengines
 %{_qt_plugindir}/generic
 %{_qt_plugindir}/printsupport
@@ -484,7 +531,9 @@ Requires:	%{qtgui} = %{EVRD}
 # We need all the Platform plugins because the plugin related cmake files in
 # %{_qt_libdir}/cmake/Qt%{api}Gui cause fatal errors if the plugins aren't
 # installed.
+%if %{with directfb}
 Requires:	%{qtgui}-directfb = %{EVRD}
+%endif
 %ifos linux
 Requires:	%{qtgui}-linuxfb = %{EVRD}
 %endif
@@ -494,7 +543,9 @@ Requires:	%{qtgui}-x11 = %{EVRD}
 Requires:	%{qtgui}-eglfs = %{EVRD}
 Requires:	%{qtgui}-kms = %{EVRD}
 Requires:	%{qtgui}-minimalegl = %{EVRD}
+%if %{with gtk}
 Requires:	%{name}-platformtheme-gtk2 = %{EVRD}
+%endif
 Requires:	pkgconfig(gl)
 Requires:	pkgconfig(egl)
 Requires:	pkgconfig(glesv2)
@@ -506,6 +557,7 @@ Development files for version 5 of the QtGui library.
 %{_qt_bindir}/uic
 %{_bindir}/uic-qt%{api}
 %{_qt_includedir}/QtGui
+%{_qt_includedir}/QtPlatformHeaders
 %{_qt_includedir}/QtPlatformSupport
 %{_qt_includedir}/QtUiTools
 %{_qt_libdir}/libQt%{api}Gui.so
@@ -526,7 +578,7 @@ Development files for version 5 of the QtGui library.
 %endif
 
 #----------------------------------------------------------------------------
-
+%if %{with directfb}
 %package -n %{qtgui}-directfb
 Summary:	DirectFB output driver for QtGui v5
 Group:		System/Libraries
@@ -538,6 +590,7 @@ DirectFB output driver for QtGui v5.
 
 %files -n %{qtgui}-directfb
 %{_qt_plugindir}/platforms/libqdirectfb.so
+%endif
 
 #----------------------------------------------------------------------------
 
@@ -644,6 +697,45 @@ Minimalistic EGL output driver for QtGui v5.
 %{_qt_plugindir}/platforms/libqminimalegl.so
 
 #----------------------------------------------------------------------------
+%package -n %{qtlocation}
+Summary:	Qt Location library
+Group:		System/Libraries
+
+%description -n %{qtlocation}
+Qt Location library
+
+%files -n %{qtlocation}
+%{_qt_libdir}/libQt%{api}Location.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}Location.so.%{major}*
+%endif
+%dir %{_qt_plugindir}/geoservices
+%{_qt_plugindir}/geoservices/libqtgeoservices_nokia.so
+%{_qt_plugindir}/geoservices/libqtgeoservices_osm.so
+%{_qt_prefix}/qml/QtLocation
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtlocationd}
+Summary:	Development files for version %{api} of the QtLocation library
+Group:		Development/KDE and Qt
+Requires:	%{qtlocation} = %{EVRD}
+
+%description -n %{qtlocationd}
+Development files for version %{api} of the QtLocation library.
+
+%files -n %{qtlocationd}
+%{_qt_includedir}/QtLocation
+%{_qt_libdir}/libQt%{api}Location.so
+%{_qt_libdir}/libQt%{api}Location.prl
+%{_qt_libdir}/cmake/Qt%{api}Location
+%{_qt_libdir}/pkgconfig/Qt%{api}Location.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Location.pc
+%endif
+
+
+#----------------------------------------------------------------------------
 
 %package -n %{qtnetwork}
 Summary:	Qt Networking library
@@ -662,12 +754,12 @@ Qt Networking library.
 #----------------------------------------------------------------------------
 
 %package -n %{qtnetworkd}
-Summary:	Development files for version 5 of the QtNetwork library
+Summary:	Development files for version %{api} of the QtNetwork library
 Group:		Development/KDE and Qt
 Requires:	%{qtnetwork} = %{EVRD}
 
 %description -n %{qtnetworkd}
-Development files for version 5 of the QtNetwork library.
+Development files for version %{api} of the QtNetwork library.
 
 %files -n %{qtnetworkd}
 %{_qt_includedir}/QtNetwork
@@ -977,6 +1069,7 @@ Group:		System/Libraries
 Requires:	%{qtsql} = %{EVRD}
 Provides:	%{name}-database-plugin-odbc = %{EVRD}
 BuildRequires:	pkgconfig(libiodbc)
+BuildRequires:	unixODBC-devel
 
 %description -n %{qtsql}-odbc
 ODBC support for the QtSql library v5.
@@ -1064,7 +1157,6 @@ Qt Widget library.
 %if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/libQt%{api}Widgets.so.%{major}*
 %endif
-%{_qt_plugindir}/accessible
 
 #----------------------------------------------------------------------------
 
@@ -1117,6 +1209,182 @@ Development files for version 5 of the QtQuickWidgets library.
 %{_qt_libdir}/pkgconfig/Qt%{api}QuickWidgets.pc
 %if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/pkgconfig/Qt%{api}QuickWidgets.pc
+%endif
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebchannel}
+Summary:	Qt %{api} WebChannel library
+Group:		System/Libraries
+
+%description -n %{qtwebchannel}
+Qt %{api} WebChannel library,  a library for communication between
+HTML/JavaScript and Qt/QML objects.
+
+%files -n %{qtwebchannel}
+%{_qt_libdir}/libQt%{api}WebChannel.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}WebChannel.so.%{major}*
+%endif
+%{_qt_prefix}/qml/QtWebChannel
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebchanneld}
+Summary:	Development files for the Qt %{api} WebChannel library
+Group:		Development/KDE and Qt
+Requires:	%{qtwebchannel} = %{EVRD}
+
+%description -n %{qtwebchanneld}
+Development files for version %{api} of the QtWebChannel library,
+a library for communication between HTML/JavaScript and Qt/QML
+objects.
+
+%files -n %{qtwebchanneld}
+%{_qt_includedir}/QtWebChannel
+%{_qt_libdir}/libQt%{api}WebChannel.so
+%{_qt_libdir}/libQt%{api}WebChannel.prl
+%{_qt_libdir}/cmake/Qt%{api}WebChannel
+%{_qt_libdir}/pkgconfig/Qt%{api}WebChannel.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}WebChannel.pc
+%endif
+
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebengine}
+Summary:	Qt %{api} WebEngine library
+Group:		System/Libraries
+Requires:	%{name}-qtwebengine-common = %{EVRD}
+Suggests:	%{name}-qtwebengine-i18n = %{EVRD}
+
+%description -n %{qtwebengine}
+Qt %{api} WebEngine library, a library for rendering web content.
+
+%files -n %{qtwebengine}
+%{_qt_libdir}/libQt%{api}WebEngine.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}WebEngine.so.%{major}*
+%endif
+%{_qt_prefix}/qml/QtWebEngine
+%dir %{_qt_plugindir}/qtwebengine
+%{_qt_plugindir}/qtwebengine/libffmpegsumo.so
+
+#----------------------------------------------------------------------------
+
+%package qtwebengine-common
+Summary:	Qt WebEngine noarch data files
+Group:		System/Libraries
+BuildArch:	noarch
+
+%description qtwebengine-common
+Qt WebEngine noarch data files.
+
+%files qtwebengine-common
+%{_qt_datadir}/icudtl.dat
+%{_qt_datadir}/qtwebengine_resources.pak
+
+#----------------------------------------------------------------------------
+
+%package qtwebengine-i18n
+Summary:	Qt %{api} WebEngine translations
+Group:		System/Libraries
+BuildArch:	noarch
+
+%description qtwebengine-i18n
+Qt %{api} WebEngine translations
+
+%files qtwebengine-i18n
+%dir %{_qt_datadir}/translations/qtwebengine_locales
+%{expand:%(for i in am ar bg bn ca cs da de el en-GB en-US es-419 es et fa fi fil fr gu he hi hr hu id it ja kn ko lt lv ml mr ms nb nl pl pt-BR pt-PT ro ru sk sl sr sv sw ta te th tr uk vi zh-CN zh-TW; do echo "%%lang(${i/-/_}) %{_qt_datadir}/translations/qtwebengine_locales/$i.pak"; done)}
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebengined}
+Summary:	Development files for the Qt %{api} WebEngine library
+Group:		Development/KDE and Qt
+Requires:	%{qtwebengine} = %{EVRD}
+
+%description -n %{qtwebengined}
+Development files for version %{api} of the QtWebEngine library,
+a library for rendering web content.
+objects.
+
+%files -n %{qtwebengined}
+%{_qt_includedir}/QtWebEngine
+%{_qt_libdir}/libQt%{api}WebEngine.so
+%{_qt_libdir}/libQt%{api}WebEngine.prl
+%{_qt_libdir}/cmake/Qt%{api}WebEngine
+%{_qt_libdir}/pkgconfig/Qt%{api}WebEngine.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}WebEngine.pc
+%endif
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebenginecore}
+Summary:	Qt %{api} WebEngine Core library
+Group:		System/Libraries
+
+%description -n %{qtwebenginecore}
+Qt %{api} WebEngine Core library, a library for rendering web content.
+
+%files -n %{qtwebenginecore}
+%{_qt_libdir}/libQt%{api}WebEngineCore.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}WebEngineCore.so.%{major}*
+%endif
+%{_libdir}/qt5/libexec/QtWebEngineProcess
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebenginecored}
+Summary:	Development files for the Qt %{api} WebEngine Core library
+Group:		Development/KDE and Qt
+Requires:	%{qtwebengined} = %{EVRD}
+Requires:	%{qtwebenginecore} = %{EVRD}
+
+%description -n %{qtwebenginecored}
+Development files for version %{api} of the QtWebEngine Core library,
+a library for rendering web content.
+objects.
+
+%files -n %{qtwebenginecored}
+%{_qt_libdir}/libQt%{api}WebEngineCore.so
+%{_qt_libdir}/libQt%{api}WebEngineCore.prl
+%{_qt_libdir}/cmake/Qt%{api}WebEngineCore
+%{_qt_libdir}/pkgconfig/Qt%{api}WebEngineCore.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}WebEngineCore.pc
+%endif
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebenginewidgets}
+Summary:	Qt %{api} WebEngine Widgets library
+Group:		System/Libraries
+
+%description -n %{qtwebenginewidgets}
+Qt %{api} WebEngine Widgets library, a library for rendering web content.
+
+%files -n %{qtwebenginewidgets}
+%{_qt_libdir}/libQt%{api}WebEngineWidgets.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}WebEngineWidgets.so.%{major}*
+%endif
+
+#----------------------------------------------------------------------------
+%package -n %{qtwebenginewidgetsd}
+Summary:	Development files for the Qt %{api} WebEngine Widgets library
+Group:		Development/KDE and Qt
+Requires:	%{qtwebenginewidgets} = %{EVRD}
+
+%description -n %{qtwebenginewidgetsd}
+Development files for version %{api} of the QtWebEngine Widgets library,
+a library for rendering web content.
+
+%files -n %{qtwebenginewidgetsd}
+%{_qt_includedir}/QtWebEngineWidgets
+%{_qt_libdir}/libQt%{api}WebEngineWidgets.so
+%{_qt_libdir}/libQt%{api}WebEngineWidgets.prl
+%{_qt_libdir}/cmake/Qt%{api}WebEngineWidgets
+%{_qt_libdir}/pkgconfig/Qt%{api}WebEngineWidgets.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}WebEngineWidgets.pc
 %endif
 
 #----------------------------------------------------------------------------
@@ -1244,7 +1512,7 @@ Development files for the Qt version of the CLucene search engine.
 %package -n %{qtdeclarative}
 Summary:	Runtime library for Qt Declarative
 Group:		System/Libraries
-Requires:	%{name}-qtdeclarative-i18n = %{EVRD}
+Suggests:	%{name}-qtdeclarative-i18n = %{EVRD}
 
 %description -n %{qtdeclarative}
 Runtime library for Qt Declarative.
@@ -1291,6 +1559,7 @@ Qt Declarative translations.
 %lang(de) %{_qt_translationsdir}/qtdeclarative_de.qm
 %lang(fi) %{_qt_translationsdir}/qtdeclarative_fi.qm
 %lang(ja) %{_qt_translationsdir}/qtdeclarative_ja.qm
+%lang(lv) %{_qt_translationsdir}/qtdeclarative_lv.qm
 %lang(ru) %{_qt_translationsdir}/qtdeclarative_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtdeclarative_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtdeclarative_uk.qm
@@ -1405,7 +1674,7 @@ to your application.
 %package -n %{qtmultimedia}
 Summary:	Qt Multimedia libraries
 Group:		System/Libraries
-Requires:	%{name}-qtmultimedia-i18n = %{EVRD}
+Suggests:	%{name}-qtmultimedia-i18n = %{EVRD}
 
 %description -n %{qtmultimedia}
 Qt Multimedia libraries.
@@ -1452,6 +1721,7 @@ BuildArch:	noarch
 Qt Multimedia translations.
 
 %files qtmultimedia-i18n
+%lang(ca) %{_qt_translationsdir}/qtmultimedia_ca.qm
 %lang(cs) %{_qt_translationsdir}/qtmultimedia_cs.qm
 %lang(de) %{_qt_translationsdir}/qtmultimedia_de.qm
 %lang(fi) %{_qt_translationsdir}/qtmultimedia_fi.qm
@@ -1569,7 +1839,7 @@ Development files for the Qt QML library.
 %package -n %{qtquick}
 Summary:	Runtime library for Qt Quick
 Group:		System/Libraries
-Requires:	%{name}-qtquick-i18n = %{EVRD}
+Suggests:	%{name}-qtquick-i18n = %{EVRD}
 
 %description -n %{qtquick}
 Runtime library for Qt Quick.
@@ -1622,6 +1892,7 @@ BuildArch:	noarch
 Qt Quick translations.
 
 %files qtquick-i18n
+%lang(ca) %{_qt_translationsdir}/qtquick1_ca.qm
 %lang(cs) %{_qt_translationsdir}/qtquick1_cs.qm
 %lang(de) %{_qt_translationsdir}/qtquick1_de.qm
 %lang(fi) %{_qt_translationsdir}/qtquick1_fi.qm
@@ -1631,6 +1902,10 @@ Qt Quick translations.
 %lang(ru) %{_qt_translationsdir}/qtquick1_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtquick1_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtquick1_uk.qm
+%lang(de) %{_qt_translationsdir}/qtquickcontrols_de.qm
+%lang(ja) %{_qt_translationsdir}/qtquickcontrols_ja.qm
+%lang(ru) %{_qt_translationsdir}/qtquickcontrols_ru.qm
+%lang(uk) %{_qt_translationsdir}/qtquickcontrols_uk.qm
 
 #----------------------------------------------------------------------------
 
@@ -1706,7 +1981,7 @@ Development files for Qt Quick's unit test module.
 %package -n %{qtscript}
 Summary:	Qt Script runtime library
 Group:		System/Libraries
-Requires:	%{name}-qtscript-i18n = %{EVRD}
+Suggests:	%{name}-qtscript-i18n = %{EVRD}
 
 %description -n %{qtscript}
 Qt Script runtime library.
@@ -1749,12 +2024,14 @@ BuildArch:	noarch
 Qt Script translations.
 
 %files qtscript-i18n
+%lang(ca) %{_qt_translationsdir}/qtscript_ca.qm
 %lang(cs) %{_qt_translationsdir}/qtscript_cs.qm
 %lang(de) %{_qt_translationsdir}/qtscript_de.qm
 %lang(fi) %{_qt_translationsdir}/qtscript_fi.qm
 %lang(hu) %{_qt_translationsdir}/qtscript_hu.qm
 %lang(it) %{_qt_translationsdir}/qtscript_it.qm
 %lang(ja) %{_qt_translationsdir}/qtscript_ja.qm
+%lang(lv) %{_qt_translationsdir}/qtscript_lv.qm
 %lang(ru) %{_qt_translationsdir}/qtscript_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtscript_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtscript_uk.qm
@@ -1828,6 +2105,96 @@ Development files for Qt's SVG rendering engine.
 %{_qt_libdir}/pkgconfig/Qt%{api}Svg.pc
 %if "%{_qt_libdir}" != "%{_libdir}"
 %{_libdir}/pkgconfig/Qt%{api}Svg.pc
+%endif
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtwaylandclient}
+Summary:	Wayland display system integration for Qt
+Group:		System/Libraries
+BuildRequires:	pkgconfig(wayland-client)
+BuildRequires:	pkgconfig(wayland-cursor)
+BuildRequires:	pkgconfig(wayland-egl)
+BuildRequires:	pkgconfig(wayland-scanner)
+BuildRequires:	pkgconfig(wayland-server)
+BuildRequires:	pkgconfig(xcomposite)
+
+%description -n %{qtwaylandclient}
+Wayland display system integration for Qt
+
+%files -n %{qtwaylandclient}
+%{_qt_bindir}/qtwaylandscanner
+%{_qt_libdir}/libQt%{api}WaylandClient.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}WaylandClient.so.%{major}*
+%endif
+%{_qt_plugindir}/platforms/libqwayland-egl.so
+%{_qt_plugindir}/platforms/libqwayland-generic.so
+%{_qt_plugindir}/wayland-decoration-client
+%{_qt_plugindir}/wayland-graphics-integration-client
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtwaylandclientd}
+Summary:	Development files for the Qt WebKit web browsing library
+Group:		Development/KDE and Qt
+Requires:	%{qtwaylandclient} = %{EVRD}
+
+%description -n %{qtwaylandclientd}
+Development files for the Qt Wayland display system integration for Qt
+
+%files -n %{qtwaylandclientd}
+%{_qt_includedir}/QtWaylandClient
+%{_qt_libdir}/libQt%{api}WaylandClient.so
+%{_qt_libdir}/libQt%{api}WaylandClient.prl
+%{_qt_libdir}/cmake/Qt%{api}WaylandClient
+%{_qt_libdir}/pkgconfig/Qt%{api}WaylandClient.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}WaylandClient.pc
+%endif
+
+#----------------------------------------------------------------------------
+
+%package -n	%{qtwaylandcompositor}
+Summary:	Wayland platform QtCompositor module
+Group:		System/Libraries
+
+%description -n %{qtwaylandcompositor}
+Qt Wayland QtCompositor module
+
+%files -n %{qtwaylandcompositor}
+%{_qt_libdir}/libQt%{api}Compositor.so.%{major}*
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/libQt%{api}Compositor.so.%{major}*
+%endif
+%{_qt_plugindir}/platforms/libqwayland-xcomposite-egl.so
+%{_qt_plugindir}/platforms/libqwayland-xcomposite-glx.so
+%{_qt_plugindir}/wayland-graphics-integration-server/libdrm-egl-server.so
+%{_qt_plugindir}/wayland-graphics-integration-server/libwayland-egl.so
+%{_qt_plugindir}/wayland-graphics-integration-server/libxcomposite-egl.so
+%{_qt_plugindir}/wayland-graphics-integration-server/libxcomposite-glx.so
+
+#----------------------------------------------------------------------------
+
+%package -n %{qtwaylandcompositord}
+Summary:	Development files for the Qt WebKit web browsing library
+Group:		Development/KDE and Qt
+Requires:	%{qtwaylandcompositor} = %{EVRD}
+Requires:	%{qtwaylandclient} = %{EVRD}
+Requires:	%{qtwaylandclient} = %{EVRD}
+Requires:	%{qtwaylandclientd} = %{EVRD}
+
+%description -n %{qtwaylandcompositord}
+Development files for the Qt Wayland QtCompositor module
+
+%files -n %{qtwaylandcompositord}
+%{_qt_includedir}/QtCompositor
+%{_qt_libdir}/libQt%{api}Compositor.so
+%{_qt_libdir}/libQt%{api}Compositor.prl
+%{_qt_libdir}/cmake/Qt%{api}Compositor
+%{_qt_libdir}/pkgconfig/Qt%{api}Compositor.pc
+%if "%{_qt_libdir}" != "%{_libdir}"
+%{_libdir}/pkgconfig/Qt%{api}Compositor.pc
 %endif
 
 #----------------------------------------------------------------------------
@@ -1950,7 +2317,7 @@ Development files for the QtX11Extras library.
 Summary:	Qt XSLT engine
 Group:		System/Libraries
 Requires:	%{qtxml} = %{EVRD}
-Requires:	%{name}-qtxmlpatterns-i18n = %{EVRD}
+Suggests:	%{name}-qtxmlpatterns-i18n = %{EVRD}
 
 %description -n %{qtxmlpatterns}
 Qt XSLT engine.
@@ -2027,6 +2394,7 @@ BuildArch:	noarch
 Qt XSLT engine translations.
 
 %files qtxmlpatterns-i18n
+%lang(ca) %{_qt_translationsdir}/qtxmlpatterns_ca.qm
 %lang(cs) %{_qt_translationsdir}/qtxmlpatterns_cs.qm
 %lang(de) %{_qt_translationsdir}/qtxmlpatterns_de.qm
 %lang(hu) %{_qt_translationsdir}/qtxmlpatterns_hu.qm
@@ -2048,6 +2416,7 @@ Requires:	%{qtconcurrentd} = %{EVRD}
 Requires:	%{qtcored} = %{EVRD}
 Requires:	%{qtdbusd} = %{EVRD}
 Requires:	%{qtguid} = %{EVRD}
+Requires:	%{qtlocationd} = %{EVRD}
 Requires:	%{qtnetworkd} = %{EVRD}
 Requires:	%{qtopengld} = %{EVRD}
 Requires:	%{qtpositioningd} = %{EVRD}
@@ -2073,8 +2442,11 @@ Requires:	%{qtquickwidgetsd} = %{EVRD}
 Requires:	%{qtscriptd} = %{EVRD}
 Requires:	%{qtscripttoolsd} = %{EVRD}
 Requires:	%{qtsvgd} = %{EVRD}
+Suggests:	%{qtwaylandclientd} = %{EVRD}
+Suggests:	%{qtwaylandcompositord} = %{EVRD}
 Requires:	%{qtwebkitd} = %{EVRD}
 Requires:	%{qtwebkitwidgetsd} = %{EVRD}
+Requires:	%{qtwebchanneld} = %{EVRD}
 Requires:	%{qtwebsocketsd} = %{EVRD}
 Requires:	%{qtxmlpatternsd} = %{EVRD}
 Requires:	qmake%{api} = %{EVRD}
@@ -2264,7 +2636,7 @@ Base macros for Qt 5.
 %{_sysconfdir}/rpm/macros.d/qt5.macros
 
 #----------------------------------------------------------------------------
-
+%if %{with gtk}
 %package platformtheme-gtk2
 Summary:	GTK 2.x platform theme for Qt 5
 Group:		Graphical desktop/KDE
@@ -2278,7 +2650,7 @@ based desktops.
 
 %files platformtheme-gtk2
 %{_qt_plugindir}/platformthemes/libqgtk2.so
-
+%endif
 #----------------------------------------------------------------------------
 
 %package -n qdoc%{api}
@@ -2332,7 +2704,9 @@ QML tools for Qt 5.
 %{_qt_bindir}/qml
 %{_qt_bindir}/qml1plugindump
 %{_qt_bindir}/qmlbundle
+%{_qt_bindir}/qmleasing
 %{_qt_bindir}/qmlimportscanner
+%{_qt_bindir}/qmllint
 %{_qt_bindir}/qmlmin
 %{_qt_bindir}/qmlplugindump
 %{_qt_bindir}/qmlprofiler
@@ -2374,11 +2748,7 @@ Tools for Qt 5.
 
 %prep
 %if "%{beta}" != ""
-%if "%{beta}" == "rc"
-%setup -q -n qt-everywhere-opensource-src-%{version}-RC
-%else
 %setup -q -n qt-everywhere-opensource-src-%{version}-%{beta}
-%endif
 %else
 %setup -q -n qt-everywhere-opensource-src-%{version}
 %endif
@@ -2387,14 +2757,64 @@ Tools for Qt 5.
 %endif
 
 %patch2 -p1 -b .0002~
-%patch3 -p1 -b .0003~
+
+pushd qtmultimedia
+%patch3 -p1 -b .gst1
+popd
+# aarch64 support in webkit
+%patch4 -p1
+# if you know how to pass an argue to build env
+# CONFIG+=wayland-compositor
+# remove this patch
+%patch5 -p1
+%patch6 -p1 -b .yasm~
+
+cd qtbase
+%patch7 -p1 -b .subpixelgc~
+cd ..
+%patch8 -p1 -b .armhf
 
 # Build scripts aren't ready for python3
 grep -rl "env python" . |xargs sed -i -e "s,env python,env python2,g"
-grep -rl "/python" . |xargs sed -i -e "s,/python,/python2,g"
+grep -rl "/python$" . |xargs sed -i -e "s,/python$,/python2,g"
+grep -rl "'python'" . |xargs sed -i -e "s,'python','python2',g"
 sed -i -e "s,python,python2,g" qtwebkit/Source/*/DerivedSources.pri
 
+# respect cflags
+sed -i -e '/^CPPFLAGS\s*=/ s/-g //' \
+	qtbase/qmake/Makefile.unix
+
+sed -i -e "s|^\(QMAKE_LFLAGS_RELEASE.*\)|\1 %{ldflags}|" \
+  qtbase/mkspecs/common/g++-unix.conf
+
+sed -i -e "s|-O2|%{optflags}|g" qtbase/mkspecs/common/gcc-base.conf
+sed -i -e "s|-O3|%{optflags}|g" qtbase/mkspecs/common/gcc-base.conf
+
+# chromium is a huge bogosity -- references to hidden SQLite symbols, has
+# asm files forcing an executable stack etc., but still tries to force ld
+# into --fatal-warnings mode...
+sed -i -e 's|--fatal-warnings|-O2|' qtwebengine/src/3rdparty/chromium/build/config/compiler/BUILD.gn qtwebengine/src/3rdparty/chromium/build/common.gypi qtwebengine/src/3rdparty/chromium/android_webview/android_webview.gyp
+
+# replace c++ with g++
+# c++ -Xassembler --version -x assembler -c /dev/null
+# clang: error: unsupported argument '--version' to option 'Xassembler'
+sed -i 's/c++/g++/g' qtwebengine/src/3rdparty/chromium/build/compiler_version.py
+
+# drop weird X11R6 lib from path in *.pc files
+sed -i 's!X11R6/!!g' qtbase/mkspecs/linux-g++*/qmake.conf
+
+# move some bundled libs to ensure they're not accidentally used
+#pushd qtbase/src/3rdparty
+#mkdir UNUSED
+#mv freetype libjpeg libpng zlib xcb sqlite UNUSED/
+#popd
+
 %build
+# build with python2
+mkdir pybin
+ln -s %{_bindir}/python2 pybin/python
+export PATH=`pwd`/pybin:$PATH
+
 ./configure \
 	-prefix %{_qt_prefix} \
 	-bindir %{_qt_bindir} \
@@ -2430,7 +2850,7 @@ sed -i -e "s,python,python2,g" qtwebkit/Source/*/DerivedSources.pri
 %ifarch %{ix86}
 	-platform linux-g++-32 \
 %endif
-%ifarch %{arm}
+%ifarch %{armx}
 	-platform linux-g++ \
 %endif
 	-system-zlib \
@@ -2439,13 +2859,14 @@ sed -i -e "s,python,python2,g" qtwebkit/Source/*/DerivedSources.pri
 	-openssl-linked \
 	-system-pcre \
 	-system-xcb \
+	-system-harfbuzz \
 	-optimized-qmake \
 	-no-nis \
 	-cups \
 	-iconv \
 	-icu \
 	-no-strip \
-	-pch \
+	-no-pch \
 	-dbus-linked \
 %ifarch %ix86 x86_64
 	-reduce-relocations \
@@ -2453,6 +2874,11 @@ sed -i -e "s,python,python2,g" qtwebkit/Source/*/DerivedSources.pri
 	-xcb \
 %if %{with directfb}
 	-directfb \
+%else
+	-no-directfb \
+%endif
+%if %{without gtk}
+	-no-gtkstyle \
 %endif
 	-qpa xcb \
 	-fontconfig \
@@ -2476,6 +2902,15 @@ sed -i -e "s,python,python2,g" qtwebkit/Source/*/DerivedSources.pri
 	-confirm-license \
 	-system-proxies \
 	-glib \
+	-mtdev \
+	-journald \
+	-pulseaudio \
+	-alsa \
+	-linuxfb \
+	-kms \
+	-evdev \
+	-silent \
+	-system-xkbcommon \
 	-no-separate-debug-info \
 	-no-strip \
 %if "%{_qt_libdir}" == "%{_libdir}"
@@ -2483,7 +2918,8 @@ sed -i -e "s,python,python2,g" qtwebkit/Source/*/DerivedSources.pri
 %endif
 	-v \
 	-I %{_includedir}/iodbc \
-	-I %{_includedir}/mysql
+	-I %{_includedir}/mysql \
+	-I %{_includedir}/vg
 
 # FIXME reduce-relocations is disabled for anything but x86 because
 # of QTBUG-36129. This should be changed as soon as we get a new
@@ -2493,22 +2929,21 @@ sed -i -e "s,python,python2,g" qtwebkit/Source/*/DerivedSources.pri
 # (1.0.4) while other bits refer to it by Qt's version number
 ln -s %{version} qtenginio/include/Enginio/1.0.4
 
-%make STRIP=true
+%make STRIP=/bin/true || make STRIP=/bin/true
 
 %if %{with docs}
 %make docs
 %endif
 
 %install
-make install STRIP=true INSTALL_ROOT=%{buildroot}
+export PATH=`pwd`/pybin:$PATH
+
+make install STRIP=/bin/true INSTALL_ROOT=%{buildroot}
 
 %if %{with docs}
 make install_qch_docs INSTALL_ROOT=%{buildroot}
 %endif
 
-# Installed, but not useful
-rm -f %{buildroot}%{_qt_bindir}/syncqt
-rm -f %{buildroot}%{_qt_bindir}/syncqt.pl
 # Probably not useful outside of Qt source tree?
 rm -f %{buildroot}%{_qt_bindir}/qtmodule-configtests
 # Let's not ship -devel files for private libraries... At least not until
@@ -2543,13 +2978,16 @@ find %{buildroot} -type f -perm -0755 -name "*.html" |xargs --no-run-if-empty ch
 find %{buildroot} -type f -perm -0755 -name "*.js" |xargs --no-run-if-empty chmod 0644
 find %{buildroot} -type f -perm -0755 -name "*.plist.app" |xargs --no-run-if-empty chmod 0644
 
+# "make dep" output packaged into examples is bogus...
+find %{buildroot} -name .deps |xargs rm -rf
+
 # Workaround for
 # *** ERROR: same build ID in nonidentical files!
 #        /usr/lib/qt5/bin/qdbuscpp2xml
 #   and  /usr/lib/qt5/bin/moc
 # ...
 # while generating debug info
-find %{buildroot} -type f -perm -0755 |grep -vE '\.(so|qml|sh)' |xargs %__strip --strip-unneeded
+find %{buildroot} -type f -perm -0755 |grep -vE '\.(so|qml|sh|pl|ttf|eot|woff)' |xargs %__strip --strip-unneeded
 
 # Install rpm macros
 mkdir -p %{buildroot}%{_sysconfdir}/rpm/macros.d
@@ -2569,3 +3007,16 @@ cat >%{buildroot}%{_sysconfdir}/xdg/qtchooser/%{name}.conf <<'EOF'
 %{_qt_bindir}
 %{_qt_libdir}
 EOF
+
+# QMAKE_PRL_BUILD_DIR = /builddir/build/BUILD/qt-everywhere-opensource-src-5.4.0-beta/qtwayland/src/client
+## .prl/.la file love
+# nuke .prl reference(s) to %%buildroot, excessive (.la-like) libs
+pushd %{buildroot}%{_qt_libdir}
+for prl_file in libQt5*.prl ; do
+  sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" ${prl_file}
+  if [ -f "$(basename ${prl_file} .prl).so" ]; then
+    rm -fv "$(basename ${prl_file} .prl).la"
+    sed -i -e "/^QMAKE_PRL_LIBS/d" ${prl_file}
+  fi
+done
+popd
