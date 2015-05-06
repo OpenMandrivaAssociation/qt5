@@ -115,7 +115,7 @@
 %define enginio %mklibname enginio 1
 %define enginiod %mklibname enginio -d
 
-%bcond_with directfb
+%bcond_without directfb
 # Requires qdoc5 and qt5-tools to build
 %bcond_with docs
 # https://bugs.gentoo.org/show_bug.cgi?id=433826
