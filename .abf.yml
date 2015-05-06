@@ -1,2 +1,4 @@
-sources:
+removed_sources:
   qt-everywhere-opensource-src-5.4.0.tar.xz: 2f5558b87f8cea37c377018d9e7a7047cc800938
+sources:
+  qt-everywhere-opensource-src-5.4.1.tar.xz: daa3373af8d6656a1066ff23bc9100b5ca004ecf
