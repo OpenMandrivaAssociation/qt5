@@ -128,7 +128,7 @@
 
 Summary:	Version 5 of the Qt toolkit
 Name:		qt5
-Version:	5.4.0
+Version:	5.4.1
 License:	LGPLv3+
 Group:		Development/KDE and Qt
 Url:		http://qt-project.org/
@@ -153,14 +153,12 @@ Patch3:		Initial-porting-effort-to-GStreamer-1.0.patch
 Patch4:		0001-Add-ARM-64-support.patch
 Patch5:		qt5-5.4.0-qtwayland-enable-compositor.patch
 Patch6:		qt-5.4.0-no-execstack-in-chromium-ffmpeg.patch
-# Don't apply subpixel gamma-correction on XCB, matching Qt 4.8 and other toolkits
-Patch7:		https://qt.gitorious.org/qt/qtbase/commit/501c510cc3cb6215aed27af7599395480a049667.patch
 # FIXME This needs porting to Qt 5.4.0
 # https://github.com/maui-packages/qtwayland/commit/737e006290ace623552105f97c0f6a623a8e1d02.patch
 Patch8:		0001-omv-arm-gnueabihf-g++.patch
 BuildRequires:	jpeg-devel
 # Build scripts
-BuildRequires:	python >= 3.0 python2
+BuildRequires:	python
 BuildRequires:	pkgconfig(libpng)
 BuildRequires:	pkgconfig(zlib)
 # CUPS
@@ -170,7 +168,7 @@ BuildRequires:	pkgconfig(gl)
 BuildRequires:	pkgconfig(egl)
 BuildRequires:	pkgconfig(glesv2)
 # OpenVG
-BuildRequires:	openvg-devel
+BuildRequires:	pkgconfig(vg)
 # Event loop
 BuildRequires:	pkgconfig(glib-2.0)
 %if %{with gtk}
@@ -212,10 +210,9 @@ BuildRequires:	pkgconfig(xkbcomp)
 BuildRequires:	pkgconfig(xkbfile)
 BuildRequires:	pkgconfig(xkbcommon) >= 0.4.1
 BuildRequires:	pkgconfig(xkbcommon-x11) >= 0.4.1
-BuildRequires:	pkgconfig(libsystemd)
+BuildRequires:	pkgconfig(systemd)
 BuildRequires:	pkgconfig(libsystemd-journal)
 BuildRequires:	pkgconfig(mtdev)
-BuildRequires:	pkgconfig(harfbuzz)
 # For proper font access
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(freetype2)
@@ -447,7 +444,6 @@ Qt Core translations.
 %lang(hu) %{_qt_translationsdir}/qtbase_hu.qm
 %lang(it) %{_qt_translationsdir}/qtbase_it.qm
 %lang(ja) %{_qt_translationsdir}/qtbase_ja.qm
-%lang(lv) %{_qt_translationsdir}/qtbase_lv.qm
 %lang(ru) %{_qt_translationsdir}/qtbase_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtbase_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtbase_uk.qm
@@ -1559,7 +1555,6 @@ Qt Declarative translations.
 %lang(de) %{_qt_translationsdir}/qtdeclarative_de.qm
 %lang(fi) %{_qt_translationsdir}/qtdeclarative_fi.qm
 %lang(ja) %{_qt_translationsdir}/qtdeclarative_ja.qm
-%lang(lv) %{_qt_translationsdir}/qtdeclarative_lv.qm
 %lang(ru) %{_qt_translationsdir}/qtdeclarative_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtdeclarative_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtdeclarative_uk.qm
@@ -2031,7 +2026,6 @@ Qt Script translations.
 %lang(hu) %{_qt_translationsdir}/qtscript_hu.qm
 %lang(it) %{_qt_translationsdir}/qtscript_it.qm
 %lang(ja) %{_qt_translationsdir}/qtscript_ja.qm
-%lang(lv) %{_qt_translationsdir}/qtscript_lv.qm
 %lang(ru) %{_qt_translationsdir}/qtscript_ru.qm
 %lang(sk) %{_qt_translationsdir}/qtscript_sk.qm
 %lang(uk) %{_qt_translationsdir}/qtscript_uk.qm
@@ -2768,17 +2762,7 @@ popd
 # remove this patch
 %patch5 -p1
 %patch6 -p1 -b .yasm~
-
-cd qtbase
-%patch7 -p1 -b .subpixelgc~
-cd ..
 %patch8 -p1 -b .armhf
-
-# Build scripts aren't ready for python3
-grep -rl "env python" . |xargs sed -i -e "s,env python,env python2,g"
-grep -rl "/python$" . |xargs sed -i -e "s,/python$,/python2,g"
-grep -rl "'python'" . |xargs sed -i -e "s,'python','python2',g"
-sed -i -e "s,python,python2,g" qtwebkit/Source/*/DerivedSources.pri
 
 # respect cflags
 sed -i -e '/^CPPFLAGS\s*=/ s/-g //' \
@@ -2810,11 +2794,6 @@ sed -i 's!X11R6/!!g' qtbase/mkspecs/linux-g++*/qmake.conf
 #popd
 
 %build
-# build with python2
-mkdir pybin
-ln -s %{_bindir}/python2 pybin/python
-export PATH=`pwd`/pybin:$PATH
-
 ./configure \
 	-prefix %{_qt_prefix} \
 	-bindir %{_qt_bindir} \
@@ -2859,7 +2838,6 @@ export PATH=`pwd`/pybin:$PATH
 	-openssl-linked \
 	-system-pcre \
 	-system-xcb \
-	-system-harfbuzz \
 	-optimized-qmake \
 	-no-nis \
 	-cups \
