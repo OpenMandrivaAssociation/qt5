@@ -1,0 +1,4 @@
+Attention!
+Qt5 monolithic package has been splited into submodules startin from 2015.0.
+
+Please find Qt5 submodules in openmandriva/qt5-qt${submodulename}

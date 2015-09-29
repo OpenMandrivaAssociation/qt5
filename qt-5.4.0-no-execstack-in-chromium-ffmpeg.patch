@@ -1,8 +1,0 @@
---- qt-everywhere-opensource-src-5.4.0-rc/qtwebengine/src/3rdparty/chromium/third_party/ffmpeg/libavutil/x86/x86inc.asm.omv~	2014-12-08 18:30:01.401702541 +0100
-+++ qt-everywhere-opensource-src-5.4.0-rc/qtwebengine/src/3rdparty/chromium/third_party/ffmpeg/libavutil/x86/x86inc.asm	2014-12-08 18:38:08.877608254 +0100
-@@ -1463,3 +1463,5 @@ FMA4_INSTR fnmsubss, fnmsub132ss, fnmsub
- %endif
- %endmacro
- %endif
-+
-+section .note.GNU-stack noalloc noexec nowrite progbits
